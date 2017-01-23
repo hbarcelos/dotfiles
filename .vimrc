@@ -148,6 +148,8 @@ set mat=2           " How many tenths of a second to blink when matching bracket
 " set list
 set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
 
+"Recursively set the path of the project.
+set path=$PWD/**
 
 " Set utf8 as standard encoding
 set encoding=utf8
