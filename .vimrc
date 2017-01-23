@@ -1,16 +1,67 @@
-" Pathogen plugin manager
-execute pathogen#infect()
-execute pathogen#helptags()
+set nocompatible
+filetype off
+set rtp+=~/.vim/bundle/vundle/
 
-" Enable syntax highlight
+call vundle#rc()
+
+Plugin 'gmarik/vundle'
+Plugin 'tpope/vim-endwise'
+Plugin 'tpope/vim-git'
+Plugin 'tpope/vim-surround'
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-sensible'
+Plugin 'tpope/vim-repeat'
+Plugin 'tpope/vim-markdown'
+Plugin 'tpope/vim-commentary'
+Plugin 'tpope/vim-unimpaired'
+Plugin 'tpope/vim-speeddating'
+Plugin 'tpope/vim-rsi'
+Plugin 'scrooloose/nerdtree'
+Plugin 'Xuyuanp/nerdtree-git-plugin'
+Plugin 'scrooloose/syntastic'
+Plugin 'ctrlpvim/ctrlp.vim'
+Plugin 'ternjs/tern_for_vim'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'ervandew/supertab'
+Plugin 'SirVer/ultisnips'
+Plugin 'honza/vim-snippets'
+Plugin 'raimondi/delimitmate'
+Plugin 'itchyny/lightline.vim'
+Plugin 'easymotion/vim-easymotion'
+Plugin 'editorconfig/editorconfig-vim'
+Plugin 'jlanzarotta/bufexplorer'
+Plugin 'mhinz/vim-startify'
+Plugin 'mhinz/vim-signify'
+Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'yggdroot/indentline'
+Plugin 'bronson/vim-trailing-whitespace'
+Plugin 'junegunn/vim-easy-align'
+Plugin 'PeterRincker/vim-argumentative'
+Plugin 'kshenoy/vim-signature'
+
+" Javascript
+Plugin 'pangloss/vim-javascript'
+" Plugin 'jelera/vim-javascript-syntax'
+Plugin 'vim-scripts/JavaScript-Indent'
+Plugin '1995eaton/vim-better-javascript-completion'
+Plugin 'elzr/vim-json'
+Plugin 'moll/vim-node'
+
+" HTML
+Plugin 'alvan/vim-closetag'
+
+" Themes
+Plugin 'nanotech/jellybeans.vim'
+Plugin 'morhetz/gruvbox'
+
+""" General {
 syntax on
-" Enable filetype plugins
-filetype on
-" Indentation in a plugin-based way
-filetype indent plugin on
+filetype plugin indent on
 
-" Read files from disk as soon as it changes
-set autoread
+set number 
+
+" change the mapleader from \ to ,
+let mapleader=","
 
 " set term=xterm-256color
 set t_Co=256
@@ -22,61 +73,65 @@ catch
     colorscheme default
 endtry
 
+" set dark background for Gvim as well
 hi Normal guifg=White guibg=Black
 
 set formatoptions+=or
 
-" Leader key for custom shortcuts
-let mapleader = ","
+set undofile
+set undodir=~/.tmp
 
-" Edit .vimrc file
-nmap <silent> <Leader>ev :e $MYVIMRC<CR>
-" Reload .vimrc file
-nmap <silent> <Leader>sv :so $MYVIMRC<CR>
+" Show line numbers
+set number
 
 " opening a new file when the current buffer has unsaved
 " changes causes fileto be hidden instead of closed
 set hidden
 
-" Allow backspacing over an indent, line break (end of line)
-" or start of an insert
-set backspace=indent,eol,start
-set whichwrap+=<,>,h,l
-
-set history=1000
-set undolevels=1000
-set undofile
-set undodir=~/.tmp
-set number          " Mostra o número das linhas
-" set ruler			"show the cursor position all the time
-" set rulerformat=%30(%=\:b%n%y%m%r%w\ %l,%c%V\ %P%) " A ruler on steroids
-" set showcmd " Show partial commands in status line and
-
-" " Broken down into easily includeable segments
-" set statusline=%<%f\ " Filename
-" set statusline+=%w%h%m%r " Options
-" set statusline+=%{fugitive#statusline()} " Git Hotness
-" " set statusline+=\ [%{getcwd()}] " Current dir
-" " set statusline+=\ [%{&ff}/%Y] " Filetype
-" set statusline+=%=%-30.(%{&fileencoding?&fileencoding:&encoding}/%{&ff}/%Y%) " Filetype
-" set statusline+=%=%-14.(%l,%c%V%)\ %p%% " Right aligned file nav info
-" set statusline+=%#warningmsg#
-" set statusline+=%{SyntasticStatuslineFlag()}
-" set statusline+=%*
-
-set autoindent    " always set autoindenting on
-set copyindent    " copy the previous indentation on autoindenting
+" always set autoindenting on
+set autoindent
+" copy the previous indentation on autoindenting
+set copyindent
 set preserveindent
 set smarttab
 set expandtab
 set shiftround
-set softtabstop=4
-set shiftwidth=4    " number of spaces to use for autoindenting
-set tabstop=4       " a tab is 4 spaces
+set softtabstop=2
+" number of spaces to use for autoindenting
+set shiftwidth=2
+" a tab is 2 spaces
+set tabstop=2
 set wrap
 
 " Folding
 set foldmethod=manual
+
+" Wild menu conf
+set wildmenu
+set wildmode=longest:full
+set wildignore=*.swp,*.bak,*.pyc,*.class
+set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
+set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
+
+" Highlights search
+set hls
+" Incremental search (while typing)
+set incsearch
+" Ignore case on search
+set ignorecase
+" If the search string contains capitalized letters, so it's case sensitive
+set smartcase
+set ffs=unix,dos,mac
+
+set title               " change the terminal's title
+set visualbell          " don't beep
+set noerrorbells        " don't beep
+
+" Don't redraw while executing macros (good performance config)
+set lazyredraw
+
+" For regular expressions turn magic on
+set magic
 
 " Split pannels conf
 set splitbelow
@@ -90,45 +145,9 @@ set scrolloff=10    " start scrolling when cursor is N lines from the top/bottom
 set showmatch       " set show matching parenthesis
 set mat=2           " How many tenths of a second to blink when matching brackets
 
-set mouse=a         " enables mouse
-
-" Wild menu conf
-set wildmenu
-set wildmode=longest:full
-set wildignore=*.swp,*.bak,*.pyc,*.class
-set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
-set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
-
-set hls             " Destaca a busca
-set incsearch       " Busca incremental (enquanto digita)
-set ignorecase 		" Ignora maiúsculas e minúsculas na busca
-set smartcase	 	" Se a busca contém maiúsuclas, é case senstive
-set ffs=unix,dos,mac    " Formato de quebras de linha UNIX
-
-set title               " change the terminal's title
-set visualbell          " don't beep
-set noerrorbells        " don't beep
-
-" Don't redraw while executing macros (good performance config)
-set lazyredraw
-
-" For regular expressions turn magic on
-set magic
-
-" This order mus be respected {
-" Sem compatibilidade com versões antigas
-set nocompatible
-" Status line conf
-set laststatus=1
-set noshowmode
-set noshowcmd
-" }
-
-"Recursively set the path of the project.
-set path=$PWD/**
-
 " set list
-set listchars=tab:>.,trail:.,extends:#,nbsp:.
+set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
+
 
 " Set utf8 as standard encoding
 set encoding=utf8
@@ -145,8 +164,9 @@ set nobackup
 set nowb
 set noswapfile
 
-" Ctags
-set tags=./tags;/,~/.vimtags
+""" }
+
+""" custom mappings {
 
 " Moves between panels
 noremap <c-h> <c-w><c-h>
@@ -160,27 +180,6 @@ noremap <silent> <Leader>. :nohlsearch<CR>
 " Open tag
 nnoremap <C-O> <C-]>
 
-" Page buffers
-nnoremap <silent> <C-B>n :bn<CR>
-nnoremap <silent> <C-B>p :bp<CR>
-nnoremap <silent> <C-B>f :bf<CR>
-nnoremap <silent> <C-B>l :bl<CR>
-
-" Tabs operations
-" map <silent> <F7> :tabprev <CR>
-" map <silent> <F8> :tabnext <CR>
-map <C-n> :tabnew<Space>
-
-" Switch CWD to the directory of the open buffer
-map <leader>cd :cd %:p:h<cr>:pwd<cr>
-
-" Save and quit shortcuts
-" nmap <Leader>ww :w!<CR>
-" nmap <Leader>wq :wq!<CR>
-" nmap <Leader>wa :wa!<CR>
-" nmap <Leader>qq :q!<CR>
-" nmap <Leader>qa :qa!<CR>
-
 " Allow saving of files as sudo when I forgot to start vim using sudo.
 cnoremap W! w !sudo tee > /dev/null %
 
@@ -190,13 +189,6 @@ noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 " Moves for wrapped lines
 noremap j gj
 noremap k gk
-
-" 0 now goes to the first non-blank character
-nnoremap 0 ^
-
-" map <Alt-p> and <Alt-P> to paste below/above and reformat
-nnoremap <Esc>P  P'[v']=
-nnoremap <Esc>p  p'[v']=
 
 " Search to jump to the line containing the word under the cursor
 map ,f [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
@@ -214,10 +206,6 @@ noremap Y y$
 vnoremap < <gv
 vnoremap > >gv
 
-" Map search for word to not move cursor
-nnoremap * *N
-nnoremap # #N
-
 " Map <Space> to / (search)
 map <space> /
 
@@ -225,117 +213,105 @@ map <space> /
 nmap <leader>cd ci"
 nmap <leader>cs ci'
 
-" Move a line of text using ,+[jk] or ,+[jk] on mac
-nmap <Leader>j mz:m+<cr>`z
-nmap <Leader>k mz:m-2<cr>`z
-vmap <Leader>j :m'>+<cr>`<my`>mzgv`yo`z
-vmap <Leader>k :m'<-2<cr>`>my`<mzgv`yo`z
+" Bring the 2nd MRU buffer to screen
+nnoremap <silent> <leader>bb :e #<CR>
 
-"Plugins
+" Toggle line numbers
+noremap <silent> <F2> :set number!<CR>
+inoremap <silent> <F2> <C-o>:set number!<CR>
+cnoremap <silent> <F2> <C-c>:set number!<CR>
 
-" PIV
-" let g:DisableAutoPHPFolding = 1
-" let g:PIVAutoClose = 0
+" Toggle list of special chars
+noremap <silent> <F3> :set list!<CR>
+inoremap <silent> <F3> <C-o>:set list!<CR>
+cnoremap <silent> <F3> <C-c>:set list!<CR>
 
-" Misc
-let g:NERDShutUp=1
-let b:match_ignorecase = 1
+" Maps \ to the same behavior of ` because of pt_BR keyboard
+nnoremap \ `
+nnoremap \\ ``
 
-" SnipMate
-let g:snips_author = "Henrique Barcelos <rick.hjpbarcelos@gmail.com>"
+" Insert new line after openning parenthesis, brackets or braces
+imap <c-c> <CR><Esc>O
 
+""" }
 
-" RagTag extension
-let g:ragtag_global_maps = 1
+""" NerdTRee {
 
-" ZenCoding.vim
-let g:user_zen_expandabbr_key = '<c-e>'
-let g:use_zen_complete_tag = 1
-
-" autotag.vim
-let s:autotag_vim_version=1
-
-if exists("g:autotag_vim_version_sourced")
-    if s:autotag_vim_version == g:autotag_vim_version_sourced
-        finish
-    endif
-endif
-
-" Windows
-nnoremap <silent> <leader>lc :lclose<CR>
-
-" Fugitive
-nnoremap <silent> <leader>gs :Gstatus<CR>
-nnoremap <silent> <leader>gd :Gdiff<CR>
-nnoremap <silent> <leader>gc :Gcommit<CR>
-nnoremap <silent> <leader>gb :Gblame<CR>
-nnoremap <silent> <leader>gl :Glog<CR>
-nnoremap <silent> <leader>gp :Git push<CR>
-nnoremap <silent> <leader>gw :Gwrite<CR>:GitGutter<CR>
-nnoremap <silent> <leader>gg :GitGutterToggle<CR>
-
-" NerdTree {
-
-" NERDTree mappings
-map <silent> <F4> :NERDTreeTabsToggle<CR>
-" map <C-e> :NERDTreeToggle<CR>:NERDTreeMirror<CR>
-" map <leader>e :NERDTreeFind<CR>
-" nmap <leader>nt :NERDTreeFind<CR>
-
-" let NERDTreeShowBookmarks=1
+let NERDTreeHijackNetrw=1
 let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr']
 let NERDTreeChDirMode=0
-" let NERDTreeQuitOnOpen=1
 let NERDTreeMouseMode=2
 let NERDTreeShowHidden=1
 let NERDTreeKeepTreeInNewTab=1
 let g:nerdtree_tabs_open_on_gui_startup=0
-" }
+let g:NERDShutUp=1
 
-" CtrlP
+map <silent> <F4> :NERDTreeToggle<Cr>
+
+map <silent> <F6> :FixWhitespace<Cr>
+vmap <silent> <F6> :FixWhitespace<Cr>
+
+""" }
+
+""" ctrlp.vim {
+
 let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
 let g:ctrlp_show_hidden = 1
-" let g:ctrlp_custom_ignore = {
-"   \ 'dir':  '\v[\/]\.(git|hg|svn)$',
-"   \ 'file': '\v\.(exe|so|dll)$',
-"   \ 'link': 'some_bad_symbolic_links',
-"   \ }
 
-" Tabularize {
-nmap <Leader>a& :Tabularize /&<CR>
-vmap <Leader>a& :Tabularize /&<CR>
-nmap <Leader>a= :Tabularize /=<CR>
-vmap <Leader>a= :Tabularize /=<CR>
-nmap <Leader>a: :Tabularize /:<CR>
-vmap <Leader>a: :Tabularize /:<CR>
-" nmap <Leader>a:: :Tabularize /:\zs<CR>
-" vmap <Leader>a:: :Tabularize /:\zs<CR>
-nmap <Leader>a, :Tabularize /,<CR>
-vmap <Leader>a, :Tabularize /,<CR>
-nmap <Leader>a<Bar> :Tabularize /<Bar><CR>
-vmap <Leader>a<Bar> :Tabularize /<Bar><CR>
+if executable('ag')
 
-inoremap <silent> <Bar>   <Bar><Esc>:call <SID>align()<CR>a
+  " Use ag over grep
+  set grepprg=ag\ --nogroup\ --nocolor
 
-function! s:align()
-  let p = '^\s*|\s.*\s|\s*$'
-  if exists(':Tabularize') && getline('.') =~# '^\s*|' && (getline(line('.')-1) =~# p || getline(line('.')+1) =~# p)
-    let column = strlen(substitute(getline('.')[0:col('.')],'[^|]','','g'))
-    let position = strlen(matchstr(getline('.')[0:col('.')],'.*|\s*\zs.*'))
-    Tabularize/|/l1
-    normal! 0
-    call search(repeat('[^|]*|',column).'\s\{-\}'.repeat('.',position),'ce',line('.'))
-  endif
-endfunction
-" }
+  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
 
-augroup markdown
-    au!
-    au BufNewFile,BufRead *.md,*.markdown setlocal filetype=ghmarkdown
-augroup END
+  " " ag is fast enough that CtrlP doesn't need to cache
+  let g:ctrlp_use_caching = 0
+endif
 
-" Syntastic {
-"let g:syntastic_check_on_open=1
+""" }
+
+""" silver searcher {
+
+" bind K to grep word under cursor
+nnoremap <leader>K :execute 'grep! --silent "\b"'.expand("<cword>").'"\b"'<CR>:rightb<SPACE>cw<CR>
+
+command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+" bind ,<SPACE> to grep shortcut
+nnoremap <leader><SPACE> :Ag<SPACE>
+
+""" }
+
+""" utilsnips + supertab + youcompleteme {
+  " YouCompleteMe and UltiSnips compatibility, with the helper of supertab
+let g:ycm_key_list_select_completion   = ['<C-n>', '<Down>']
+let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
+
+let g:SuperTabDefaultCompletionType    = '<C-n>'
+let g:SuperTabCrMapping                = 0
+
+let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsJumpForwardTrigger="<tab>"
+let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+
+""" }
+
+""" tern {
+
+" lern shortucts
+nnoremap <silent> <leader>td :TernDef<CR>
+nnoremap <silent> <leader>tpd :TernDefPreview<CR>
+nnoremap <silent> <leader>tsd :TernDefSplit<CR>
+nnoremap <silent> <leader>tD :TernDoc<CR>
+nnoremap <silent> <leader>tt :TernType<CR>
+nnoremap <silent> <leader>tr :TernRefs<CR>
+nnoremap <silent> <leader>tR :TernRename<CR>
+
+""" }
+
+
+""" syntastic {
 
 function SyntasticToggleAutoLocList()
     if g:syntastic_auto_loc_list == 2
@@ -352,28 +328,17 @@ let g:syntastic_auto_loc_list = 2
 let g:syntastic_check_on_open = 0
 let g:syntastic_check_on_wq = 1
 
-" C++11
-let g:syntastic_cpp_compiler_options = ' -std=c++11'
-let g:syntastic_cpp_compiler = 'clang'
-
-" Javascript
-let g:syntastic_javascript_checkers = ['eslint']
-
 nnoremap <silent> ]l :lnext<CR>
 nnoremap <silent> [l :lprev<CR>
 nnoremap <silent> <leader>lt :call SyntasticToggleAutoLocList()<CR>
 
-" SnipMate para arquivos PHP, PHTML
-" autocmd FileType phtml :set ft=php.html
-au BufRead,BufNewFile *.phtml set filetype=php.html
-autocmd FileType php,phtml :set makeprg=php\ -l\ %
-autocmd FileType php,phtml :set errorformat=%m\ in\ %f\ on\ line\ %l
-autocmd FileType php set keywordprg=pman
-autocmd  FileType  php setlocal omnifunc=phpcomplete_extended#CompletePHP
+" Javascript
+let g:syntastic_javascript_checkers = ['eslint']
 
-"}
+"""}
 
-" { LightLine conf
+""" lighline {
+
 let g:lightline = {
       \ 'colorscheme': 'jellybeans',
       \ 'active': {
@@ -502,100 +467,15 @@ endfunction
 let g:unite_force_overwrite_statusline = 0
 let g:vimfiler_force_overwrite_statusline = 0
 let g:vimshell_force_overwrite_statusline = 0
-"}
+""" }
 
+""" startify {
 
-" OMNICppComplete
-au BufNewFile,BufRead,BufEnter *.cpp,*.hpp set tags+=~/.vim/tags/cpp
-au BufNewFile,BufRead,BufEnter *.cpp,*.hpp set omnifunc=omni#cpp#complete#Main
+let g:startify_change_to_dir = 0
 
-let OmniCpp_NamespaceSearch = 1
-let OmniCpp_GlobalScopeSearch = 1
-let OmniCpp_ShowAccess = 1
-let OmniCpp_ShowPrototypeInAbbr = 1 " show function parameters
-let OmniCpp_MayCompleteDot = 1 " autocomplete after .
-let OmniCpp_MayCompleteArrow = 1 " autocomplete after ->
-let OmniCpp_MayCompleteScope = 1 " autocomplete after ::
-let OmniCpp_DefaultNamespaces = ["std", "_GLIBCXX_STD"]
-" automatically open and close the popup menu / preview window
-au CursorMovedI,InsertLeave * if pumvisible() == 0|silent! pclose|endif
-set completeopt=menuone,menu,longest,preview
+""""}
 
-
-" phpcomplete_extended
-let g:phpcomplete_index_composer_command = "composer"
-
-" Vim-markdown config
-augroup markdown
-    au!
-    au BufNewFile,BufRead *.md,*.markdown setlocal filetype=ghmarkdown
-augroup END
-
-" More javascript configuration
-
-au FileType javascript,js setl sw=2 sts=2 et
-au BufRead,BufNewFile *.js set filetype=javascript
-
-" set conceallevel=1
-set concealcursor=nvic
-let g:javascript_conceal=1
-
-" vim-javascript conceal settings.
-let g:javascript_conceal_null           = "ø"
-let g:javascript_conceal_undefined      = "¿"
-let g:javascript_conceal_NaN            = "ℕ"
-let g:javascript_conceal_static         = "•"
-let g:javascript_conceal_super          = "Ω"
-let g:javascript_conceal_arrow_function = "⇒"
-let g:javascript_conceal_function = "λ"
-let g:javascript_conceal_this = "@"
-let g:javascript_conceal_return = "<"
-let g:javascript_conceal_prototype = "#"
-
-let g:javascript_plugin_jsdoc = 1
-
-let g:used_javascript_libs = 'underscore,angularjs,jasmine,chai,jquery'
-
-" Tern shortucts
-nnoremap <silent> <leader>td :TernDef<CR>
-nnoremap <silent> <leader>tpd :TernDefPreview<CR>
-nnoremap <silent> <leader>tsd :TernDefSplit<CR>
-nnoremap <silent> <leader>tD :TernDoc<CR>
-nnoremap <silent> <leader>tt :TernType<CR>
-nnoremap <silent> <leader>tr :TernRefs<CR>
-nnoremap <silent> <leader>tR :TernRename<CR>
-
-" Tagbar shortcuts
-nnoremap <silent> <F8> :TagbarToggle<CR>
-
-
-" The Silver Searcher
-if executable('ag')
-  " Use ag over grep
-  set grepprg=ag\ --nogroup\ --nocolor
-
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-
-  " ag is fast enough that CtrlP doesn't need to cache
-  let g:ctrlp_use_caching = 0
-endif
-
-" bind K to grep word under cursor
-nnoremap <leader>K :execute 'grep! --silent "\b"'.expand("<cword>").'"\b"'<CR>:rightb<SPACE>cw<CR>
-
-command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
-" bind ,<SPACE> to grep shortcut
-nnoremap <leader><SPACE> :Ag<SPACE>
-
-" Bring the 2nd MRU buffer to screen
-nnoremap <silent> <leader>bb :e #<CR>
-
-" Maps \ to the same behavior of ` because of pt_BR keyboard
-nnoremap \ `
-nnoremap \\ ``
-
-" Signify mappings
+""" signify {
 
 let g:signify_vcs_list              = [ 'git', 'hg' ]
 let g:signify_cursorhold_insert     = 1
@@ -620,37 +500,45 @@ xmap ic <plug>(signify-motion-inner-visual)
 omap ac <plug>(signify-motion-outer-pending)
 xmap ac <plug>(signify-motion-outer-visual)
 
-" Startify options
-let g:startify_change_to_dir = 0
+""" }
 
+""" vim better javascript completion {
 
-" Qars utility helper
-" @see http://vimcasts.org/episodes/project-wide-find-and-replace/
-command! -nargs=0 -bar Qargs execute 'args' QuickfixFilenames()
-function! QuickfixFilenames()
-  " Building a hash ensures we get each buffer only once
-  let buffer_numbers = {}
-  for quickfix_item in getqflist()
-    let buffer_numbers[quickfix_item['bufnr']] = bufname(quickfix_item['bufnr'])
-  endfor
-  return join(map(values(buffer_numbers), 'fnameescape(v:val)'))
-endfunction
+let g:vimjs#casesensistive = 0
+let g:vimjs#smartcomplete = 1
 
+""" }
 
-" QFEnter {
-let g:qfenter_vopen_map = ['<C-v>']
-let g:qfenter_hopen_map = ['<C-CR>', '<C-s>', '<C-x>']
-let g:qfenter_topen_map = ['<C-t>']
-" }
+""" indentline {
 
+" Vim
+let g:indentLine_color_term = 236
 
-" FixMyJS {
-let g:fixmyjs_engine = 'eslint'
-let g:fixmyjs_rc_path = '$HOME/.eslintrc.js'
-nnoremap <silent> <Leader><Leader>l :Fixmyjs<CR>
-vnoremap <silent> <Leader><Leader>l :Fixmyjs<CR>
-" }
+"GVim
+let g:indentLine_color_gui = '#333333'
 
-" Editor Config {
-let g:EditorConfig_exclude_patterns = ['fugitive://.*']
-" }
+""" }
+
+""" gruvbox {
+let g:gruvbox_contrast_dark = 'soft'
+""" }
+
+""" vim-javascript {
+
+let g:javascript_plugin_jsdoc = 1
+let g:javascript_plugin_ngdoc = 1
+
+""" }
+
+""" vim-easy-align {
+" Start interactive EasyAlign in visual mode (e.g. vipga)
+xmap ga <Plug>(EasyAlign)
+
+" Start interactive EasyAlign for a motion/text object (e.g. gaip)
+nmap ga <Plug>(EasyAlign)
+
+let g:easy_align_delimiters = {
+  \ ':': { 'pattern': ':', 'left_margin': 1, 'right_margin': 1, 'stick_to_left': 0 }
+\}
+""" }
+
