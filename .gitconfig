@@ -1,0 +1,7 @@
+[include]
+  path = ~/.gitconfig.d/alias.gitconfig
+  path = ~/.gitconfig.d/branching.gitconfig
+  path = ~/.gitconfig.d/core.gitconfig
+  path = ~/.gitconfig.d/grep.gitconfig
+  path = ~/.gitconfig.d/user.gitconfig
+  path = ~/.gitconfig.d/submodule.gitconfig

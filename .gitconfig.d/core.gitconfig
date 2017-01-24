@@ -1,0 +1,3 @@
+[core]
+	excludesfile = /home/henrique/.gitignore_global
+

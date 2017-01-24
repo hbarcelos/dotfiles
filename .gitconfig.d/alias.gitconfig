@@ -1,0 +1,57 @@
+[alias]
+	co = checkout
+	cob = checkout -b
+	br = branch
+	ci = commit
+	cia = commit -a
+	cam = commit --amend
+	cama = commit --amend -a
+	st = status
+	sts = status -s
+	cl = clone
+	df = diff
+	dfw = diff --word-diff
+  dfc = diff --color-words=.
+	dc = diff --cached
+
+	r = reset
+	r1 = reset HEAD^
+	r2 = reset HEAD^^
+	rh = reset --hard
+	rh1 = reset HEAD^ --hard
+	rh2 = reset HEAD^^ --hard
+
+	grep = grep --break --heading --line-number
+
+	oneline = log --pretty=oneline
+	logs = log --oneline --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+	last = log -1 HEAD
+  ls = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate
+  ll = log --pretty=format:"%C(yellow)%h%Cred%d\\ %Creset%s%Cblue\\ [%cn]" --decorate --numstat
+  lnc = log --pretty=format:"%h\\ %s\\ [%cn]"
+  hist = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
+
+	unstage = reset HEAD --
+	uns = reset HEAD --
+	undo = reset --hard
+
+	changes = diff --name-status -r
+
+  assume = update-index --assume-unchanged
+  unassume = update-index --no-assume-unchanged
+  assumed = "!git ls-files -v | grep ^h | cut -c 3-"
+  unassumeall = "!git assumed | xargs git update-index --no-assume-unchanged"
+  assumeall = "!git st -s | awk {'print $2'} | xargs git assume"
+
+  lasttag = describe --tags --abbrev=0
+  lt = describe --tags --abbrev=0
+
+  ours = "!f() { git co --ours $@ && git add $@; }; f"
+  theirs = "!f() { git co --theirs $@ && git add $@; }; f"
+
+  delete-merged-branches = "!git co master && git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
+	tidy = rebase -i @{upstream}
+	spush = push --recurse-submodules=on-demand
+	g = grep --extended-regexp --break --heading --line-number
+	search = log --no-merges -i -E --pretty='%h (%ad) - [%an] %s %d' --date='short' --grep
+
