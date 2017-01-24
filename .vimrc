@@ -38,6 +38,14 @@ Plugin 'bronson/vim-trailing-whitespace'
 Plugin 'junegunn/vim-easy-align'
 Plugin 'PeterRincker/vim-argumentative'
 Plugin 'kshenoy/vim-signature'
+Plugin 'myusuf3/numbers.vim'
+Plugin 'ryanoasis/vim-devicons'
+Plugin 'haya14busa/incsearch.vim'
+Plugin 'haya14busa/incsearch-fuzzy.vim'
+Plugin 'haya14busa/vim-asterisk'
+Plugin 'haya14busa/vim-operator-flashy'
+Plugin 'kana/vim-operator-user'
+Plugin 'haya14busa/vim-metarepeat'
 
 " Javascript
 Plugin 'pangloss/vim-javascript'
@@ -58,7 +66,7 @@ Plugin 'morhetz/gruvbox'
 syntax on
 filetype plugin indent on
 
-set number 
+" set number 
 
 " change the mapleader from \ to ,
 let mapleader=","
@@ -113,8 +121,6 @@ set wildignore=*.swp,*.bak,*.pyc,*.class
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
 set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
 
-" Highlights search
-set hls
 " Incremental search (while typing)
 set incsearch
 " Ignore case on search
@@ -399,13 +405,21 @@ function! MyFugitive()
   return ''
 endfunction
 
-function! MyFileformat()
-  return winwidth(0) > 70 ? &fileformat : ''
+function! MyFiletype()
+  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype . ' ' . WebDevIconsGetFileTypeSymbol() : 'no ft') : ''
 endfunction
 
-function! MyFiletype()
-  return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : '') : ''
+function! MyFileformat()
+  return winwidth(0) > 70 ? (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
 endfunction
+
+" function! MyFileformat()
+"   return winwidth(0) > 70 ? &fileformat : ''
+" endfunction
+
+" function! MyFiletype()
+"   return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : '') : ''
+" endfunction
 
 function! MyFileencoding()
   return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
@@ -544,3 +558,59 @@ let g:easy_align_delimiters = {
 \}
 """ }
 
+""" numbers.vim {
+
+let g:enable_numbers = 0
+
+map <silent> <F12> :NumbersToggle<Cr>
+vmap <silent> <F12> :NumbersToggle<Cr>
+""" }
+
+""" vim-devicons {
+
+
+let g:webdevicons_enable = 1
+let g:DevIconsEnableFolderPatternMatching = 1
+
+""" }
+
+""" incsearch {
+
+map /  <Plug>(incsearch-forward)
+map ?  <Plug>(incsearch-backward)
+map g/ <Plug>(incsearch-stay)
+
+set hlsearch
+let g:incsearch#auto_nohlsearch = 1
+
+map n  <Plug>(incsearch-nohl-n)
+map N  <Plug>(incsearch-nohl-N)
+" map *  <Plug>(incsearch-nohl-*)
+" map #  <Plug>(incsearch-nohl-#)
+" map g* <Plug>(incsearch-nohl-g*)
+" map g# <Plug>(incsearch-nohl-g#)
+
+map z/ <Plug>(incsearch-fuzzy-/)
+map z<space> z/
+map z? <Plug>(incsearch-fuzzy-?)
+map zg/ <Plug>(incsearch-fuzzy-stay)
+
+""" }
+
+""" asterisk {
+
+let g:asterisk#keeppos = 1
+
+map *  <Plug>(asterisk-z*)
+map #  <Plug>(asterisk-z#)
+map g* <Plug>(asterisk-gz*)
+map g# <Plug>(asterisk-gz#)
+
+""" }
+
+""" flashy {
+
+map y <Plug>(operator-flashy)
+nmap Y <Plug>(operator-flashy)$
+
+""" }
