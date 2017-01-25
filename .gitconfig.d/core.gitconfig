@@ -1,3 +1,4 @@
 [core]
 	excludesfile = /home/henrique/.gitignore_global
+	pager = less -R
 
