@@ -38,22 +38,33 @@ Plugin 'bronson/vim-trailing-whitespace'
 Plugin 'junegunn/vim-easy-align'
 Plugin 'PeterRincker/vim-argumentative'
 Plugin 'kshenoy/vim-signature'
-Plugin 'myusuf3/numbers.vim'
 Plugin 'ryanoasis/vim-devicons'
 Plugin 'haya14busa/incsearch.vim'
 Plugin 'haya14busa/incsearch-fuzzy.vim'
-Plugin 'haya14busa/vim-asterisk'
-Plugin 'haya14busa/vim-operator-flashy'
 Plugin 'kana/vim-operator-user'
 Plugin 'haya14busa/vim-metarepeat'
+Plugin 'bkad/CamelCaseMotion'
+Plugin 'terryma/vim-expand-region'
+Plugin 'vim-scripts/gitignore'
+Plugin 'djoshea/vim-autoread'
+Plugin 'wellle/targets.vim'
+Plugin 'FooSoft/vim-argwrap'
 
 " Javascript
 Plugin 'pangloss/vim-javascript'
-" Plugin 'jelera/vim-javascript-syntax'
-Plugin 'vim-scripts/JavaScript-Indent'
 Plugin '1995eaton/vim-better-javascript-completion'
 Plugin 'elzr/vim-json'
 Plugin 'moll/vim-node'
+Plugin 'othree/javascript-libraries-syntax.vim'
+
+" Angular
+Plugin 'burnettk/vim-angular'
+
+" EJS
+Plugin 'briancollins/vim-jst'
+
+" RAML
+Plugin 'in3d/vim-raml'
 
 " HTML
 Plugin 'alvan/vim-closetag'
@@ -66,7 +77,7 @@ Plugin 'morhetz/gruvbox'
 syntax on
 filetype plugin indent on
 
-" set number 
+" set number
 
 " change the mapleader from \ to ,
 let mapleader=","
@@ -76,7 +87,7 @@ set t_Co=256
 set background=dark
 
 try
-    colorscheme jellybeans
+    colorscheme gruvbox
 catch
     colorscheme default
 endtry
@@ -189,7 +200,7 @@ noremap <silent> <Leader>. :nohlsearch<CR>
 nnoremap <C-O> <C-]>
 
 " Allow saving of files as sudo when I forgot to start vim using sudo.
-cnoremap W! w !sudo tee > /dev/null %
+cmap w!! w !sudo tee % >/dev/null
 
 " Remove the Windows ^M - when the encodings gets messed up
 noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
@@ -198,17 +209,41 @@ noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 noremap j gj
 noremap k gk
 
-" Search to jump to the line containing the word under the cursor
-map ,f [I:let nr = input("Which one: ")<Bar>exe "normal " . nr ."[\t"<CR>
-
-" Clipboard copy and paste
-noremap <leader><leader>y "+y
-noremap <leader><leader>Y "+Y
-noremap <leader><leader>p "+p
-noremap <leader><leader>P "+P
+" Emacs like shortcuts in insert mode
+inoremap <C-e> <C-o>$
+inoremap <C-a> <C-o>^
 
 " Make Y behaves like C and D
 noremap Y y$
+
+" Clipboard copy and paste
+noremap <leader><leader>y "+y
+noremap <leader><leader>Y "+y$
+noremap <leader><leader>p "+p
+noremap <leader><leader>P "+P
+
+" Automatically jump to end of text pasted
+vnoremap <silent> y y`]
+vnoremap <silent> p p`]
+nnoremap <silent> p p`]
+
+" vp doesn't replace paste buffer
+function! RestoreRegister()
+  let @" = s:restore_reg
+  return ''
+endfunction
+function! s:Repl()
+  let s:restore_reg = @"
+  return "p@=RestoreRegister()\<cr>"
+endfunction
+vmap <silent> <expr> p <sid>Repl()
+
+" Allows easy replacement of the current word and all its occurrences.
+nnoremap <Leader>rc :%s/\<<C-r><C-w>\>/
+vnoremap <Leader>rc y:%s/<C-r>"/
+
+" quickly select pasted text
+noremap gV `[v`]
 
 " visual shifting (does not exit Visual mode)
 vnoremap < <gv
@@ -223,11 +258,17 @@ nmap <leader>cs ci'
 
 " Bring the 2nd MRU buffer to screen
 nnoremap <silent> <leader>bb :e #<CR>
+nnoremap <silent> <tab> :e #<CR>
 
 " Toggle line numbers
-noremap <silent> <F2> :set number!<CR>
-inoremap <silent> <F2> <C-o>:set number!<CR>
-cnoremap <silent> <F2> <C-c>:set number!<CR>
+noremap <silent> <F10> :set number!<CR>
+inoremap <silent> <F10> <C-o>:set number!<CR>
+cnoremap <silent> <F10> <C-c>:set number!<CR>
+" Toggle relative line numbers
+noremap <silent> <F12> :set relativenumber!<CR>
+inoremap <silent> <F12> <C-o>:set relativenumber!<CR>
+cnoremap <silent> <F12> <C-c>:set relativenumber!<CR>
+
 
 " Toggle list of special chars
 noremap <silent> <F3> :set list!<CR>
@@ -241,12 +282,15 @@ nnoremap \\ ``
 " Insert new line after openning parenthesis, brackets or braces
 imap <c-c> <CR><Esc>O
 
+" Escape in normal mode
+inoremap jj <Esc>
+
 """ }
 
 """ NerdTRee {
 
 let NERDTreeHijackNetrw=1
-let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git', '\.hg', '\.svn', '\.bzr']
+let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git$', '\.hg', '\.svn', '\.bzr']
 let NERDTreeChDirMode=0
 let NERDTreeMouseMode=2
 let NERDTreeShowHidden=1
@@ -255,7 +299,13 @@ let g:nerdtree_tabs_open_on_gui_startup=0
 let g:NERDShutUp=1
 
 map <silent> <F4> :NERDTreeToggle<Cr>
+noremap <leader>n :NERDTreeFind<Cr>
 
+autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+
+""" }
+
+""" FixWhitespace {
 map <silent> <F6> :FixWhitespace<Cr>
 vmap <silent> <F6> :FixWhitespace<Cr>
 
@@ -263,27 +313,30 @@ vmap <silent> <F6> :FixWhitespace<Cr>
 
 """ ctrlp.vim {
 
-let g:ctrlp_custom_ignore = '\v[\/]\.(git|hg|svn)$'
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/]\.(git|hg|svn)$',
+  \ 'file': '\v\.(exe|so|dll|pyc)$'
+  \ }
 let g:ctrlp_show_hidden = 1
-
-if executable('ag')
-
-  " Use ag over grep
-  set grepprg=ag\ --nogroup\ --nocolor
-
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-
-  " " ag is fast enough that CtrlP doesn't need to cache
-  let g:ctrlp_use_caching = 0
-endif
 
 """ }
 
 """ silver searcher {
 
+let g:ctrlp_use_caching = 0
+if executable('ag')
+    set grepprg=ag\ --nogroup\ --nocolor\ --smart-case
+
+    let g:ctrlp_user_command = 'ag %s -l --nocolor --smart-case -g ""'
+else
+  let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . -co --exclude-standard', 'find %s -type f']
+  let g:ctrlp_prompt_mappings = {
+    \ 'AcceptSelection("e")': ['<space>', '<cr>', '<2-LeftMouse>'],
+    \ }
+endif
+
 " bind K to grep word under cursor
-nnoremap <leader>K :execute 'grep! --silent "\b"'.expand("<cword>").'"\b"'<CR>:rightb<SPACE>cw<CR>
+nnoremap <leader>K :execute 'grep! "\b"'.expand("<cword>").'"\b"'<CR>:rightb<SPACE>cw<CR>
 
 command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 " bind ,<SPACE> to grep shortcut
@@ -307,7 +360,7 @@ let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
 """ tern {
 
-" lern shortucts
+" tern shortucts
 nnoremap <silent> <leader>td :TernDef<CR>
 nnoremap <silent> <leader>tpd :TernDefPreview<CR>
 nnoremap <silent> <leader>tsd :TernDefSplit<CR>
@@ -340,6 +393,9 @@ nnoremap <silent> ]l :lnext<CR>
 nnoremap <silent> [l :lprev<CR>
 nnoremap <silent> <leader>lt :call SyntasticToggleAutoLocList()<CR>
 
+" Runs syntastic if the buffer is read due to external changes
+autocmd BufRead * SyntasticCheck
+
 " Javascript
 let g:syntastic_javascript_checkers = ['eslint']
 
@@ -348,7 +404,7 @@ let g:syntastic_javascript_checkers = ['eslint']
 """ lighline {
 
 let g:lightline = {
-      \ 'colorscheme': 'jellybeans',
+      \ 'colorscheme': 'gruvbox',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'readonly', 'filename' ], ['ctrlpmark'] ],
       \   'right': [ [ 'syntastic', 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
@@ -536,7 +592,11 @@ let g:indentLine_color_gui = '#333333'
 """ }
 
 """ gruvbox {
-let g:gruvbox_contrast_dark = 'soft'
+
+let g:gruvbox_contrast_dark = 'medium'
+let g:gruvbox_contrast_light = 'medium'
+let g:gruvbox_improved_warnings = 1
+
 """ }
 
 """ vim-javascript {
@@ -558,14 +618,6 @@ let g:easy_align_delimiters = {
 \}
 """ }
 
-""" numbers.vim {
-
-let g:enable_numbers = 0
-
-map <silent> <F12> :NumbersToggle<Cr>
-vmap <silent> <F12> :NumbersToggle<Cr>
-""" }
-
 """ vim-devicons {
 
 
@@ -581,14 +633,15 @@ map ?  <Plug>(incsearch-backward)
 map g/ <Plug>(incsearch-stay)
 
 set hlsearch
-let g:incsearch#auto_nohlsearch = 1
+
+" let g:incsearch#auto_nohlsearch = 1
 
 map n  <Plug>(incsearch-nohl-n)
 map N  <Plug>(incsearch-nohl-N)
-" map *  <Plug>(incsearch-nohl-*)
-" map #  <Plug>(incsearch-nohl-#)
-" map g* <Plug>(incsearch-nohl-g*)
-" map g# <Plug>(incsearch-nohl-g#)
+map *  <Plug>(incsearch-nohl-*)
+map #  <Plug>(incsearch-nohl-#)
+map g* <Plug>(incsearch-nohl-g*)
+map g# <Plug>(incsearch-nohl-g#)
 
 map z/ <Plug>(incsearch-fuzzy-/)
 map z<space> z/
@@ -597,20 +650,33 @@ map zg/ <Plug>(incsearch-fuzzy-stay)
 
 """ }
 
-""" asterisk {
+""" camel case motion {
 
-let g:asterisk#keeppos = 1
-
-map *  <Plug>(asterisk-z*)
-map #  <Plug>(asterisk-z#)
-map g* <Plug>(asterisk-gz*)
-map g# <Plug>(asterisk-gz#)
+call camelcasemotion#CreateMotionMappings('<leader>')
 
 """ }
 
-""" flashy {
+""" Javascript libraries syntax {
 
-map y <Plug>(operator-flashy)
-nmap Y <Plug>(operator-flashy)$
+let g:used_javascript_libs = 'underscore,jquery,angularjs'
+
+""" }
+
+""" vim-json {
+
+let g:vim_json_syntax_conceal = 0
+
+""" }
+
+""" vim-expand-region {
+
+vmap v <Plug>(expand_region_expand)
+vmap V <Plug>(expand_region_shrink)
+
+""" }
+
+""" vim-argwrap {
+
+nnoremap <silent> <leader>a :ArgWrap<CR>
 
 """ }
