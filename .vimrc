@@ -366,8 +366,8 @@ nnoremap <silent> <leader>tpd :TernDefPreview<CR>
 nnoremap <silent> <leader>tsd :TernDefSplit<CR>
 nnoremap <silent> <leader>tD :TernDoc<CR>
 nnoremap <silent> <leader>tt :TernType<CR>
-nnoremap <silent> <leader>tr :TernRefs<CR>
-nnoremap <silent> <leader>tR :TernRename<CR>
+nnoremap <silent> <leader>tR :TernRefs<CR>
+nnoremap <silent> <leader>tr :TernRename<CR>
 
 """ }
 
