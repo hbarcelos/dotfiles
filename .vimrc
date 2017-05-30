@@ -140,9 +140,12 @@ set ignorecase
 set smartcase
 set ffs=unix,dos,mac
 
-set title               " change the terminal's title
-set visualbell          " don't beep
-set noerrorbells        " don't beep
+" change the terminal's title
+set title
+" don't beep
+set visualbell
+" don't beep
+set noerrorbells
 
 " Don't redraw while executing macros (good performance config)
 set lazyredraw
@@ -157,10 +160,13 @@ set splitright
 " Enable CTRL-A/CTRL-X to work on octal and hex numbers, as well as characters
 set nrformats=octal,hex,alpha
 
-set scrolloff=10    " start scrolling when cursor is N lines from the top/bottom edge
+" start scrolling when cursor is N lines from the top/bottom edge
+set scrolloff=10
 
-set showmatch       " set show matching parenthesis
-set mat=2           " How many tenths of a second to blink when matching brackets
+" set show matching parenthesis
+set showmatch
+" How many tenths of a second to blink when matching brackets
+set mat=2
 
 " set list
 set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
@@ -174,14 +180,19 @@ set encoding=utf8
 " Not show current line for each minimized file
 set wmw=0
 
-set shortmess+=filmnrxoOtT " Abbrev. of messages (avoids 'hit enter')
-set viewoptions=folds,options,cursor,unix,slash " Better Unix / Windows compatibility
-" set virtualedit=onemore " Allow for cursor beyond last character
+" Abbrev. of messages (avoids 'hit enter')
+set shortmess+=filmnrxoOtT
+
+" Better Unix / Windows compatibility
+set viewoptions=folds,options,cursor,unix,slash
 
 " Turn backup off, since most stuff is in SVN, git et.c anyway...
 set nobackup
 set nowb
 set noswapfile
+
+" Enables current line highlight
+set cursorline
 
 """ }
 
