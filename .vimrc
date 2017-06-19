@@ -24,7 +24,6 @@ Plugin 'ternjs/tern_for_vim'
 Plugin 'Valloric/YouCompleteMe'
 Plugin 'ervandew/supertab'
 Plugin 'SirVer/ultisnips'
-Plugin 'honza/vim-snippets'
 Plugin 'raimondi/delimitmate'
 Plugin 'itchyny/lightline.vim'
 Plugin 'easymotion/vim-easymotion'
@@ -32,7 +31,6 @@ Plugin 'editorconfig/editorconfig-vim'
 Plugin 'jlanzarotta/bufexplorer'
 Plugin 'mhinz/vim-startify'
 Plugin 'mhinz/vim-signify'
-Plugin 'christoomey/vim-tmux-navigator'
 Plugin 'yggdroot/indentline'
 Plugin 'bronson/vim-trailing-whitespace'
 Plugin 'junegunn/vim-easy-align'
@@ -49,6 +47,10 @@ Plugin 'vim-scripts/gitignore'
 Plugin 'djoshea/vim-autoread'
 Plugin 'wellle/targets.vim'
 Plugin 'FooSoft/vim-argwrap'
+
+" Tmux integration
+Plugin 'christoomey/vim-tmux-navigator'
+Plugin 'benmills/vimux'
 
 " Javascript
 Plugin 'pangloss/vim-javascript'
@@ -367,9 +369,18 @@ let g:UltiSnipsExpandTrigger="<tab>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
+" Fix Python Path (for YCM)
+let g:ycm_path_to_python_interpreter="/usr/bin/python"
+
 """ }
 
 """ tern {
+
+"enable keyboard shortcuts
+let g:tern_map_keys=1
+"show argument hints
+let g:tern_show_argument_hints='on_hold'
+
 
 " tern shortucts
 nnoremap <silent> <leader>td :TernDef<CR>
@@ -689,5 +700,13 @@ vmap V <Plug>(expand_region_shrink)
 """ vim-argwrap {
 
 nnoremap <silent> <leader>a :ArgWrap<CR>
+
+""" }
+
+""" vim-markdown {
+
+let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'javascript']
+
+au FileType markdown setl sw=4 sts=4 et
 
 """ }
