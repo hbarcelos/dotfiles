@@ -1,85 +1,107 @@
-set nocompatible
-filetype off
-set rtp+=~/.vim/bundle/vundle/
+call plug#begin('~/.vim/plugged')
 
-call vundle#rc()
+function! BuildYCM(info)
+  if a:info.status == 'installed' || a:info.force
+    !./install.sh --tern-completer
+  endif
+endfunction
 
-Plugin 'gmarik/vundle'
-Plugin 'tpope/vim-endwise'
-Plugin 'tpope/vim-git'
-Plugin 'tpope/vim-surround'
-Plugin 'tpope/vim-fugitive'
-Plugin 'tpope/vim-sensible'
-Plugin 'tpope/vim-repeat'
-Plugin 'tpope/vim-markdown'
-Plugin 'tpope/vim-commentary'
-Plugin 'tpope/vim-unimpaired'
-Plugin 'tpope/vim-speeddating'
-Plugin 'tpope/vim-rsi'
-Plugin 'scrooloose/nerdtree'
-Plugin 'Xuyuanp/nerdtree-git-plugin'
-Plugin 'scrooloose/syntastic'
-Plugin 'ctrlpvim/ctrlp.vim'
-Plugin 'ternjs/tern_for_vim'
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'ervandew/supertab'
-Plugin 'SirVer/ultisnips'
-Plugin 'raimondi/delimitmate'
-Plugin 'itchyny/lightline.vim'
-Plugin 'easymotion/vim-easymotion'
-Plugin 'editorconfig/editorconfig-vim'
-Plugin 'jlanzarotta/bufexplorer'
-Plugin 'mhinz/vim-startify'
-Plugin 'mhinz/vim-signify'
-Plugin 'yggdroot/indentline'
-Plugin 'bronson/vim-trailing-whitespace'
-Plugin 'junegunn/vim-easy-align'
-Plugin 'PeterRincker/vim-argumentative'
-Plugin 'kshenoy/vim-signature'
-Plugin 'ryanoasis/vim-devicons'
-Plugin 'haya14busa/incsearch.vim'
-Plugin 'haya14busa/incsearch-fuzzy.vim'
-Plugin 'kana/vim-operator-user'
-Plugin 'haya14busa/vim-metarepeat'
-Plugin 'bkad/CamelCaseMotion'
-Plugin 'terryma/vim-expand-region'
-Plugin 'vim-scripts/gitignore'
-Plugin 'djoshea/vim-autoread'
-Plugin 'wellle/targets.vim'
-Plugin 'FooSoft/vim-argwrap'
+function! BuildTern(info)
+  if a:info.status == 'installed' || a:info.force
+    !npm install
+  endif
+endfunction
+
+function! InstallEslint(info)
+  if a:info.status == 'installed' || a:info.force
+    !sudo npm install -g eslint
+  endif
+endfunction
+
+Plug 'tpope/vim-git'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-sensible'
+Plug 'tpope/vim-repeat'
+Plug 'tpope/vim-markdown'
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-speeddating'
+Plug 'tpope/vim-rsi'
+Plug 'scrooloose/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+Plug 'scrooloose/syntastic'
+Plug 'mtscout6/syntastic-local-eslint.vim'
+Plug 'ctrlpvim/ctrlp.vim', { 'do': function('InstallEslint') }
+Plug 'ternjs/tern_for_vim', { 'do': function('BuildTern') }
+Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
+Plug 'ervandew/supertab'
+Plug 'SirVer/ultisnips'
+Plug 'honza/vim-snippets'
+Plug 'raimondi/delimitmate'
+Plug 'itchyny/lightline.vim'
+Plug 'easymotion/vim-easymotion'
+Plug 'editorconfig/editorconfig-vim'
+Plug 'jlanzarotta/bufexplorer'
+Plug 'mhinz/vim-startify'
+Plug 'mhinz/vim-signify'
+Plug 'yggdroot/indentline'
+Plug 'bronson/vim-trailing-whitespace'
+Plug 'junegunn/vim-easy-align'
+Plug 'PeterRincker/vim-argumentative'
+Plug 'kshenoy/vim-signature'
+Plug 'ryanoasis/vim-devicons'
+Plug 'haya14busa/incsearch.vim'
+Plug 'haya14busa/incsearch-fuzzy.vim'
+Plug 'kana/vim-operator-user'
+Plug 'haya14busa/vim-metarepeat'
+Plug 'bkad/CamelCaseMotion'
+Plug 'terryma/vim-expand-region'
+Plug 'vim-scripts/gitignore'
+Plug 'djoshea/vim-autoread'
+Plug 'wellle/targets.vim'
+Plug 'FooSoft/vim-argwrap'
+
 
 " Tmux integration
-Plugin 'christoomey/vim-tmux-navigator'
-Plugin 'benmills/vimux'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'benmills/vimux'
 
 " Javascript
-Plugin 'pangloss/vim-javascript'
-Plugin '1995eaton/vim-better-javascript-completion'
-Plugin 'elzr/vim-json'
-Plugin 'moll/vim-node'
-Plugin 'othree/javascript-libraries-syntax.vim'
+Plug 'pangloss/vim-javascript'
+Plug '1995eaton/vim-better-javascript-completion'
+Plug 'elzr/vim-json'
+Plug 'moll/vim-node'
+Plug 'othree/javascript-libraries-syntax.vim'
 
 " Angular
-Plugin 'burnettk/vim-angular'
+Plug 'burnettk/vim-angular'
 
 " EJS
-Plugin 'briancollins/vim-jst'
+Plug 'briancollins/vim-jst'
 
 " RAML
-Plugin 'in3d/vim-raml'
+Plug 'in3d/vim-raml'
 
 " HTML
-Plugin 'alvan/vim-closetag'
+Plug 'alvan/vim-closetag'
+
+" Terraform
+Plug 'hashivim/vim-terraform'
 
 " Themes
-Plugin 'nanotech/jellybeans.vim'
-Plugin 'morhetz/gruvbox'
+Plug 'nanotech/jellybeans.vim'
+Plug 'morhetz/gruvbox'
+
+" For fun
+
+Plug 'johngrib/vim-game-code-break'
+
+call plug#end()
 
 """ General {
 syntax on
 filetype plugin indent on
-
-" set number
 
 " change the mapleader from \ to ,
 let mapleader=","
@@ -128,8 +150,6 @@ set wrap
 set foldmethod=manual
 
 " Wild menu conf
-set wildmenu
-set wildmode=longest:full
 set wildignore=*.swp,*.bak,*.pyc,*.class
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
 set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
@@ -198,7 +218,7 @@ set cursorline
 
 """ }
 
-""" custom mappings {
+""" Custom mappings {
 
 " Moves between panels
 noremap <c-h> <c-w><c-h>
@@ -222,9 +242,13 @@ noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 noremap j gj
 noremap k gk
 
+" Moves for line boundaries
+nnoremap H ^
+nnoremap L $
+
 " Emacs like shortcuts in insert mode
-inoremap <C-e> <C-o>$
 inoremap <C-a> <C-o>^
+inoremap <C-e> <C-o>$
 
 " Make Y behaves like C and D
 noremap Y y$
@@ -298,6 +322,9 @@ imap <c-c> <CR><Esc>O
 " Escape in normal mode
 inoremap jj <Esc>
 
+" Close every window in the current tabview but the current one
+nnoremap <leader>o <c-w>o
+
 """ }
 
 """ NerdTRee {
@@ -319,6 +346,7 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 """ }
 
 """ FixWhitespace {
+
 map <silent> <F6> :FixWhitespace<Cr>
 vmap <silent> <F6> :FixWhitespace<Cr>
 
@@ -340,7 +368,7 @@ let g:ctrlp_use_caching = 0
 if executable('ag')
     set grepprg=ag\ --nogroup\ --nocolor\ --smart-case
 
-    let g:ctrlp_user_command = 'ag %s -l --nocolor --smart-case -g ""'
+    let g:ctrlp_user_command = 'ag %s -l --nocolor --smart-case --hidden -g ""'
 else
   let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . -co --exclude-standard', 'find %s -type f']
   let g:ctrlp_prompt_mappings = {
@@ -351,21 +379,21 @@ endif
 " bind K to grep word under cursor
 nnoremap <leader>K :execute 'grep! "\b"'.expand("<cword>").'"\b"'<CR>:rightb<SPACE>cw<CR>
 
-command -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+command! -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 " bind ,<SPACE> to grep shortcut
 nnoremap <leader><SPACE> :Ag<SPACE>
 
 """ }
 
 """ utilsnips + supertab + youcompleteme {
-  " YouCompleteMe and UltiSnips compatibility, with the helper of supertab
+" YouCompleteMe and UltiSnips compatibility, with the helper of supertab
 let g:ycm_key_list_select_completion   = ['<C-n>', '<Down>']
 let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
 
 let g:SuperTabDefaultCompletionType    = '<C-n>'
 let g:SuperTabCrMapping                = 0
 
-let g:UltiSnipsExpandTrigger="<tab>"
+let g:UltiSnipsExpandTrigger="<c-y>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
@@ -393,10 +421,9 @@ nnoremap <silent> <leader>tr :TernRename<CR>
 
 """ }
 
-
 """ syntastic {
 
-function SyntasticToggleAutoLocList()
+function! SyntasticToggleAutoLocList()
     if g:syntastic_auto_loc_list == 2
         let g:syntastic_auto_loc_list = 1
     else
@@ -561,6 +588,7 @@ endfunction
 let g:unite_force_overwrite_statusline = 0
 let g:vimfiler_force_overwrite_statusline = 0
 let g:vimshell_force_overwrite_statusline = 0
+
 """ }
 
 """ startify {
@@ -595,7 +623,6 @@ omap ac <plug>(signify-motion-outer-pending)
 xmap ac <plug>(signify-motion-outer-visual)
 
 """ }
-
 """ vim better javascript completion {
 
 let g:vimjs#casesensistive = 0
@@ -647,7 +674,6 @@ let g:webdevicons_enable = 1
 let g:DevIconsEnableFolderPatternMatching = 1
 
 """ }
-
 """ incsearch {
 
 map /  <Plug>(incsearch-forward)
@@ -678,12 +704,6 @@ call camelcasemotion#CreateMotionMappings('<leader>')
 
 """ }
 
-""" Javascript libraries syntax {
-
-let g:used_javascript_libs = 'underscore,jquery,angularjs'
-
-""" }
-
 """ vim-json {
 
 let g:vim_json_syntax_conceal = 0
@@ -708,5 +728,21 @@ nnoremap <silent> <leader>a :ArgWrap<CR>
 let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'javascript']
 
 au FileType markdown setl sw=4 sts=4 et
+
+""" }
+
+""" vimux {
+
+" Prompt for a command to run
+map <Leader>vp :VimuxPromptCommand<CR>
+
+" Run last command executed by VimuxRunCommand
+map <Leader>vl :VimuxRunLastCommand<CR>
+
+" Inspect runner pane
+map <Leader>vi :VimuxInspectRunner<CR>
+
+" Zoom the tmux runner pane
+map <Leader>vz :VimuxZoomRunner<CR>
 
 """ }
