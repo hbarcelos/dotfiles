@@ -30,8 +30,6 @@ Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-rsi'
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'scrooloose/syntastic'
-Plug 'mtscout6/syntastic-local-eslint.vim'
 Plug 'ctrlpvim/ctrlp.vim', { 'do': function('InstallEslint') }
 Plug 'ternjs/tern_for_vim', { 'do': function('BuildTern') }
 Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
@@ -40,6 +38,8 @@ Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'raimondi/delimitmate'
 Plug 'itchyny/lightline.vim'
+Plug 'w0rp/ale'
+Plug 'maximbaz/lightline-ale'
 Plug 'easymotion/vim-easymotion'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'jlanzarotta/bufexplorer'
@@ -61,7 +61,6 @@ Plug 'vim-scripts/gitignore'
 Plug 'djoshea/vim-autoread'
 Plug 'wellle/targets.vim'
 Plug 'FooSoft/vim-argwrap'
-
 
 " Tmux integration
 Plug 'christoomey/vim-tmux-navigator'
@@ -94,7 +93,6 @@ Plug 'nanotech/jellybeans.vim'
 Plug 'morhetz/gruvbox'
 
 " For fun
-
 Plug 'johngrib/vim-game-code-break'
 
 call plug#end()
@@ -421,37 +419,20 @@ nnoremap <silent> <leader>tr :TernRename<CR>
 
 """ }
 
-""" syntastic {
+""" ALE {
 
-function! SyntasticToggleAutoLocList()
-    if g:syntastic_auto_loc_list == 2
-        let g:syntastic_auto_loc_list = 1
-    else
-        lclose
-        let g:syntastic_auto_loc_list = 2
-    endif
-    SyntasticCheck
-endfunction
+let g:ale_linters = {
+\   'javascript': ['eslint', 'standard'],
+\}
 
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 2
-let g:syntastic_check_on_open = 0
-let g:syntastic_check_on_wq = 1
+let g:ale_fixers = {
+\   'javascript': ['eslint', 'standard'],
+\}
 
-nnoremap <silent> ]l :lnext<CR>
-nnoremap <silent> [l :lprev<CR>
-nnoremap <silent> <leader>lt :call SyntasticToggleAutoLocList()<CR>
+let g:ale_sign_error = '✗'
+let g:ale_sign_warning = '‼️'
 
-" Runs syntastic if the buffer is read due to external changes
-autocmd BufRead * SyntasticCheck
-
-let g:syntastic_error_symbol = "✗"
-let g:syntastic_warning_symbol = '⚠'
-
-" Javascript
-let g:syntastic_javascript_checkers = ['eslint', 'standard']
-
-"""}
+""" }
 
 """ lighline {
 
@@ -459,7 +440,7 @@ let g:lightline = {
       \ 'colorscheme': 'gruvbox',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'readonly', 'filename' ], ['ctrlpmark'] ],
-      \   'right': [ [ 'syntastic', 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
+      \   'right': [ [ 'linter_errors', 'linter_warnings', 'linter_ok', 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
       \ },
       \ 'component_function': {
       \   'fugitive': 'MyFugitive',
@@ -472,13 +453,16 @@ let g:lightline = {
       \   'ctrlpmark': 'CtrlPMark',
       \ },
       \ 'component_expand': {
-      \   'syntastic': 'SyntasticStatuslineFlag',
+      \   'linter_warnings': 'lightline#ale#warnings',
+      \   'linter_errors': 'lightline#ale#errors',
+      \   'linter_ok': 'lightline#ale#ok',
       \ },
       \ 'component_type': {
-      \   'syntastic': 'error',
+      \   'linter_warnings': 'warning',
+      \   'linter_errors': 'error',
       \ },
-      \ 'separator': { 'left': '', 'right': '' },
-      \ 'subseparator': { 'left': '', 'right': '' }
+      \   'separator': { 'left': '', 'right': '' },
+      \   'subseparator': { 'left': '', 'right': '' }
       \ }
 
 function! MyModified()
@@ -555,6 +539,7 @@ function! CtrlPMark()
     return ''
   endif
 endfunction
+
 let g:ctrlp_status_func = {
   \ 'main': 'CtrlPStatusFunc_1',
   \ 'prog': 'CtrlPStatusFunc_2',
@@ -577,15 +562,6 @@ let g:tagbar_status_func = 'TagbarStatusFunc'
 function! TagbarStatusFunc(current, sort, fname, ...) abort
     let g:lightline.fname = a:fname
   return lightline#statusline(0)
-endfunction
-
-augroup AutoSyntastic
-  autocmd!
-  autocmd BufWritePost *.c,*.cpp call s:syntastic()
-augroup END
-function! s:syntastic()
-  SyntasticCheck
-  call lightline#update()
 endfunction
 
 let g:unite_force_overwrite_statusline = 0
