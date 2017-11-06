@@ -393,7 +393,7 @@ let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
 let g:SuperTabDefaultCompletionType    = '<C-n>'
 let g:SuperTabCrMapping                = 0
 
-let g:UltiSnipsExpandTrigger="<c-y>"
+let g:UltiSnipsExpandTrigger="<c-e>"
 let g:UltiSnipsJumpForwardTrigger="<tab>"
 let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
 
@@ -445,8 +445,11 @@ nnoremap <silent> <leader>lt :call SyntasticToggleAutoLocList()<CR>
 " Runs syntastic if the buffer is read due to external changes
 autocmd BufRead * SyntasticCheck
 
+let g:syntastic_error_symbol = "✗"
+let g:syntastic_warning_symbol = '⚠'
+
 " Javascript
-let g:syntastic_javascript_checkers = ['eslint']
+let g:syntastic_javascript_checkers = ['eslint', 'standard']
 
 """}
 
@@ -744,5 +747,20 @@ map <Leader>vi :VimuxInspectRunner<CR>
 
 " Zoom the tmux runner pane
 map <Leader>vz :VimuxZoomRunner<CR>
+
+" Interrupt the tmux runner
+map <Leader>vc :VimuxInterruptRunner<CR>
+
+"""" development utilities {
+
+" javascript
+
+au FileType javascript nnoremap <leader>vt :call VimuxRunCommand("npm run test -- " . bufname("%"))<CR>
+
+au FileType javascript nnoremap <leader>vw :call VimuxRunCommand("npm run test -- " . bufname("%") . " --watch")<CR>
+
+au FileType javascript nnoremap <leader>vr :call VimuxRunCommand("node -- " . bufname("%"))<CR>
+
+"""" }
 
 """ }
