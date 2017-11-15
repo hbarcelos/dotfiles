@@ -28,6 +28,8 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-rsi'
+Plug 'dsummersl/gundo.vim'
+Plug 'terryma/vim-multiple-cursors'
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'ctrlpvim/ctrlp.vim', { 'do': function('InstallEslint') }
@@ -37,6 +39,7 @@ Plug 'ervandew/supertab'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
 Plug 'raimondi/delimitmate'
+Plug 'jiangmiao/auto-pairs'
 Plug 'itchyny/lightline.vim'
 Plug 'w0rp/ale'
 Plug 'maximbaz/lightline-ale'
@@ -46,7 +49,7 @@ Plug 'jlanzarotta/bufexplorer'
 Plug 'mhinz/vim-startify'
 Plug 'mhinz/vim-signify'
 Plug 'yggdroot/indentline'
-Plug 'bronson/vim-trailing-whitespace'
+Plug 'ntpeters/vim-better-whitespace'
 Plug 'junegunn/vim-easy-align'
 Plug 'PeterRincker/vim-argumentative'
 Plug 'kshenoy/vim-signature'
@@ -61,6 +64,7 @@ Plug 'vim-scripts/gitignore'
 Plug 'djoshea/vim-autoread'
 Plug 'wellle/targets.vim'
 Plug 'FooSoft/vim-argwrap'
+Plug 'vim-scripts/restore_view.vim'
 
 " Tmux integration
 Plug 'christoomey/vim-tmux-navigator'
@@ -104,19 +108,6 @@ filetype plugin indent on
 " change the mapleader from \ to ,
 let mapleader=","
 
-" set term=xterm-256color
-set t_Co=256
-set background=dark
-
-try
-    colorscheme gruvbox
-catch
-    colorscheme default
-endtry
-
-" set dark background for Gvim as well
-hi Normal guifg=White guibg=Black
-
 set formatoptions+=or
 
 set undofile
@@ -146,6 +137,9 @@ set wrap
 
 " Folding
 set foldmethod=manual
+
+nnoremap <silent> <Space> @=(foldlevel('.')?'za':"\<Space>")<CR>
+vnoremap <Space> zf
 
 " Wild menu conf
 set wildignore=*.swp,*.bak,*.pyc,*.class
@@ -284,9 +278,6 @@ noremap gV `[v`]
 vnoremap < <gv
 vnoremap > >gv
 
-" Map <Space> to / (search)
-map <space> /
-
 " Replace text in quotes
 nmap <leader>cd ci"
 nmap <leader>cs ci'
@@ -343,10 +334,17 @@ autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isT
 
 """ }
 
+""" Gundo {
+
+let g:mundo_right = 1
+nnoremap <silent> <F5> :MundoToggle<CR>
+
+""" }
+
 """ FixWhitespace {
 
-map <silent> <F6> :FixWhitespace<Cr>
-vmap <silent> <F6> :FixWhitespace<Cr>
+map <silent> <F6> :StripWhitespace<Cr>
+vmap <silent> <F6> :StripWhitespace<Cr>
 
 """ }
 
@@ -354,7 +352,7 @@ vmap <silent> <F6> :FixWhitespace<Cr>
 
 let g:ctrlp_custom_ignore = {
   \ 'dir':  '\v[\/]\.(git|hg|svn)$',
-  \ 'file': '\v\.(exe|so|dll|pyc)$'
+  \ 'file': '\v\.(exe|so|dll)$'
   \ }
 let g:ctrlp_show_hidden = 1
 
@@ -432,6 +430,11 @@ let g:ale_fixers = {
 let g:ale_sign_error = '✗'
 let g:ale_sign_warning = '‼️'
 
+nnoremap <silent> <leader>lf :ALEFix<CR>
+
+nmap <silent> <leader>k <Plug>(ale_previous_wrap)
+nmap <silent> <leader>j <Plug>(ale_next_wrap)
+
 """ }
 
 """ lighline {
@@ -451,11 +454,9 @@ let g:lightline = {
       \   'fileencoding': 'MyFileencoding',
       \   'mode': 'MyMode',
       \   'ctrlpmark': 'CtrlPMark',
-      \ },
-      \ 'component_expand': {
-      \   'linter_warnings': 'lightline#ale#warnings',
-      \   'linter_errors': 'lightline#ale#errors',
-      \   'linter_ok': 'lightline#ale#ok',
+      \   'linter_warnings': 'MyWarnings',
+      \   'linter_errors': 'MyErrors',
+      \   'linter_ok': 'MyOk'
       \ },
       \ 'component_type': {
       \   'linter_warnings': 'warning',
@@ -464,6 +465,30 @@ let g:lightline = {
       \   'separator': { 'left': '', 'right': '' },
       \   'subseparator': { 'left': '', 'right': '' }
       \ }
+
+function! MyWarnings()
+    if expand('%:t') !~? 'Tagbar\|Gundo\|NERD\|ControlP' 
+        let _ = lightline#ale#warnings()
+        return strlen(_) ? _ : ''
+    endif
+    return ''
+endfunction
+
+function! MyErrors()
+    if expand('%:t') !~? 'Tagbar\|Gundo\|NERD\|ControlP'
+        let _ = lightline#ale#errors()
+        return strlen(_) ? _ : ''
+    endif
+    return ''
+endfunction
+
+function! MyOk()
+    if expand('%:t') !~? 'Tagbar\|Gundo\|NERD\|ControlP'
+        let _ = lightline#ale#ok()
+        return strlen(_) ? _ : ''
+    endif
+    return ''
+endfunction
 
 function! MyModified()
   return &ft =~ 'help' ? '' : &modified ? '+' : &modifiable ? '' : '-'
@@ -504,14 +529,6 @@ endfunction
 function! MyFileformat()
   return winwidth(0) > 70 ? (&fileformat . ' ' . WebDevIconsGetFileFormatSymbol()) : ''
 endfunction
-
-" function! MyFileformat()
-"   return winwidth(0) > 70 ? &fileformat : ''
-" endfunction
-
-" function! MyFiletype()
-"   return winwidth(0) > 70 ? (strlen(&filetype) ? &filetype : '') : ''
-" endfunction
 
 function! MyFileencoding()
   return winwidth(0) > 70 ? (strlen(&fenc) ? &fenc : &enc) : ''
@@ -621,9 +638,22 @@ let g:indentLine_color_gui = '#333333'
 
 """ gruvbox {
 
-let g:gruvbox_contrast_dark = 'medium'
-let g:gruvbox_contrast_light = 'medium'
+let g:gruvbox_contrast_dark = 'soft'
+let g:gruvbox_contrast_light = 'soft'
 let g:gruvbox_improved_warnings = 1
+
+" set term=xterm-256color
+set t_Co=256
+set background=dark
+
+try
+    colorscheme gruvbox
+catch
+    colorscheme default
+endtry
+
+" set dark background for Gvim as well
+hi Normal guifg=White guibg=Black
 
 """ }
 
@@ -648,11 +678,11 @@ let g:easy_align_delimiters = {
 
 """ vim-devicons {
 
-
 let g:webdevicons_enable = 1
 let g:DevIconsEnableFolderPatternMatching = 1
 
 """ }
+
 """ incsearch {
 
 map /  <Plug>(incsearch-forward)
