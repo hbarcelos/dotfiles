@@ -5,3 +5,25 @@
   path = ~/.gitconfig.d/grep.gitconfig
   path = ~/.gitconfig.d/user.gitconfig
   path = ~/.gitconfig.d/submodule.gitconfig
+[core]
+	editor = vim
+[alias]
+	current-branch = rev-parse --abbrev-ref HEAD
+	cbr = !git current-branch
+	ps = push
+	pl = pull
+	pst = push --tags
+[color]
+	ui = true
+[color "diff-highlight"]
+	oldNormal = red bold
+	oldHighlight = red bold 52
+	newNormal = green bold
+	newHighlight = green bold 22
+[color "diff"]
+	meta = 227
+	frag = magenta bold
+	commit = 227 bold
+	old = red bold
+	new = green bold
+	whitespace = red reverse

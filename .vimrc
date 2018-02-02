@@ -208,6 +208,17 @@ set noswapfile
 " Enables current line highlight
 set cursorline
 
+" Automatically quit Vim if quickfix window is the last
+au BufEnter * call MyLastWindow()
+function! MyLastWindow()
+  " if the window is quickfix go on
+  if &buftype=="quickfix"
+    " if this window is last on screen quit without warning
+    if winbufnr(2) == -1
+      quit!
+    endif
+  endif
+endfunction
 """ }
 
 """ Custom mappings {
@@ -466,8 +477,12 @@ let g:lightline = {
       \   'subseparator': { 'left': '', 'right': '' }
       \ }
 
+function! IsNotPluginWindow()
+    return expand('%:t') !~? 'Tagbar\|Gundo\|__Mundo\|NERD\|ControlP'
+endfunction
+
 function! MyWarnings()
-    if expand('%:t') !~? 'Tagbar\|Gundo\|NERD\|ControlP' 
+    if IsNotPluginWindow()
         let _ = lightline#ale#warnings()
         return strlen(_) ? _ : ''
     endif
@@ -475,7 +490,7 @@ function! MyWarnings()
 endfunction
 
 function! MyErrors()
-    if expand('%:t') !~? 'Tagbar\|Gundo\|NERD\|ControlP'
+    if IsNotPluginWindow()
         let _ = lightline#ale#errors()
         return strlen(_) ? _ : ''
     endif
@@ -483,7 +498,7 @@ function! MyErrors()
 endfunction
 
 function! MyOk()
-    if expand('%:t') !~? 'Tagbar\|Gundo\|NERD\|ControlP'
+    if IsNotPluginWindow()
         let _ = lightline#ale#ok()
         return strlen(_) ? _ : ''
     endif
@@ -619,6 +634,7 @@ omap ac <plug>(signify-motion-outer-pending)
 xmap ac <plug>(signify-motion-outer-visual)
 
 """ }
+
 """ vim better javascript completion {
 
 let g:vimjs#casesensistive = 0
@@ -769,4 +785,8 @@ au FileType javascript nnoremap <leader>vr :call VimuxRunCommand("node -- " . bu
 
 """" }
 
+""" }
+
+""" Custom file types {
+autocmd BufNewFile,BufRead *stylelintrc,*eslintrc,*babelrc,*jshintrc setlocal syntax=json
 """ }
