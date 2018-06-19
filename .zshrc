@@ -10,20 +10,20 @@ if [ -f ~/antigen.zsh ]; then
 
   # Bundles from the default repo (robbyrussell's oh-my-zsh).
 
-  bgnotify_threshold=4  ## set your own notification threshold
-  function bgnotify_formatted {
-    ## $1=exit_status, $2=command, $3=elapsed_time
-    [ $1 -eq 0 ] && title="Holy Smokes Batman!" || title="Holy Graf Zeppelin!"
-    bgnotify "$title -- after ${3}s" "$2";
-  }
-  antigen bundle bgnotify
+  # bgnotify_threshold=4  ## set your own notification threshold
+  # function bgnotify_formatted {
+  #   ## $1=exit_status, $2=command, $3=elapsed_time
+  #   [ $1 -eq 0 ] && title="Holy Smokes Batman!" || title="Holy Graf Zeppelin!"
+  #   bgnotify "$title -- after ${3}s" "$2";
+  # }
+  # antigen bundle bgnotify
 
   # export NVM_LAZY_LOAD=true
   export NVM_AUTO_USE=true
   antigen bundle lukechilds/zsh-nvm
 
-  # export ZSH_TMUX_AUTOSTART=false
-  # export ZSH_TMUX_AUTOSTART_ONCE=true
+  export ZSH_TMUX_AUTOSTART=true
+  export ZSH_TMUX_AUTOSTART_ONCE=true
   antigen bundle tmux
 
   antigen bundle aws
@@ -38,7 +38,7 @@ if [ -f ~/antigen.zsh ]; then
   antigen bundle Seinh/git-prune
   antigen bundle node
   antigen bundle npm
-  antigen bundle npx
+  # antigen bundle npx
   antigen bundle nvm
   antigen bundle zsh-users/zsh-syntax-highlighting
   antigen bundle zsh-users/zsh-autosuggestions
@@ -67,7 +67,6 @@ if [ -f ~/antigen.zsh ]; then
 
   # ZSH autosuggestions config
   bindkey '^ ' autosuggest-accept
-
 else
   echo -e "Please install antigen:\n"
   echo -e "    curl -L git.io/antigen > antigen.zsh\n"
@@ -86,3 +85,10 @@ alias pacmatic='pacdiff_program="sudo pacdiff" pacmatic'
 # fzf config
 [ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
 
+# fasd initialization
+eval "$(fasd --init auto)"
+
+# GOLANG
+export GOPATH=${GOPATH:-$HOME/go}
+
+export PATH="${HOME}/.local/bin:${PATH}"

@@ -2,7 +2,7 @@ call plug#begin('~/.vim/plugged')
 
 function! BuildYCM(info)
   if a:info.status == 'installed' || a:info.force
-    !./install.sh --tern-completer
+    !./install.py --tern-completer
   endif
 endfunction
 
@@ -14,7 +14,13 @@ endfunction
 
 function! InstallEslint(info)
   if a:info.status == 'installed' || a:info.force
-    !sudo npm install -g eslint
+    !npm install -g eslint
+  endif
+endfunction
+
+function! InstallFlow(info)
+  if a:info.status == 'installed' || a:info.force
+    !npm install -g flow-bin
   endif
 endfunction
 
@@ -28,6 +34,7 @@ Plug 'tpope/vim-commentary'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-rsi'
+Plug 'tpope/vim-dispatch'
 Plug 'dsummersl/gundo.vim'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'scrooloose/nerdtree'
@@ -65,6 +72,9 @@ Plug 'djoshea/vim-autoread'
 Plug 'wellle/targets.vim'
 Plug 'FooSoft/vim-argwrap'
 Plug 'vim-scripts/restore_view.vim'
+Plug 'janko-m/vim-test'
+Plug 'nelstrom/vim-visual-star-search'
+Plug 'brooth/far.vim'
 
 " Tmux integration
 Plug 'christoomey/vim-tmux-navigator'
@@ -76,6 +86,7 @@ Plug '1995eaton/vim-better-javascript-completion'
 Plug 'elzr/vim-json'
 Plug 'moll/vim-node'
 Plug 'othree/javascript-libraries-syntax.vim'
+Plug 'flowtype/vim-flow', { 'do': function('InstallFlow') }
 
 " Angular
 Plug 'burnettk/vim-angular'
@@ -91,6 +102,13 @@ Plug 'alvan/vim-closetag'
 
 " Terraform
 Plug 'hashivim/vim-terraform'
+
+" Haskell
+Plug 'eagletmt/neco-ghc'
+Plug 'dag/vim2hs'
+
+" Database
+Plug 'tpope/vim-dadbod'
 
 " Themes
 Plug 'nanotech/jellybeans.vim'
@@ -337,6 +355,7 @@ let NERDTreeShowHidden=1
 let NERDTreeKeepTreeInNewTab=1
 let g:nerdtree_tabs_open_on_gui_startup=0
 let g:NERDShutUp=1
+let g:NERDTreeWinSize=41 " original + 10
 
 map <silent> <F4> :NERDTreeToggle<Cr>
 noremap <leader>n :NERDTreeFind<Cr>
@@ -422,7 +441,7 @@ nnoremap <silent> <leader>td :TernDef<CR>
 nnoremap <silent> <leader>tpd :TernDefPreview<CR>
 nnoremap <silent> <leader>tsd :TernDefSplit<CR>
 nnoremap <silent> <leader>tD :TernDoc<CR>
-nnoremap <silent> <leader>tt :TernType<CR>
+nnoremap <silent> <leader>tT :TernType<CR>
 nnoremap <silent> <leader>tR :TernRefs<CR>
 nnoremap <silent> <leader>tr :TernRename<CR>
 
@@ -431,15 +450,21 @@ nnoremap <silent> <leader>tr :TernRename<CR>
 """ ALE {
 
 let g:ale_linters = {
-\   'javascript': ['eslint', 'standard'],
+\   'javascript': ['eslint'],
+\   'css': ['stylelint'],
+\   'scss': ['stylelint'],
 \}
 
 let g:ale_fixers = {
-\   'javascript': ['eslint', 'standard'],
+\   'javascript': ['eslint'],
+\   'css': ['stylelint'],
+\   'scss': ['stylelint'],
 \}
 
-let g:ale_sign_error = '✗'
-let g:ale_sign_warning = '‼️'
+let g:ale_sign_error = '‼️'
+let g:ale_sign_warning = '⚠️'
+highlight clear ALEErrorSign " otherwise uses error bg color (typically red)
+highlight clear ALEWarningSign " otherwise uses error bg color (typically red)
 
 nnoremap <silent> <leader>lf :ALEFix<CR>
 
@@ -695,7 +720,33 @@ let g:easy_align_delimiters = {
 """ vim-devicons {
 
 let g:webdevicons_enable = 1
-let g:DevIconsEnableFolderPatternMatching = 1
+
+" use double-width(1) or single-width(0) glyphs
+" only manipulates padding, has no effect on terminal or set(guifont) font
+let g:WebDevIconsUnicodeGlyphDoubleWidth = 1
+
+" Force extra padding in NERDTree so that the filetype icons line up vertically
+let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+
+" enable open and close folder/directory glyph flags (disabled by default with 0)
+let g:DevIconsEnableFoldersOpenClose = 1
+
+" enable file extension pattern matching glyphs on folder/directory (disabled by default with 0)
+" let g:DevIconsEnableFolderExtensionPatternMatching = 1
+
+" enable custom folder/directory glyph exact matching
+" (enabled by default when g:WebDevIconsUnicodeDecorateFolderNodes is set to 1)
+let WebDevIconsUnicodeDecorateFolderNodesExactMatches = 1
+
+" whether or not to show the nerdtree brackets around flags
+let g:webdevicons_conceal_nerdtree_brackets = 1
+
+" Force extra padding in NERDTree so that the filetype icons line up vertically
+let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
+
+" enable folder/directory glyph flag (disabled by default with 0)
+" the amount of space to use after the glyph character (default ' ')
+let g:WebDevIconsNerdTreeAfterGlyphPadding = ' '
 
 """ }
 
@@ -773,15 +824,21 @@ map <Leader>vz :VimuxZoomRunner<CR>
 " Interrupt the tmux runner
 map <Leader>vc :VimuxInterruptRunner<CR>
 
+" Interrupt the tmux runner
+map <Leader>vk :VimuxCloseRunner<CR>
+
+let g:VimuxUseNearest = 0
+let g:VimuxRunnerType = "window"
+
 """" development utilities {
 
 " javascript
 
-au FileType javascript nnoremap <leader>vt :call VimuxRunCommand("npm run test -- " . bufname("%"))<CR>
+" au FileType javascript nnoremap <leader>vt :call VimuxRunCommand("npm run test -- " . bufname("%"))<CR>
 
-au FileType javascript nnoremap <leader>vw :call VimuxRunCommand("npm run test -- " . bufname("%") . " --watch")<CR>
+" au FileType javascript nnoremap <leader>vw :call VimuxRunCommand("npm run test -- " . bufname("%") . " --watch")<CR>
 
-au FileType javascript nnoremap <leader>vr :call VimuxRunCommand("node -- " . bufname("%"))<CR>
+" au FileType javascript nnoremap <leader>vr :call VimuxRunCommand("node -- " . bufname("%"))<CR>
 
 """" }
 
@@ -789,4 +846,21 @@ au FileType javascript nnoremap <leader>vr :call VimuxRunCommand("node -- " . bu
 
 """ Custom file types {
 autocmd BufNewFile,BufRead *stylelintrc,*eslintrc,*babelrc,*jshintrc setlocal syntax=json
+
+autocmd BufNewFile,BufRead *.flow set filetype=javascript
 """ }
+
+""" vim-test {
+let test#javascript#ava#file_pattern = '\.test\.js' " the default is '_test\.rb'
+let test#strategy = "vimux"
+
+nnoremap <silent> <leader>tt :TestFile<CR>
+nnoremap <silent> <leader>tw :TestFile -w<CR>
+nnoremap <silent> <leader>ts :TestSuite<CR>
+nnoremap <silent> <leader>tl :TestLast<CR>
+nnoremap <silent> <leader>tv :TestVisit<CR>
+" }
+
+""" far {
+let g:far#source = 'ag'
+"}
