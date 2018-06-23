@@ -81,7 +81,9 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'benmills/vimux'
 
 " Javascript
-Plug 'pangloss/vim-javascript'
+" Plug 'pangloss/vim-javascript'
+" Plug 'mxw/vim-jsx'
+Plug 'chemzqm/vim-jsx-improve'
 Plug '1995eaton/vim-better-javascript-completion'
 Plug 'elzr/vim-json'
 Plug 'moll/vim-node'
@@ -670,10 +672,10 @@ let g:vimjs#smartcomplete = 1
 """ indentline {
 
 " Vim
-let g:indentLine_color_term = 236
+" let g:indentLine_color_term = 236
 
 "GVim
-let g:indentLine_color_gui = '#333333'
+" let g:indentLine_color_gui = '#333333'
 
 """ }
 
