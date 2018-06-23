@@ -309,6 +309,46 @@ noremap gV `[v`]
 vnoremap < <gv
 vnoremap > >gv
 
+" Escape special characters in a string for exact matching.
+" This is useful to copying strings from the file to the search tool
+" Based on this - http://peterodding.com/code/vim/profile/autoload/xolox/escape.vim
+function! EscapeString (string)
+  let string=a:string
+  " Escape regex characters
+  let string = escape(string, '^$.*\/~[]')
+  " Escape the line endings
+  let string = substitute(string, '\n', '\\n', 'g')
+  return string
+endfunction
+
+" Get the current visual block for search and replaces
+" This function passed the visual block through a string escape function
+" Based on this - https://stackoverflow.com/questions/676600/vim-replace-selected-text/677918#677918
+function! GetVisual() range
+  " Save the current register and clipboard
+  let reg_save = getreg('"')
+  let regtype_save = getregtype('"')
+  let cb_save = &clipboard
+  set clipboard&
+
+  " Put the current visual selection in the " register
+  normal! ""gvy
+  let selection = getreg('"')
+
+  " Put the saved registers and clipboards back
+  call setreg('"', reg_save, regtype_save)
+  let &clipboard = cb_save
+
+  "Escape any special characters in the selection
+  let escaped_selection = EscapeString(selection)
+
+  return escaped_selection
+endfunction
+
+" Start the find and replace command across the entire file
+vnoremap <leader>s <Esc>:%s/<c-r>=GetVisual()<cr>/
+vnoremap <leader>gs <Esc>:%s/<c-r>=GetVisual()<cr>//g<left>
+
 " Replace text in quotes
 nmap <leader>cd ci"
 nmap <leader>cs ci'
@@ -359,7 +399,7 @@ let g:nerdtree_tabs_open_on_gui_startup=0
 let g:NERDShutUp=1
 let g:NERDTreeWinSize=41 " original + 10
 
-map <silent> <F4> :NERDTreeToggle<Cr>
+noremap <silent> <F4> :NERDTreeToggle<Cr>
 noremap <leader>n :NERDTreeFind<Cr>
 
 autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
@@ -812,25 +852,39 @@ au FileType markdown setl sw=4 sts=4 et
 """ vimux {
 
 " Prompt for a command to run
-map <Leader>vp :VimuxPromptCommand<CR>
+nnoremap <silent> <Leader>vp :VimuxPromptCommand<CR>
 
 " Run last command executed by VimuxRunCommand
-map <Leader>vl :VimuxRunLastCommand<CR>
+nnoremap <silent> <Leader>vl :VimuxRunLastCommand<CR>
 
 " Inspect runner pane
-map <Leader>vi :VimuxInspectRunner<CR>
+nnoremap <silent> <Leader>vi :VimuxInspectRunner<CR>
 
 " Zoom the tmux runner pane
-map <Leader>vz :VimuxZoomRunner<CR>
+nnoremap <silent> <Leader>vz :VimuxZoomRunner<CR>
 
 " Interrupt the tmux runner
-map <Leader>vc :VimuxInterruptRunner<CR>
+nnoremap <silent> <Leader>vc :VimuxInterruptRunner<CR>
 
 " Interrupt the tmux runner
-map <Leader>vk :VimuxCloseRunner<CR>
+nnoremap <silent> <Leader>vk :VimuxCloseRunner<CR>
 
-let g:VimuxUseNearest = 0
-let g:VimuxRunnerType = "window"
+" Open a tmux runner
+nnoremap <silent> <leader>vo :call VimuxOpenRunner()<CR>
+
+let g:VimuxOrientation = "h"
+
+function! CustomVimuxSetWindowMode()
+  let g:VimuxUseNearest = 0
+  let g:VimuxRunnerType = "window"
+endfunction
+
+function! CustomVimuxSetPaneMode()
+  let g:VimuxUseNearest = 1
+  let g:VimuxRunnerType = "pane"
+endfunction
+
+call CustomVimuxSetWindowMode()
 
 """" development utilities {
 
