@@ -101,3 +101,10 @@ eval "$(fasd --init auto)"
 export GOPATH=${GOPATH:-$HOME/go}
 
 export PATH="${HOME}/.local/bin:${PATH}"
+
+# tabtab source for serverless package
+# uninstall by removing these lines or running `tabtab uninstall serverless`
+[[ -f /home/henrique/.nvm/versions/node/v10.5.0/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.zsh ]] && . /home/henrique/.nvm/versions/node/v10.5.0/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.zsh
+# tabtab source for sls package
+# uninstall by removing these lines or running `tabtab uninstall sls`
+[[ -f /home/henrique/.nvm/versions/node/v10.5.0/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.zsh ]] && . /home/henrique/.nvm/versions/node/v10.5.0/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.zsh
