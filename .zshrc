@@ -1,6 +1,15 @@
 # Configuration of global environment variables
 export DISABLE_AUTO_TITLE=true
 export EDITOR='vim'
+export TERM="screen-256color"
+
+# Fixes weird characters on Vim when running out of tmux
+alias vim='TERM="xterm-256color" vim'
+
+if [ -f "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh" ]; then
+  source "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh"
+fi
+
 
 if [ -f ~/antigen.zsh ]; then
 

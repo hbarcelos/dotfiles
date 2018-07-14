@@ -55,7 +55,6 @@ Plug 'editorconfig/editorconfig-vim'
 Plug 'jlanzarotta/bufexplorer'
 Plug 'mhinz/vim-startify'
 Plug 'mhinz/vim-signify'
-Plug 'yggdroot/indentline'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'junegunn/vim-easy-align'
 Plug 'PeterRincker/vim-argumentative'
@@ -114,7 +113,10 @@ Plug 'tpope/vim-dadbod'
 
 " Themes
 Plug 'nanotech/jellybeans.vim'
-Plug 'morhetz/gruvbox'
+" Plug 'morhetz/gruvbox'
+" To install the theme in Gnome Terminal, run:
+" curl -s https://raw.githubusercontent.com/arcticicestudio/nord-gnome-terminal/develop/src/nord.sh | bash -
+Plug 'arcticicestudio/nord-vim'
 
 " For fun
 Plug 'johngrib/vim-game-code-break'
@@ -209,7 +211,7 @@ set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
 set path=$PWD/**
 
 " Set utf8 as standard encoding
-set encoding=utf8
+set encoding=UTF-8
 
 " Not show current line for each minimized file
 set wmw=0
@@ -518,7 +520,7 @@ nmap <silent> <leader>j <Plug>(ale_next_wrap)
 """ lighline {
 
 let g:lightline = {
-      \ 'colorscheme': 'gruvbox',
+      \ 'colorscheme': 'nord',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'readonly', 'filename' ], ['ctrlpmark'] ],
       \   'right': [ [ 'linter_errors', 'linter_warnings', 'linter_ok', 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
@@ -724,21 +726,37 @@ let g:vimjs#smartcomplete = 1
 let g:gruvbox_contrast_dark = 'soft'
 let g:gruvbox_contrast_light = 'soft'
 let g:gruvbox_improved_warnings = 1
-
-" set term=xterm-256color
-set t_Co=256
-set background=dark
-
-try
-    colorscheme gruvbox
-catch
-    colorscheme default
-endtry
-
-" set dark background for Gvim as well
-hi Normal guifg=White guibg=Black
-
 """ }
+
+""" Nord {
+let g:nord_comment_brightness = 10
+let g:nord_cursor_line_number_background = 1
+let g:nord_italic_comments = 1
+
+"""}
+
+" The "^[" is a single character. You enter it by pressing Ctrl+v and then ESC.
+let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
+let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
+
+" Makes the background transparent. Leave these out if you're not using a transparent
+" terminal.
+highlight Normal ctermbg=NONE guibg=NONE
+highlight NonText ctermbg=NONE guibg=NONE
+
+" This is what sets vim to use 24-bit colors. It will also work for any version of neovim
+" newer than 0.1.4.
+set termguicolors
+
+" Setting dark mode
+" set background=dark
+
+" Change the color scheme here.
+try
+  colorscheme nord
+catch
+  colorscheme default
+endtry
 
 """ vim-javascript {
 
@@ -774,7 +792,10 @@ let g:WebDevIconsUnicodeDecorateFolderNodes = 1
 let g:DevIconsEnableFoldersOpenClose = 1
 
 " enable file extension pattern matching glyphs on folder/directory (disabled by default with 0)
-" let g:DevIconsEnableFolderExtensionPatternMatching = 1
+let g:DevIconsEnableFolderExtensionPatternMatching = 1
+
+" enable pattern matching glyphs on folder/directory (enabled by default with 1)
+let g:DevIconsEnableFolderPatternMatching = 1
 
 " enable custom folder/directory glyph exact matching
 " (enabled by default when g:WebDevIconsUnicodeDecorateFolderNodes is set to 1)
@@ -917,6 +938,7 @@ nnoremap <silent> <leader>tl :TestLast<CR>
 nnoremap <silent> <leader>tv :TestVisit<CR>
 " }
 
-""" far {
+""" FAR {
 let g:far#source = 'ag'
 "}
+
