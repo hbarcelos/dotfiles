@@ -101,6 +101,9 @@ Plug 'in3d/vim-raml'
 " HTML
 Plug 'alvan/vim-closetag'
 
+" XML
+Plug 'othree/xml.vim'
+
 " Terraform
 Plug 'hashivim/vim-terraform'
 
@@ -497,12 +500,15 @@ let g:ale_linters = {
 \   'javascript': ['eslint'],
 \   'css': ['stylelint'],
 \   'scss': ['stylelint'],
+\   'xml': ['xmllint'],
 \}
 
 let g:ale_fixers = {
 \   'javascript': ['eslint'],
+\   'json': ['jq'],
 \   'css': ['stylelint'],
 \   'scss': ['stylelint'],
+\   'xml': ['xmllint'],
 \}
 
 let g:ale_sign_error = '‼️'
@@ -923,6 +929,7 @@ call CustomVimuxSetWindowMode()
 
 """ Custom file types {
 autocmd BufNewFile,BufRead *stylelintrc,*eslintrc,*babelrc,*jshintrc setlocal syntax=json
+autocmd BufNewFile,BufRead *stylelintrc,*eslintrc,*babelrc,*jshintrc setlocal filetype=json
 
 autocmd BufNewFile,BufRead *.flow set filetype=javascript
 """ }
@@ -932,7 +939,7 @@ let test#javascript#ava#file_pattern = '\.test\.js' " the default is '_test\.rb'
 let test#strategy = "vimux"
 
 nnoremap <silent> <leader>tt :TestFile<CR>
-nnoremap <silent> <leader>tw :TestFile -w<CR>
+nnoremap <silent> <leader>tw :TestFile --watch<CR>
 nnoremap <silent> <leader>ts :TestSuite<CR>
 nnoremap <silent> <leader>tl :TestLast<CR>
 nnoremap <silent> <leader>tv :TestVisit<CR>
