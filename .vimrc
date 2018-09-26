@@ -2,7 +2,7 @@ call plug#begin('~/.vim/plugged')
 
 function! BuildYCM(info)
   if a:info.status == 'installed' || a:info.force
-    !./install.py --tern-completer
+    !python3 ./install.py
   endif
 endfunction
 
@@ -35,6 +35,7 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-dispatch'
+Plug 'tpope/vim-abolish'
 Plug 'dsummersl/gundo.vim'
 Plug 'terryma/vim-multiple-cursors'
 Plug 'scrooloose/nerdtree'
@@ -53,11 +54,13 @@ Plug 'maximbaz/lightline-ale'
 Plug 'easymotion/vim-easymotion'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'jlanzarotta/bufexplorer'
+Plug 'moll/vim-bbye'
 Plug 'mhinz/vim-startify'
 Plug 'mhinz/vim-signify'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'junegunn/vim-easy-align'
 Plug 'PeterRincker/vim-argumentative'
+Plug 'wellle/targets.vim'
 Plug 'kshenoy/vim-signature'
 Plug 'ryanoasis/vim-devicons'
 Plug 'haya14busa/incsearch.vim'
@@ -74,6 +77,7 @@ Plug 'vim-scripts/restore_view.vim'
 Plug 'janko-m/vim-test'
 Plug 'nelstrom/vim-visual-star-search'
 Plug 'brooth/far.vim'
+Plug 'tommcdo/vim-exchange'
 
 " Tmux integration
 Plug 'christoomey/vim-tmux-navigator'
@@ -111,8 +115,12 @@ Plug 'hashivim/vim-terraform'
 Plug 'eagletmt/neco-ghc'
 Plug 'dag/vim2hs'
 
-" Database
-Plug 'tpope/vim-dadbod'
+" Go
+Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+
+" CSS
+Plug 'hail2u/vim-css3-syntax'
+Plug 'ap/vim-css-color'
 
 " Themes
 Plug 'nanotech/jellybeans.vim'
@@ -202,8 +210,9 @@ set nrformats=octal,hex,alpha
 " start scrolling when cursor is N lines from the top/bottom edge
 set scrolloff=10
 
-" set show matching parenthesis
+" set show matching pairs
 set showmatch
+
 " How many tenths of a second to blink when matching brackets
 set mat=2
 
@@ -225,7 +234,7 @@ set shortmess+=filmnrxoOtT
 " Better Unix / Windows compatibility
 set viewoptions=folds,options,cursor,unix,slash
 
-" Turn backup off, since most stuff is in SVN, git et.c anyway...
+" Turn backup off
 set nobackup
 set nowb
 set noswapfile
@@ -303,10 +312,6 @@ function! s:Repl()
 endfunction
 vmap <silent> <expr> p <sid>Repl()
 
-" Allows easy replacement of the current word and all its occurrences.
-nnoremap <Leader>rc :%s/\<<C-r><C-w>\>/
-vnoremap <Leader>rc y:%s/<C-r>"/
-
 " quickly select pasted text
 noremap gV `[v`]
 
@@ -352,14 +357,11 @@ endfunction
 
 " Start the find and replace command across the entire file
 vnoremap <leader>s <Esc>:%s/<c-r>=GetVisual()<cr>/
-vnoremap <leader>gs <Esc>:%s/<c-r>=GetVisual()<cr>//g<left>
-
-" Replace text in quotes
-nmap <leader>cd ci"
-nmap <leader>cs ci'
+vnoremap <leader>gs <Esc>:%s/<c-r>=GetVisual()<cr>//g<left><left>
+nnoremap <Leader>s :%s/\<<C-r><C-w>\>/
+nnoremap <Leader>gs :%s/\<<C-r><C-w>\>//g<left><left>
 
 " Bring the 2nd MRU buffer to screen
-nnoremap <silent> <leader>bb :e #<CR>
 nnoremap <silent> <tab> :e #<CR>
 
 " Toggle line numbers
@@ -381,11 +383,8 @@ cnoremap <silent> <F3> <C-c>:set list!<CR>
 nnoremap \ `
 nnoremap \\ ``
 
-" Insert new line after openning parenthesis, brackets or braces
-imap <c-c> <CR><Esc>O
-
 " Escape in normal mode
-inoremap jj <Esc>
+inoremap jk <Esc>
 
 " Close every window in the current tabview but the current one
 nnoremap <leader>o <c-w>o
@@ -422,6 +421,7 @@ nnoremap <silent> <F5> :MundoToggle<CR>
 
 map <silent> <F6> :StripWhitespace<Cr>
 vmap <silent> <F6> :StripWhitespace<Cr>
+imap <silent> <S-F6> <c-o>:StripWhitespace<Cr>
 
 """ }
 
@@ -454,24 +454,25 @@ nnoremap <leader>K :execute 'grep! "\b"'.expand("<cword>").'"\b"'<CR>:rightb<SPA
 
 command! -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
 " bind ,<SPACE> to grep shortcut
-nnoremap <leader><SPACE> :Ag<SPACE>
+nnoremap <leader>/ :Ag<SPACE>
 
 """ }
 
 """ utilsnips + supertab + youcompleteme {
+
 " YouCompleteMe and UltiSnips compatibility, with the helper of supertab
-let g:ycm_key_list_select_completion   = ['<C-n>', '<Down>']
+let g:ycm_key_list_select_completion = ['<C-n>', '<Down>']
 let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
 
-let g:SuperTabDefaultCompletionType    = '<C-n>'
-let g:SuperTabCrMapping                = 0
+let g:SuperTabDefaultCompletionType = '<C-n>'
+let g:SuperTabCrMapping = 0
 
-let g:UltiSnipsExpandTrigger="<c-e>"
-let g:UltiSnipsJumpForwardTrigger="<tab>"
-let g:UltiSnipsJumpBackwardTrigger="<s-tab>"
+let g:UltiSnipsExpandTrigger = "<c-c>"
+let g:UltiSnipsJumpForwardTrigger = "<tab>"
+let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 
 " Fix Python Path (for YCM)
-let g:ycm_path_to_python_interpreter="/usr/bin/python"
+let g:ycm_path_to_python_interpreter = "/usr/bin/python"
 
 """ }
 
@@ -480,7 +481,7 @@ let g:ycm_path_to_python_interpreter="/usr/bin/python"
 "enable keyboard shortcuts
 let g:tern_map_keys=1
 "show argument hints
-let g:tern_show_argument_hints='on_hold'
+let g:tern_show_argument_hints = 'on_hold'
 
 
 " tern shortucts
@@ -717,24 +718,16 @@ let g:vimjs#smartcomplete = 1
 
 """ }
 
-""" indentline {
-
-" Vim
-" let g:indentLine_color_term = 236
-
-"GVim
-" let g:indentLine_color_gui = '#333333'
-
-""" }
-
 """ gruvbox {
 
 let g:gruvbox_contrast_dark = 'soft'
 let g:gruvbox_contrast_light = 'soft'
 let g:gruvbox_improved_warnings = 1
+
 """ }
 
 """ Nord {
+
 let g:nord_comment_brightness = 10
 let g:nord_cursor_line_number_background = 1
 let g:nord_italic_comments = 1
@@ -825,6 +818,7 @@ map /  <Plug>(incsearch-forward)
 map ?  <Plug>(incsearch-backward)
 map g/ <Plug>(incsearch-stay)
 
+
 set hlsearch
 
 " let g:incsearch#auto_nohlsearch = 1
@@ -913,23 +907,9 @@ endfunction
 
 call CustomVimuxSetWindowMode()
 
-"""" development utilities {
-
-" javascript
-
-" au FileType javascript nnoremap <leader>vt :call VimuxRunCommand("npm run test -- " . bufname("%"))<CR>
-
-" au FileType javascript nnoremap <leader>vw :call VimuxRunCommand("npm run test -- " . bufname("%") . " --watch")<CR>
-
-" au FileType javascript nnoremap <leader>vr :call VimuxRunCommand("node -- " . bufname("%"))<CR>
-
-"""" }
-
-""" }
-
 """ Custom file types {
-autocmd BufNewFile,BufRead *stylelintrc,*eslintrc,*babelrc,*jshintrc setlocal syntax=json
-autocmd BufNewFile,BufRead *stylelintrc,*eslintrc,*babelrc,*jshintrc setlocal filetype=json
+autocmd BufNewFile,BufRead *stylelintrc,*eslintrc,*babelrc,*jshintrc set syntax=json
+autocmd BufNewFile,BufRead *stylelintrc,*eslintrc,*babelrc,*jshintrc set filetype=json
 
 autocmd BufNewFile,BufRead *.flow set filetype=javascript
 """ }
@@ -943,9 +923,31 @@ nnoremap <silent> <leader>tw :TestFile --watch<CR>
 nnoremap <silent> <leader>ts :TestSuite<CR>
 nnoremap <silent> <leader>tl :TestLast<CR>
 nnoremap <silent> <leader>tv :TestVisit<CR>
-" }
+""" }
 
 """ FAR {
 let g:far#source = 'ag'
-"}
+""" }
 
+""" bufexplorer {
+
+" Show unlisted buffers.
+let g:bufExplorerShowUnlisted=1
+
+" Show relative paths.
+let g:bufExplorerShowRelativePath=1
+
+""" }
+
+""" AutoPairs {
+
+let g:AutoPairsFlyMode = 1
+let g:AutoPairsShortcutToggle = '<leader>tap'
+
+""" }
+
+""" {
+
+nnoremap <Leader>q :Bwipeout<CR>
+
+""" }
