@@ -93,6 +93,9 @@ Plug 'moll/vim-node'
 Plug 'othree/javascript-libraries-syntax.vim'
 Plug 'flowtype/vim-flow', { 'do': function('InstallFlow') }
 
+" Elm
+Plug 'ElmCast/elm-vim'
+
 " Angular
 Plug 'burnettk/vim-angular'
 
@@ -120,7 +123,7 @@ Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 " CSS
 Plug 'hail2u/vim-css3-syntax'
-Plug 'ap/vim-css-color'
+Plug 'ap/vim-css-color', { 'for': ['css', 'scss', 'html', 'jsx'] }
 
 " Themes
 Plug 'nanotech/jellybeans.vim'
@@ -949,5 +952,15 @@ let g:AutoPairsShortcutToggle = '<leader>tap'
 """ {
 
 nnoremap <Leader>q :Bwipeout<CR>
+
+""" }
+
+""" {
+
+let g:elm_setup_keybindings = 0
+
+let g:ycm_semantic_triggers = {
+  \ 'elm' : ['.'],
+\}
 
 """ }
