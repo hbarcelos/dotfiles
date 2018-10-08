@@ -945,7 +945,7 @@ let g:bufExplorerShowRelativePath=1
 """ AutoPairs {
 
 let g:AutoPairsFlyMode = 1
-let g:AutoPairsShortcutToggle = '<leader>tap'
+let g:AutoPairsShortcutToggle = '<esc>t'
 
 """ }
 
