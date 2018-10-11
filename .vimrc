@@ -461,6 +461,12 @@ nnoremap <leader>/ :Ag<SPACE>
 
 """ }
 
+""" ultisnips {
+
+let g:UltiSnipsSnippetDirectories=["UltiSnips"]
+
+""" }
+
 """ utilsnips + supertab + youcompleteme {
 
 " YouCompleteMe and UltiSnips compatibility, with the helper of supertab
