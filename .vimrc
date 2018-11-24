@@ -80,6 +80,8 @@ Plug 'brooth/far.vim'
 Plug 'tommcdo/vim-exchange'
 
 " Tmux integration
+Plug 'tmux-plugins/vim-tmux'
+Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'benmills/vimux'
 
