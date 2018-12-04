@@ -31,9 +31,9 @@ Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-repeat'
 Plug 'tpope/vim-markdown'
 Plug 'tpope/vim-commentary'
+Plug 'suy/vim-context-commentstring'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-speeddating'
-Plug 'tpope/vim-rsi'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-abolish'
 Plug 'dsummersl/gundo.vim'
@@ -46,6 +46,7 @@ Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 Plug 'ervandew/supertab'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
+Plug 'hbarcelos/my-snippets'
 Plug 'raimondi/delimitmate'
 Plug 'jiangmiao/auto-pairs'
 Plug 'itchyny/lightline.vim'
@@ -78,6 +79,15 @@ Plug 'janko-m/vim-test'
 Plug 'nelstrom/vim-visual-star-search'
 Plug 'brooth/far.vim'
 Plug 'tommcdo/vim-exchange'
+Plug 'kana/vim-textobj-user'
+Plug 'kana/vim-textobj-entire'
+Plug 'kana/vim-textobj-indent'
+Plug 'kana/vim-textobj-line'
+Plug 'kana/vim-textobj-lastpat'
+Plug 'kana/vim-textobj-function'
+Plug 'glts/vim-textobj-comment'
+Plug 'julian/vim-textobj-brace'
+Plug 'thinca/vim-textobj-function-javascript'
 
 " Tmux integration
 Plug 'tmux-plugins/vim-tmux'
@@ -86,17 +96,14 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'benmills/vimux'
 
 " Javascript
-" Plug 'pangloss/vim-javascript'
-" Plug 'mxw/vim-jsx'
-Plug 'chemzqm/vim-jsx-improve'
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
+" Plug 'chemzqm/vim-jsx-improve'
 Plug '1995eaton/vim-better-javascript-completion'
 Plug 'elzr/vim-json'
 Plug 'moll/vim-node'
 Plug 'othree/javascript-libraries-syntax.vim'
 Plug 'flowtype/vim-flow', { 'do': function('InstallFlow') }
-
-" Elm
-Plug 'ElmCast/elm-vim'
 
 " Angular
 Plug 'burnettk/vim-angular'
@@ -389,7 +396,7 @@ nnoremap \ `
 nnoremap \\ ``
 
 " Escape in normal mode
-inoremap jk <Esc>
+inoremap jj <Esc>
 
 " Close every window in the current tabview but the current one
 nnoremap <leader>o <c-w>o
@@ -715,10 +722,10 @@ nmap <leader>gJ 9999<leader>gj
 nmap <leader>gK 9999<leader>gk
 
 "" hunk text object
-omap ic <plug>(signify-motion-inner-pending)
-xmap ic <plug>(signify-motion-inner-visual)
-omap ac <plug>(signify-motion-outer-pending)
-xmap ac <plug>(signify-motion-outer-visual)
+omap ih <plug>(signify-motion-inner-pending)
+xmap ih <plug>(signify-motion-inner-visual)
+omap ah <plug>(signify-motion-outer-pending)
+xmap ah <plug>(signify-motion-outer-visual)
 
 """ }
 
@@ -923,10 +930,13 @@ autocmd BufNewFile,BufRead *stylelintrc,*eslintrc,*babelrc,*jshintrc set syntax=
 autocmd BufNewFile,BufRead *stylelintrc,*eslintrc,*babelrc,*jshintrc set filetype=json
 
 autocmd BufNewFile,BufRead *.flow set filetype=javascript
+
+autocmd BufNewFile,BufRead *.jsx set filetype=javascript.jsx
 """ }
 
 """ vim-test {
 let test#javascript#ava#file_pattern = '\.test\.js' " the default is '_test\.rb'
+let test#javascript#jest#file_pattern = '\.test\.js' " the default is '_test\.rb'
 let test#strategy = "vimux"
 
 nnoremap <silent> <leader>tt :TestFile<CR>
@@ -957,18 +967,14 @@ let g:AutoPairsShortcutToggle = '<esc>t'
 
 """ }
 
-""" {
+""" vim-bbye {
 
 nnoremap <Leader>q :Bwipeout<CR>
 
 """ }
 
-""" {
+""" vim-jsx {
 
-let g:elm_setup_keybindings = 0
-
-let g:ycm_semantic_triggers = {
-  \ 'elm' : ['.'],
-\}
+let g:jsx_ext_required = 0
 
 """ }
