@@ -88,6 +88,7 @@ Plug 'kana/vim-textobj-function'
 Plug 'glts/vim-textobj-comment'
 Plug 'julian/vim-textobj-brace'
 Plug 'thinca/vim-textobj-function-javascript'
+Plug 'justinj/vim-textobj-reactprop'
 
 " Tmux integration
 Plug 'tmux-plugins/vim-tmux'
@@ -96,9 +97,9 @@ Plug 'christoomey/vim-tmux-navigator'
 Plug 'benmills/vimux'
 
 " Javascript
-Plug 'pangloss/vim-javascript'
-Plug 'mxw/vim-jsx'
-" Plug 'chemzqm/vim-jsx-improve'
+" Plug 'pangloss/vim-javascript'
+" Plug 'mxw/vim-jsx'
+Plug 'chemzqm/vim-jsx-improve'
 Plug '1995eaton/vim-better-javascript-completion'
 Plug 'elzr/vim-json'
 Plug 'moll/vim-node'

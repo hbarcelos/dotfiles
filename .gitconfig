@@ -14,6 +14,10 @@
 	ps = push
 	pl = pull
 	pst = push --tags
+  cleanup = !git branch --merged | grep  -v '\\*\\|master\\|develop' | xargs -n 1 -I {} git branch -d {}
+  cl = !git cleanup
+  cleanup-remote= !git branch -r --merged origin/master | grep -v '^.*master' | sed s:origin/:: | xargs -n 1 -I {} git push origin --delete {}
+  clr = !git cleanup-remote
 [color]
 	ui = true
 [color "diff-highlight"]
