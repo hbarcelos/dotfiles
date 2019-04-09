@@ -37,7 +37,6 @@ Plug 'tpope/vim-speeddating'
 Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-abolish'
 Plug 'dsummersl/gundo.vim'
-Plug 'terryma/vim-multiple-cursors'
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'ctrlpvim/ctrlp.vim', { 'do': function('InstallEslint') }
@@ -46,7 +45,7 @@ Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 Plug 'ervandew/supertab'
 Plug 'SirVer/ultisnips'
 Plug 'honza/vim-snippets'
-Plug 'hbarcelos/my-snippets'
+Plug 'ahmedelgabri/vim-ava-snippets'
 Plug 'raimondi/delimitmate'
 Plug 'jiangmiao/auto-pairs'
 Plug 'itchyny/lightline.vim'
@@ -61,7 +60,6 @@ Plug 'mhinz/vim-signify'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'junegunn/vim-easy-align'
 Plug 'PeterRincker/vim-argumentative'
-Plug 'wellle/targets.vim'
 Plug 'kshenoy/vim-signature'
 Plug 'ryanoasis/vim-devicons'
 Plug 'haya14busa/incsearch.vim'
@@ -72,7 +70,6 @@ Plug 'bkad/CamelCaseMotion'
 Plug 'terryma/vim-expand-region'
 Plug 'vim-scripts/gitignore'
 Plug 'djoshea/vim-autoread'
-Plug 'wellle/targets.vim'
 Plug 'FooSoft/vim-argwrap'
 Plug 'vim-scripts/restore_view.vim'
 Plug 'janko-m/vim-test'
@@ -86,7 +83,6 @@ Plug 'kana/vim-textobj-line'
 Plug 'kana/vim-textobj-lastpat'
 Plug 'kana/vim-textobj-function'
 Plug 'glts/vim-textobj-comment'
-Plug 'julian/vim-textobj-brace'
 Plug 'thinca/vim-textobj-function-javascript'
 Plug 'justinj/vim-textobj-reactprop'
 
@@ -184,9 +180,6 @@ set wrap
 " Folding
 set foldmethod=manual
 
-nnoremap <silent> <Space> @=(foldlevel('.')?'za':"\<Space>")<CR>
-vnoremap <Space> zf
-
 " Wild menu conf
 set wildignore=*.swp,*.bak,*.pyc,*.class
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
@@ -275,9 +268,6 @@ noremap <c-h> <c-w><c-h>
 noremap <c-l> <c-w><c-l>
 noremap <c-j> <c-w><c-j>
 noremap <c-k> <c-w><c-k>
-
-" Remove search highligh
-noremap <silent> <Leader>. :nohlsearch<CR>
 
 " Open tag
 nnoremap <C-O> <C-]>
@@ -448,32 +438,9 @@ let g:ctrlp_show_hidden = 1
 
 """ }
 
-""" silver searcher {
-
-let g:ctrlp_use_caching = 0
-if executable('ag')
-    set grepprg=ag\ --nogroup\ --nocolor\ --smart-case
-
-    let g:ctrlp_user_command = 'ag %s -l --nocolor --smart-case --hidden -g ""'
-else
-  let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . -co --exclude-standard', 'find %s -type f']
-  let g:ctrlp_prompt_mappings = {
-    \ 'AcceptSelection("e")': ['<space>', '<cr>', '<2-LeftMouse>'],
-    \ }
-endif
-
-" bind K to grep word under cursor
-nnoremap <leader>K :execute 'grep! "\b"'.expand("<cword>").'"\b"'<CR>:rightb<SPACE>cw<CR>
-
-command! -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
-" bind ,<SPACE> to grep shortcut
-nnoremap <leader>/ :Ag<SPACE>
-
-""" }
-
 """ ultisnips {
 
-let g:UltiSnipsSnippetDirectories=["UltiSnips"]
+let g:UltiSnipsSnippetDirectories=["UltiSnips", $HOME."/my-snippets/UltiSnips"]
 
 """ }
 
@@ -701,7 +668,7 @@ let g:vimshell_force_overwrite_statusline = 0
 
 let g:startify_change_to_dir = 0
 
-""""}
+""" }
 
 """ signify {
 
@@ -840,6 +807,9 @@ map g/ <Plug>(incsearch-stay)
 
 set hlsearch
 
+" Remove search highligh
+noremap <silent> <Leader>. :nohlsearch<CR>
+
 " let g:incsearch#auto_nohlsearch = 1
 
 map n  <Plug>(incsearch-nohl-n)
@@ -853,6 +823,31 @@ map z/ <Plug>(incsearch-fuzzy-/)
 map z<space> z/
 map z? <Plug>(incsearch-fuzzy-?)
 map zg/ <Plug>(incsearch-fuzzy-stay)
+
+nnoremap <Space> /
+
+""" }
+
+""" silver searcher {
+
+let g:ctrlp_use_caching = 0
+if executable('ag')
+    set grepprg=ag\ --nogroup\ --nocolor\ --smart-case
+
+    let g:ctrlp_user_command = 'ag %s -l --nocolor --smart-case --hidden -g ""'
+else
+  let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . -co --exclude-standard', 'find %s -type f']
+  let g:ctrlp_prompt_mappings = {
+    \ 'AcceptSelection("e")': ['<space>', '<cr>', '<2-LeftMouse>'],
+    \ }
+endif
+
+" bind K to grep word under cursor
+nnoremap <leader>K :execute 'grep! "\b"'.expand("<cword>").'"\b"'<CR>:rightb<SPACE>cw<CR>
+
+command! -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
+" bind ,<SPACE> to grep shortcut
+nnoremap <leader><Space> :Ag<SPACE>
 
 """ }
 
@@ -924,7 +919,18 @@ function! CustomVimuxSetPaneMode()
   let g:VimuxRunnerType = "pane"
 endfunction
 
+function! CloseOnExit()
+  if g:VimuxRunnerType == 'window' && g:VimuxUseNearest == 0
+    VimuxCloseRunner
+  endif
+endfunction
+
 call CustomVimuxSetWindowMode()
+
+" closes the runner automatically when closing vim
+autocmd VimLeave * :call CloseOnExit()
+
+""" }
 
 """ Custom file types {
 autocmd BufNewFile,BufRead *stylelintrc,*eslintrc,*babelrc,*jshintrc set syntax=json
@@ -936,10 +942,11 @@ autocmd BufNewFile,BufRead *.jsx set filetype=javascript.jsx
 """ }
 
 """ vim-test {
-let test#javascript#ava#file_pattern = '\.test\.js' " the default is '_test\.rb'
-let test#javascript#jest#file_pattern = '\.test\.js' " the default is '_test\.rb'
+let test#javascript#ava#file_pattern = '\.test\.js'
+let test#javascript#jest#file_pattern = '\.test\.js'
 let test#strategy = "vimux"
 
+nnoremap <silent> <leader>te :TestFile
 nnoremap <silent> <leader>tt :TestFile<CR>
 nnoremap <silent> <leader>tw :TestFile --watch<CR>
 nnoremap <silent> <leader>ts :TestSuite<CR>
@@ -954,7 +961,7 @@ let g:far#source = 'ag'
 """ bufexplorer {
 
 " Show unlisted buffers.
-let g:bufExplorerShowUnlisted=1
+let g:bufExplorerShowUnlisted=0
 
 " Show relative paths.
 let g:bufExplorerShowRelativePath=1

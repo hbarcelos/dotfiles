@@ -124,3 +124,7 @@ export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 
 # Zsh fpath config
 fpath+=${ZDOTDIR:-~}/.zsh_functions
+
+# tabtab source for slss package
+# uninstall by removing these lines or running `tabtab uninstall slss`
+[[ -f /home/henrique/.nvm/versions/node/v11.10.1/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.zsh ]] && . /home/henrique/.nvm/versions/node/v11.10.1/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.zsh
