@@ -35,7 +35,6 @@ if [ -f ~/.zplug/init.zsh ]; then
   zplug "plugins/sudo", from:oh-my-zsh
   zplug "plugins/tmux", from:oh-my-zsh
   zplug "plugins/yarn", from:oh-my-zsh
-
   zplug "zsh-users/zsh-syntax-highlighting", defer:2
   zplug "zsh-users/zsh-autosuggestions"
   zplug "chrissicool/zsh-256color"
@@ -53,9 +52,12 @@ if [ -f ~/.zplug/init.zsh ]; then
   zplug "unixorn/bitbucket-git-helpers.plugin.zsh"
   zplug "zdharma/zsh-diff-so-fancy"
   zplug "adrieankhisbe/diractions"
-
-  # Local plugins
-  zplug "~/", from:local, use:".fzf.zsh"
+  zplug "junegunn/fzf-bin", \
+      from:gh-r, \
+      as:command, \
+      rename-to:fzf, \
+      use:"*linux*amd64*"
+  zplug "junegunn/fzf", use:"shell/*.zsh", defer:2
 
   export NVM_AUTO_USE=true
   export ZSH_TMUX_AUTOSTART=true
@@ -94,30 +96,13 @@ fi
 # pacaur, yaourt, makepkg: use powerpill instead of pacman
 pacman -Q powerpill >& /dev/null && export PACMAN=/usr/bin/powerpill
 
-# pacmatic: use pacaur instead of pacman
-# s/pacaur/yaourt/g if desired
-pacman -Q yaourt >& /dev/null && export pacman_program=/usr/bin/yaourt
-
-# pacaur must not be run as root, but pacdiff must be
-alias pacmatic='pacdiff_program="sudo pacdiff" pacmatic'
-
 # fasd initialization
 eval "$(fasd --init auto)"
 
 # GOLANG
 export GOPATH=${GOPATH:-$HOME/go}
 
-export PATH="${HOME}/.local/bin:${PATH}"
-
-# tabtab source for serverless package
-  # uninstall by removing these lines or running `tabtab uninstall serverless`
-  [[ -f /home/henrique/.nvm/versions/node/v10.5.0/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.zsh ]] && . /home/henrique/.nvm/versions/node/v10.5.0/lib/node_modules/serverless/node_modules/tabtab/.completions/serverless.zsh
-  # tabtab source for sls package
-    # uninstall by removing these lines or running `tabtab uninstall sls`
-    [[ -f /home/henrique/.nvm/versions/node/v10.5.0/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.zsh ]] && . /home/henrique/.nvm/versions/node/v10.5.0/lib/node_modules/serverless/node_modules/tabtab/.completions/sls.zsh
-
-# Added by Krypton
-export GPG_TTY=$(tty)
+export PATH="${HOME}/.local/bin:${HOME}/.cargo/bin:${PATH}"
 
 # Yarn Config
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
@@ -125,6 +110,3 @@ export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
 # Zsh fpath config
 fpath+=${ZDOTDIR:-~}/.zsh_functions
 
-# tabtab source for slss package
-# uninstall by removing these lines or running `tabtab uninstall slss`
-[[ -f /home/henrique/.nvm/versions/node/v11.10.1/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.zsh ]] && . /home/henrique/.nvm/versions/node/v11.10.1/lib/node_modules/serverless/node_modules/tabtab/.completions/slss.zsh

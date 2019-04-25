@@ -113,9 +113,7 @@ Plug 'in3d/vim-raml'
 
 " HTML
 Plug 'alvan/vim-closetag'
-
-" XML
-Plug 'othree/xml.vim'
+Plug 'othree/html5.vim'
 
 " Terraform
 Plug 'hashivim/vim-terraform'
@@ -129,7 +127,7 @@ Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 
 " CSS
 Plug 'hail2u/vim-css3-syntax'
-Plug 'ap/vim-css-color', { 'for': ['css', 'scss', 'html', 'jsx'] }
+" Plug 'ap/vim-css-color', { 'for': ['css', 'scss', 'html', 'jsx'] }
 
 " Themes
 Plug 'nanotech/jellybeans.vim'
@@ -714,7 +712,6 @@ let g:gruvbox_improved_warnings = 1
 
 """ Nord {
 
-let g:nord_comment_brightness = 10
 let g:nord_cursor_line_number_background = 1
 let g:nord_italic_comments = 1
 
