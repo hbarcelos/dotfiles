@@ -66,8 +66,7 @@ if [ -f ~/.zplug/init.zsh ]; then
   # Load the theme.
   # zplug theme robbyrussell
   zplug "NelsonBrandao/absolute", as:theme
-  # GEOMETRY_PROMPT_PLUGINS=(git +node)
-  # zplug "geometry-zsh/geometry"
+  # GEOMETRY_PROMPT_PLUGINS=(git +node) zplug "geometry-zsh/geometry"
 
   # zplug check returns true if all packages are installed
   # Therefore, when it returns false, run zplug install
@@ -97,16 +96,10 @@ fi
 pacman -Q powerpill >& /dev/null && export PACMAN=/usr/bin/powerpill
 
 # fasd initialization
-eval "$(fasd --init auto)"
-
-# GOLANG
-export GOPATH=${GOPATH:-$HOME/go}
-
-export PATH="${HOME}/.local/bin:${HOME}/.cargo/bin:${PATH}"
-
-# Yarn Config
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
+which fasd > /dev/null && eval "$(fasd --init auto)"
 
 # Zsh fpath config
 fpath+=${ZDOTDIR:-~}/.zsh_functions
 
+# Profile
+[ -f ~/.profile ] && source ~/.profile

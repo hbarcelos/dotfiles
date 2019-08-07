@@ -40,12 +40,11 @@ Plug 'dsummersl/gundo.vim'
 Plug 'scrooloose/nerdtree'
 Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'ctrlpvim/ctrlp.vim', { 'do': function('InstallEslint') }
-Plug 'ternjs/tern_for_vim', { 'do': function('BuildTern') }
+Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'typescript', 'flow.javascript'], 'do': function('BuildTern') }
 Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
+" Plug 'ajh17/VimCompletesMe'
 Plug 'ervandew/supertab'
 Plug 'SirVer/ultisnips'
-Plug 'honza/vim-snippets'
-Plug 'ahmedelgabri/vim-ava-snippets'
 Plug 'raimondi/delimitmate'
 Plug 'jiangmiao/auto-pairs'
 Plug 'itchyny/lightline.vim'
@@ -59,7 +58,8 @@ Plug 'mhinz/vim-startify'
 Plug 'mhinz/vim-signify'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'junegunn/vim-easy-align'
-Plug 'PeterRincker/vim-argumentative'
+" Plug 'PeterRincker/vim-argumentative'
+Plug 'machakann/vim-swap'
 Plug 'kshenoy/vim-signature'
 Plug 'ryanoasis/vim-devicons'
 Plug 'haya14busa/incsearch.vim'
@@ -92,6 +92,12 @@ Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'christoomey/vim-tmux-navigator'
 Plug 'benmills/vimux'
 
+" Snippets
+Plug 'epilande/vim-es2015-snippets'
+Plug 'hbarcelos/vim-react-snippets'
+Plug 'honza/vim-snippets'
+Plug 'ahmedelgabri/vim-ava-snippets'
+
 " Javascript
 " Plug 'pangloss/vim-javascript'
 " Plug 'mxw/vim-jsx'
@@ -102,14 +108,14 @@ Plug 'moll/vim-node'
 Plug 'othree/javascript-libraries-syntax.vim'
 Plug 'flowtype/vim-flow', { 'do': function('InstallFlow') }
 
-" Angular
-Plug 'burnettk/vim-angular'
+" Typescript
+Plug 'leafgarland/typescript-vim'
+" Plug 'herringtondarkholme/yats.vim'
+Plug 'quramy/tsuquyomi'
 
-" EJS
-Plug 'briancollins/vim-jst'
-
-" RAML
-Plug 'in3d/vim-raml'
+" Javascript + Typescript
+Plug 'Quramy/vim-js-pretty-template'
+Plug 'jason0x43/vim-js-indent'
 
 " HTML
 Plug 'alvan/vim-closetag'
@@ -128,6 +134,15 @@ Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
 " CSS
 Plug 'hail2u/vim-css3-syntax'
 " Plug 'ap/vim-css-color', { 'for': ['css', 'scss', 'html', 'jsx'] }
+
+" Solidity
+Plug 'tomlion/vim-solidity'
+
+" Python
+Plug 'vim-scripts/indentpython.vim'
+
+" TOML
+Plug 'cespare/vim-toml'
 
 " Themes
 Plug 'nanotech/jellybeans.vim'
@@ -259,6 +274,9 @@ function! MyLastWindow()
 endfunction
 """ }
 
+" Creates a command to edit .vimrc
+command! Vimrc :vs $MYVIMRC
+
 """ Custom mappings {
 
 " Moves between panels
@@ -277,8 +295,8 @@ cmap w!! w !sudo tee % >/dev/null
 noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
 
 " Moves for wrapped lines
-noremap j gj
-noremap k gk
+nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
+nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
 
 " Moves for line boundaries
 nnoremap H ^
@@ -407,7 +425,11 @@ let g:NERDTreeWinSize=41 " original + 10
 noremap <silent> <F4> :NERDTreeToggle<Cr>
 noremap <leader>n :NERDTreeFind<Cr>
 
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+augroup NERDTree
+  autocmd!
+
+  autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+augroup END
 
 """ }
 
@@ -451,49 +473,89 @@ let g:ycm_key_list_previous_completion = ['<C-p>', '<Up>']
 let g:SuperTabDefaultCompletionType = '<C-n>'
 let g:SuperTabCrMapping = 0
 
-let g:UltiSnipsExpandTrigger = "<c-c>"
+let g:UltiSnipsExpandTrigger = "<C-c>"
 let g:UltiSnipsJumpForwardTrigger = "<tab>"
 let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 
 " Fix Python Path (for YCM)
 let g:ycm_path_to_python_interpreter = "/usr/bin/python"
 
+map <leader>gdf  :YcmCompleter GoToDefinition<CR>
+map <leader>gdc  :YcmCompleter GoToDeclaration<CR>
+
 """ }
 
 """ tern {
+augroup tern
+  autocmd!
 
-"enable keyboard shortcuts
-let g:tern_map_keys=1
-"show argument hints
-let g:tern_show_argument_hints = 'on_hold'
+  autocmd FileType javascript let g:tern_map_keys=1
+  autocmd FileType javascript let g:tern_show_argument_hints = 'on_hold'
 
+  autocmd FileType javascript nnoremap <silent> <leader>td :TernDef<CR>
+  autocmd FileType javascript nnoremap <silent> <leader>tpd :TernDefPreview<CR>
+  autocmd FileType javascript nnoremap <silent> <leader>tsd :TernDefSplit<CR>
+  autocmd FileType javascript nnoremap <silent> <leader>tD :TernDoc<CR>
+  autocmd FileType javascript nnoremap <silent> <leader>tT :TernType<CR>
+  autocmd FileType javascript nnoremap <silent> <leader>tR :TernRefs<CR>
+  autocmd FileType javascript nnoremap <silent> <leader>tr :TernRename<CR>
 
-" tern shortucts
-nnoremap <silent> <leader>td :TernDef<CR>
-nnoremap <silent> <leader>tpd :TernDefPreview<CR>
-nnoremap <silent> <leader>tsd :TernDefSplit<CR>
-nnoremap <silent> <leader>tD :TernDoc<CR>
-nnoremap <silent> <leader>tT :TernType<CR>
-nnoremap <silent> <leader>tR :TernRefs<CR>
-nnoremap <silent> <leader>tr :TernRename<CR>
-
+augroup END
 """ }
+
+""" tsuquyomi {
+augroup tsuquyomi
+  autocmd!
+
+  let g:tsuquyomi_disable_default_mappings = 1
+  let g:tsuquyomi_disable_quickfix = 1
+
+  " autocmd FileType typescript setlocal completeopt-=preview
+  " autocmd FileType typescript setlocal completeopt-=menu
+
+  autocmd FileType typescript nmap <silent> <leader>te  :TsuquyomiAsyncGeterr<CR>
+  autocmd FileType typescript nmap <silent> <leader>td  <plug>(TsuquyomiDefinition)
+  autocmd FileType typescript nmap <silent> <leader>tsd <plug>(TsuquyomiSplitDefinition)
+  autocmd FileType typescript nmap <silent> <leader>th <plug>(TsuquyomiSignatureHelp)
+  autocmd FileType typescript nmap <silent> <leader>tb  <plug>(TsuquyomiGoBack)
+  autocmd FileType typescript nmap <buffer> <leader>tt  : <C-u>echo tsuquyomi#hint()<CR>
+  autocmd FileType typescript nmap <silent> <leader>tT  <plug>(TsuquyomiTypeDefinition)
+  autocmd FileType typescript nmap <silent> <leader>tR  <plug>(TsuquyomiReferences)
+  autocmd FileType typescript nmap <silent> <leader>ti  <plug>(TsuquyomiImplementation)
+  autocmd FileType typescript nmap <silent> <leader>tr  <plug>(TsuquyomiRenameSymbolC)
+
+augroup END
+""" }
+
+augroup vim_js_pretty_template
+  autocmd!
+
+  autocmd FileType typescript JsPreTmpl
+  " For leafgarland/typescript-vim users only. Please see #1 for details.
+  autocmd FileType typescript syn clear foldBraces
+augroup NED
 
 """ ALE {
 
 let g:ale_linters = {
 \   'javascript': ['eslint'],
+\   'typescript': ['eslint'],
 \   'css': ['stylelint'],
 \   'scss': ['stylelint'],
 \   'xml': ['xmllint'],
+\   'solidity': ['solcjs', 'solium'],
+\   'python': ['flake8', 'pylint'],
 \}
 
 let g:ale_fixers = {
 \   'javascript': ['eslint'],
+\   'typescript': ['eslint'],
 \   'json': ['jq'],
 \   'css': ['stylelint'],
 \   'scss': ['stylelint'],
 \   'xml': ['xmllint'],
+\   'solidity': ['solium'],
+\   'python': ['autopep8', 'yapf'],
 \}
 
 let g:ale_sign_error = '‼️'
@@ -925,22 +987,32 @@ endfunction
 call CustomVimuxSetWindowMode()
 
 " closes the runner automatically when closing vim
-autocmd VimLeave * :call CloseOnExit()
+augroup vimux
+  autocmd!
+
+  autocmd VimLeave * :call CloseOnExit()
+augroup END
 
 """ }
 
 """ Custom file types {
-autocmd BufNewFile,BufRead *stylelintrc,*eslintrc,*babelrc,*jshintrc set syntax=json
-autocmd BufNewFile,BufRead *stylelintrc,*eslintrc,*babelrc,*jshintrc set filetype=json
+augroup custom_filetypes
+  autocmd!
 
-autocmd BufNewFile,BufRead *.flow set filetype=javascript
+  autocmd BufNewFile,BufRead *stylelintrc,*eslintrc,*babelrc,*jshintrc,*prettierrc set syntax=json
+  autocmd BufNewFile,BufRead *stylelintrc,*eslintrc,*babelrc,*jshintrc,*prettierrc set filetype=json
 
-autocmd BufNewFile,BufRead *.jsx set filetype=javascript.jsx
+  autocmd BufNewFile,BufRead *.flow set filetype=javascript
+
+  autocmd BufNewFile,BufRead *.jsx set filetype=javascript.jsx
+
+augroup END
 """ }
 
 """ vim-test {
 let test#javascript#ava#file_pattern = '\.test\.js'
 let test#javascript#jest#file_pattern = '\.test\.js'
+let test#javascript#mocha#file_pattern = '\.test\.js'
 let test#strategy = "vimux"
 
 nnoremap <silent> <leader>te :TestFile
@@ -983,3 +1055,13 @@ nnoremap <Leader>q :Bwipeout<CR>
 let g:jsx_ext_required = 0
 
 """ }
+
+""" vim-swap {
+
+omap i, <Plug>(swap-textobject-i)
+xmap i, <Plug>(swap-textobject-i)
+omap a, <Plug>(swap-textobject-a)
+xmap a, <Plug>(swap-textobject-a)
+
+""" }
+
