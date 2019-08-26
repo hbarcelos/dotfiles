@@ -24,58 +24,76 @@ function! InstallFlow(info)
   endif
 endfunction
 
-Plug 'tpope/vim-git'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-fugitive'
+""" General {
+
 Plug 'tpope/vim-sensible'
-Plug 'tpope/vim-repeat'
-Plug 'tpope/vim-markdown'
-Plug 'tpope/vim-commentary'
-Plug 'suy/vim-context-commentstring'
-Plug 'tpope/vim-unimpaired'
-Plug 'tpope/vim-speeddating'
-Plug 'tpope/vim-dispatch'
 Plug 'tpope/vim-abolish'
-Plug 'dsummersl/gundo.vim'
-Plug 'scrooloose/nerdtree'
-Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'ctrlpvim/ctrlp.vim', { 'do': function('InstallEslint') }
-Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'typescript', 'flow.javascript'], 'do': function('BuildTern') }
-Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
-" Plug 'ajh17/VimCompletesMe'
-Plug 'ervandew/supertab'
 Plug 'SirVer/ultisnips'
-Plug 'raimondi/delimitmate'
-Plug 'jiangmiao/auto-pairs'
-Plug 'itchyny/lightline.vim'
-Plug 'w0rp/ale'
-Plug 'maximbaz/lightline-ale'
-Plug 'easymotion/vim-easymotion'
 Plug 'editorconfig/editorconfig-vim'
+Plug 'ntpeters/vim-better-whitespace'
+Plug 'djoshea/vim-autoread'
+
+""" }
+
+""" Interface {
+
+Plug 'w0rp/ale'
+Plug 'tpope/vim-dispatch'
+Plug 'janko-m/vim-test'
+Plug 'brooth/far.vim'
+" Plug 'romainl/vim-qf'
+Plug 'tpope/vim-fugitive'
+Plug 'dsummersl/gundo.vim'
+Plug 'ctrlpvim/ctrlp.vim', { 'do': function('InstallEslint') }
+Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
+Plug 'itchyny/lightline.vim'
+Plug 'maximbaz/lightline-ale'
 Plug 'jlanzarotta/bufexplorer'
 Plug 'moll/vim-bbye'
 Plug 'mhinz/vim-startify'
 Plug 'mhinz/vim-signify'
-Plug 'ntpeters/vim-better-whitespace'
-Plug 'junegunn/vim-easy-align'
-" Plug 'PeterRincker/vim-argumentative'
-Plug 'machakann/vim-swap'
-Plug 'kshenoy/vim-signature'
 Plug 'ryanoasis/vim-devicons'
 Plug 'haya14busa/incsearch.vim'
 Plug 'haya14busa/incsearch-fuzzy.vim'
-Plug 'kana/vim-operator-user'
-Plug 'haya14busa/vim-metarepeat'
-Plug 'bkad/CamelCaseMotion'
-Plug 'terryma/vim-expand-region'
-Plug 'vim-scripts/gitignore'
-Plug 'djoshea/vim-autoread'
-Plug 'FooSoft/vim-argwrap'
-Plug 'vim-scripts/restore_view.vim'
-Plug 'janko-m/vim-test'
 Plug 'nelstrom/vim-visual-star-search'
-Plug 'brooth/far.vim'
+
+" NERDTree
+Plug 'scrooloose/nerdtree'
+Plug 'Xuyuanp/nerdtree-git-plugin'
+" Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
+" Plug 'evandotpro/nerdtree-chmod'
+
+" Tmux
+Plug 'tmux-plugins/vim-tmux'
+Plug 'tmux-plugins/vim-tmux-focus-events'
+Plug 'christoomey/vim-tmux-navigator'
+Plug 'benmills/vimux'
+
+""" }
+
+""" Editing {
+
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-repeat'
+Plug 'haya14busa/vim-metarepeat'
+Plug 'tpope/vim-commentary'
+Plug 'suy/vim-context-commentstring'
+Plug 'tpope/vim-unimpaired'
+Plug 'tpope/vim-speeddating'
+Plug 'ervandew/supertab'
+" Plug 'raimondi/delimitmate'
+Plug 'jiangmiao/auto-pairs'
+Plug 'easymotion/vim-easymotion'
+Plug 'bkad/CamelCaseMotion'
+Plug 'junegunn/vim-easy-align'
+Plug 'PeterRincker/vim-argumentative'
+Plug 'FooSoft/vim-argwrap'
 Plug 'tommcdo/vim-exchange'
+Plug 'terryma/vim-expand-region'
+Plug 'mattn/emmet-vim'
+
+" Custom operators
+Plug 'kana/vim-operator-user'
 Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-entire'
 Plug 'kana/vim-textobj-indent'
@@ -86,27 +104,31 @@ Plug 'glts/vim-textobj-comment'
 Plug 'thinca/vim-textobj-function-javascript'
 Plug 'justinj/vim-textobj-reactprop'
 
-" Tmux integration
-Plug 'tmux-plugins/vim-tmux'
-Plug 'tmux-plugins/vim-tmux-focus-events'
-Plug 'christoomey/vim-tmux-navigator'
-Plug 'benmills/vimux'
-
 " Snippets
 Plug 'epilande/vim-es2015-snippets'
 Plug 'hbarcelos/vim-react-snippets'
 Plug 'honza/vim-snippets'
 Plug 'ahmedelgabri/vim-ava-snippets'
 
+""" }
+
+""" Syntax {
+
+Plug 'tpope/vim-git'
+Plug 'vim-scripts/gitignore'
+Plug 'tpope/vim-markdown'
+
 " Javascript
 " Plug 'pangloss/vim-javascript'
 " Plug 'mxw/vim-jsx'
+Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'typescript', 'flow.javascript', 'vue'], 'do': function('BuildTern') }
 Plug 'chemzqm/vim-jsx-improve'
 Plug '1995eaton/vim-better-javascript-completion'
 Plug 'elzr/vim-json'
 Plug 'moll/vim-node'
 Plug 'othree/javascript-libraries-syntax.vim'
 Plug 'flowtype/vim-flow', { 'do': function('InstallFlow') }
+Plug 'posva/vim-vue'
 
 " Typescript
 Plug 'leafgarland/typescript-vim'
@@ -129,14 +151,15 @@ Plug 'eagletmt/neco-ghc'
 Plug 'dag/vim2hs'
 
 " Go
-Plug 'fatih/vim-go', { 'do': ':GoUpdateBinaries' }
+Plug 'fatih/vim-go' ", { 'do': ':GoUpdateBinaries' }
 
 " CSS
 Plug 'hail2u/vim-css3-syntax'
 " Plug 'ap/vim-css-color', { 'for': ['css', 'scss', 'html', 'jsx'] }
 
 " Solidity
-Plug 'tomlion/vim-solidity'
+" Plug 'tomlion/vim-solidity'
+Plug '~/labs/vim-solidity'
 
 " Python
 Plug 'vim-scripts/indentpython.vim'
@@ -154,11 +177,15 @@ Plug 'arcticicestudio/nord-vim'
 " For fun
 Plug 'johngrib/vim-game-code-break'
 
+""" }
+
 call plug#end()
 
 """ General {
 syntax on
 filetype plugin indent on
+
+set guifont=Hasklig\ Medium\ 10
 
 " change the mapleader from \ to ,
 let mapleader=","
@@ -412,6 +439,13 @@ nnoremap <leader>o <c-w>o
 
 """ NerdTRee {
 
+" Show files matching .gitignore
+autocmd FileType nerdtree setlocal nolist
+
+if winwidth(0) >= 150
+  let g:NERDTreeWinSize=41 " original + 10
+endif
+
 let NERDTreeHijackNetrw=1
 let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git$', '\.hg', '\.svn', '\.bzr']
 let NERDTreeChDirMode=0
@@ -420,7 +454,20 @@ let NERDTreeShowHidden=1
 let NERDTreeKeepTreeInNewTab=1
 let g:nerdtree_tabs_open_on_gui_startup=0
 let g:NERDShutUp=1
-let g:NERDTreeWinSize=41 " original + 10
+let g:NERDTreeShowIgnoredStatus = 1
+
+let g:NERDTreeIndicatorMapCustom = {
+    \ "Modified"  : "✎",
+    \ "Staged"    : "✚",
+    \ "Untracked" : "✭",
+    \ "Renamed"   : "➜",
+    \ "Unmerged"  : "═",
+    \ "Deleted"   : "✖",
+    \ "Dirty"     : "✎",
+    \ "Clean"     : "✔︎",
+    \ 'Ignored'   : '☒',
+    \ "Unknown"   : "?"
+    \ }
 
 noremap <silent> <F4> :NERDTreeToggle<Cr>
 noremap <leader>n :NERDTreeFind<Cr>
@@ -432,6 +479,38 @@ augroup NERDTree
 augroup END
 
 """ }
+
+""" vim-devicons {
+
+let g:webdevicons_enable = 1
+
+" use double-width(1) or single-width(0) glyphs
+" only manipulates padding, has no effect on terminal or set(guifont) font
+let g:WebDevIconsUnicodeGlyphDoubleWidth = 1
+
+" Force extra padding in NERDTree so that the filetype icons line up vertically
+let g:WebDevIconsUnicodeDecorateFolderNodes = 1
+
+" enable open and close folder/directory glyph flags (disabled by default with 0)
+let g:DevIconsEnableFoldersOpenClose = 1
+
+" enable file extension pattern matching glyphs on folder/directory (disabled by default with 0)
+let g:DevIconsEnableFolderExtensionPatternMatching = 1
+
+" enable pattern matching glyphs on folder/directory (enabled by default with 1)
+let g:DevIconsEnableFolderPatternMatching = 1
+
+" whether or not to show the nerdtree brackets around flags
+let g:webdevicons_conceal_nerdtree_brackets = 1
+
+" Force extra padding in NERDTree so that the filetype icons line up vertically
+let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
+
+" the amount of space to use after the glyph character (default ' ')
+let g:WebDevIconsNerdTreeAfterGlyphPadding = ' '
+
+""" }
+
 
 """ Gundo {
 
@@ -455,6 +534,14 @@ let g:ctrlp_custom_ignore = {
   \ 'file': '\v\.(exe|so|dll)$'
   \ }
 let g:ctrlp_show_hidden = 1
+
+""" }
+
+""" ctrlp-funky {
+nnoremap <Leader>fu :CtrlPFunky<CR>
+
+" narrow the list down with a word under cursor
+nnoremap <Leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<CR>
 
 """ }
 
@@ -489,16 +576,19 @@ map <leader>gdc  :YcmCompleter GoToDeclaration<CR>
 augroup tern
   autocmd!
 
-  autocmd FileType javascript let g:tern_map_keys=1
-  autocmd FileType javascript let g:tern_show_argument_hints = 'on_hold'
+  autocmd FileType vue call tern#Enable()
+  autocmd FileType vue setlocal completeopt-=preview
 
-  autocmd FileType javascript nnoremap <silent> <leader>td :TernDef<CR>
-  autocmd FileType javascript nnoremap <silent> <leader>tpd :TernDefPreview<CR>
-  autocmd FileType javascript nnoremap <silent> <leader>tsd :TernDefSplit<CR>
-  autocmd FileType javascript nnoremap <silent> <leader>tD :TernDoc<CR>
-  autocmd FileType javascript nnoremap <silent> <leader>tT :TernType<CR>
-  autocmd FileType javascript nnoremap <silent> <leader>tR :TernRefs<CR>
-  autocmd FileType javascript nnoremap <silent> <leader>tr :TernRename<CR>
+  autocmd FileType javascript,vue let g:tern_map_keys=1
+  autocmd FileType javascript,vue let g:tern_show_argument_hints = 'on_hold'
+
+  autocmd FileType javascript,vue nnoremap <silent> <leader>td :TernDef<CR>
+  autocmd FileType javascript,vue nnoremap <silent> <leader>tpd :TernDefPreview<CR>
+  autocmd FileType javascript,vue nnoremap <silent> <leader>tsd :TernDefSplit<CR>
+  autocmd FileType javascript,vue nnoremap <silent> <leader>tD :TernDoc<CR>
+  autocmd FileType javascript,vue nnoremap <silent> <leader>tT :TernType<CR>
+  autocmd FileType javascript,vue nnoremap <silent> <leader>tR :TernRefs<CR>
+  autocmd FileType javascript,vue nnoremap <silent> <leader>tr :TernRename<CR>
 
 augroup END
 """ }
@@ -538,25 +628,31 @@ augroup NED
 """ ALE {
 
 let g:ale_linters = {
-\   'javascript': ['eslint'],
-\   'typescript': ['eslint'],
+\   'javascript': ['prettier', 'eslint'],
+\   'typescript': ['prettier', 'eslint'],
+\   'vue': ['prettier', 'eslint'],
 \   'css': ['stylelint'],
 \   'scss': ['stylelint'],
 \   'xml': ['xmllint'],
 \   'solidity': ['solcjs', 'solium'],
 \   'python': ['flake8', 'pylint'],
+\   'html': ['prettier'],
 \}
 
 let g:ale_fixers = {
-\   'javascript': ['eslint'],
-\   'typescript': ['eslint'],
+\   'javascript': ['prettier', 'eslint'],
+\   'typescript': ['prettier', 'eslint'],
+\   'vue': ['prettier', 'eslint'],
 \   'json': ['jq'],
 \   'css': ['stylelint'],
 \   'scss': ['stylelint'],
 \   'xml': ['xmllint'],
 \   'solidity': ['solium'],
 \   'python': ['autopep8', 'yapf'],
+\   'html': ['prettier'],
 \}
+
+let g:ale_javascript_prettier_use_local_config = 1
 
 let g:ale_sign_error = '‼️'
 let g:ale_sign_warning = '⚠️'
@@ -565,8 +661,8 @@ highlight clear ALEWarningSign " otherwise uses error bg color (typically red)
 
 nnoremap <silent> <leader>lf :ALEFix<CR>
 
-nmap <silent> <leader>k <Plug>(ale_previous_wrap)
-nmap <silent> <leader>j <Plug>(ale_next_wrap)
+nnoremap <silent> <leader>k <Plug>(ale_previous_wrap)
+nnoremap <silent> <leader>j <Plug>(ale_next_wrap)
 
 """ }
 
@@ -821,42 +917,6 @@ let g:easy_align_delimiters = {
 \}
 """ }
 
-""" vim-devicons {
-
-let g:webdevicons_enable = 1
-
-" use double-width(1) or single-width(0) glyphs
-" only manipulates padding, has no effect on terminal or set(guifont) font
-let g:WebDevIconsUnicodeGlyphDoubleWidth = 1
-
-" Force extra padding in NERDTree so that the filetype icons line up vertically
-let g:WebDevIconsUnicodeDecorateFolderNodes = 1
-
-" enable open and close folder/directory glyph flags (disabled by default with 0)
-let g:DevIconsEnableFoldersOpenClose = 1
-
-" enable file extension pattern matching glyphs on folder/directory (disabled by default with 0)
-let g:DevIconsEnableFolderExtensionPatternMatching = 1
-
-" enable pattern matching glyphs on folder/directory (enabled by default with 1)
-let g:DevIconsEnableFolderPatternMatching = 1
-
-" enable custom folder/directory glyph exact matching
-" (enabled by default when g:WebDevIconsUnicodeDecorateFolderNodes is set to 1)
-let WebDevIconsUnicodeDecorateFolderNodesExactMatches = 1
-
-" whether or not to show the nerdtree brackets around flags
-let g:webdevicons_conceal_nerdtree_brackets = 1
-
-" Force extra padding in NERDTree so that the filetype icons line up vertically
-let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
-
-" enable folder/directory glyph flag (disabled by default with 0)
-" the amount of space to use after the glyph character (default ' ')
-let g:WebDevIconsNerdTreeAfterGlyphPadding = ' '
-
-""" }
-
 """ incsearch {
 
 map /  <Plug>(incsearch-forward)
@@ -1039,8 +1099,8 @@ let g:bufExplorerShowRelativePath=1
 
 """ AutoPairs {
 
-let g:AutoPairsFlyMode = 1
-let g:AutoPairsShortcutToggle = '<esc>t'
+" let g:AutoPairsFlyMode = 1
+" let g:AutoPairsShortcutToggle = '<esc>t'
 
 """ }
 
@@ -1056,12 +1116,22 @@ let g:jsx_ext_required = 0
 
 """ }
 
-""" vim-swap {
+""" vim-dispatch {
 
-omap i, <Plug>(swap-textobject-i)
-xmap i, <Plug>(swap-textobject-i)
-omap a, <Plug>(swap-textobject-a)
-xmap a, <Plug>(swap-textobject-a)
+let g:dispatch_no_maps = 1
 
 """ }
 
+""" vim-closetag {
+
+let g:closetag_filetypes = 'html,xhtml,phtml,jsx,tsx,vue'
+let g:closetag_xhtml_filetypes = 'xhtml,jsx,tsx,vue'
+let g:closetag_emptyTags_caseSensitive = 1
+
+" Disables auto-close if not in a valid region (based on filetype)
+"
+let g:closetag_regions = {
+    \ 'typescript.tsx': 'jsxRegion,tsxRegion',
+    \ 'javascript.jsx': 'jsxRegion',
+    \ }
+"""}
