@@ -60,8 +60,8 @@ if [ -f ~/.zplug/init.zsh ]; then
   zplug "junegunn/fzf", use:"shell/*.zsh", defer:2
 
   export NVM_AUTO_USE=true
-  export ZSH_TMUX_AUTOSTART=true
-  export ZSH_TMUX_AUTOSTART_ONCE=true
+  # export ZSH_TMUX_AUTOSTART=true
+  # export ZSH_TMUX_AUTOSTART_ONCE=true
 
   # Load the theme.
   # zplug theme robbyrussell
