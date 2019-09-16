@@ -34,3 +34,6 @@
 	old = red bold
 	new = green bold
 	whitespace = red reverse
+[user]
+	name = Henrique Barcelos
+	email = henrique@4cadia.com
