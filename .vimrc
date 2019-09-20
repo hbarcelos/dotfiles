@@ -37,7 +37,7 @@ Plug 'djoshea/vim-autoread'
 
 """ Interface {
 
-Plug 'w0rp/ale'
+Plug 'dense-analysis/ale'
 Plug 'tpope/vim-dispatch'
 Plug 'janko-m/vim-test'
 Plug 'brooth/far.vim'
@@ -316,7 +316,7 @@ noremap <c-k> <c-w><c-k>
 nnoremap <C-O> <C-]>
 
 " Allow saving of files as sudo when I forgot to start vim using sudo.
-cmap w!! w !sudo tee % >/dev/null
+cnoremap w!! w !sudo tee % >/dev/null
 
 " Remove the Windows ^M - when the encodings gets messed up
 noremap <Leader>m mmHmt:%s/<C-V><cr>//ge<cr>'tzt'm
@@ -352,6 +352,7 @@ function! RestoreRegister()
   let @" = s:restore_reg
   return ''
 endfunction
+
 function! s:Repl()
   let s:restore_reg = @"
   return "p@=RestoreRegister()\<cr>"
@@ -537,14 +538,6 @@ let g:ctrlp_show_hidden = 1
 
 """ }
 
-""" ctrlp-funky {
-nnoremap <Leader>fu :CtrlPFunky<CR>
-
-" narrow the list down with a word under cursor
-nnoremap <Leader>fU :execute 'CtrlPFunky ' . expand('<cword>')<CR>
-
-""" }
-
 """ ultisnips {
 
 let g:UltiSnipsSnippetDirectories=["UltiSnips", $HOME."/my-snippets/UltiSnips"]
@@ -567,8 +560,8 @@ let g:UltiSnipsJumpBackwardTrigger = "<s-tab>"
 " Fix Python Path (for YCM)
 let g:ycm_path_to_python_interpreter = "/usr/bin/python"
 
-map <leader>gdf  :YcmCompleter GoToDefinition<CR>
-map <leader>gdc  :YcmCompleter GoToDeclaration<CR>
+map <leader>gdf :YcmCompleter GoToDefinition<CR>
+map <leader>gdc :YcmCompleter GoToDeclaration<CR>
 
 """ }
 
@@ -606,7 +599,7 @@ augroup tsuquyomi
   autocmd FileType typescript nmap <silent> <leader>te  :TsuquyomiAsyncGeterr<CR>
   autocmd FileType typescript nmap <silent> <leader>td  <plug>(TsuquyomiDefinition)
   autocmd FileType typescript nmap <silent> <leader>tsd <plug>(TsuquyomiSplitDefinition)
-  autocmd FileType typescript nmap <silent> <leader>th <plug>(TsuquyomiSignatureHelp)
+  autocmd FileType typescript nmap <silent> <leader>th  <plug>(TsuquyomiSignatureHelp)
   autocmd FileType typescript nmap <silent> <leader>tb  <plug>(TsuquyomiGoBack)
   autocmd FileType typescript nmap <buffer> <leader>tt  : <C-u>echo tsuquyomi#hint()<CR>
   autocmd FileType typescript nmap <silent> <leader>tT  <plug>(TsuquyomiTypeDefinition)
@@ -623,13 +616,13 @@ augroup vim_js_pretty_template
   autocmd FileType typescript JsPreTmpl
   " For leafgarland/typescript-vim users only. Please see #1 for details.
   autocmd FileType typescript syn clear foldBraces
-augroup NED
+augroup END
 
 """ ALE {
 
 let g:ale_linters = {
 \   'javascript': ['prettier', 'eslint'],
-\   'typescript': ['prettier', 'eslint'],
+\   'typescript': ['prettier', 'tslint', 'eslint'],
 \   'vue': ['prettier', 'eslint'],
 \   'css': ['stylelint'],
 \   'scss': ['stylelint'],
@@ -641,9 +634,9 @@ let g:ale_linters = {
 
 let g:ale_fixers = {
 \   'javascript': ['prettier', 'eslint'],
-\   'typescript': ['prettier', 'eslint'],
+\   'typescript': ['prettier', 'tslint', 'eslint'],
 \   'vue': ['prettier', 'eslint'],
-\   'json': ['jq'],
+\   'json': ['jq', 'prettier'],
 \   'css': ['stylelint'],
 \   'scss': ['stylelint'],
 \   'xml': ['xmllint'],
@@ -661,8 +654,8 @@ highlight clear ALEWarningSign " otherwise uses error bg color (typically red)
 
 nnoremap <silent> <leader>lf :ALEFix<CR>
 
-nnoremap <silent> <leader>k <Plug>(ale_previous_wrap)
-nnoremap <silent> <leader>j <Plug>(ale_next_wrap)
+nmap <silent> <leader>k <Plug>(ale_previous_wrap)
+nmap <silent> <leader>j <Plug>(ale_next_wrap)
 
 """ }
 
