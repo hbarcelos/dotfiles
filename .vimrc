@@ -121,7 +121,7 @@ Plug 'tpope/vim-markdown'
 " Javascript
 " Plug 'pangloss/vim-javascript'
 " Plug 'mxw/vim-jsx'
-Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'typescript', 'flow.javascript', 'vue'], 'do': function('BuildTern') }
+Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'typescript', 'flow.javascript', 'vue', 'javascript.jsx'], 'do': function('BuildTern') }
 Plug 'chemzqm/vim-jsx-improve'
 Plug '1995eaton/vim-better-javascript-completion'
 Plug 'elzr/vim-json'
@@ -436,6 +436,8 @@ inoremap jj <Esc>
 " Close every window in the current tabview but the current one
 nnoremap <leader>o <c-w>o
 
+nnoremap <leader>cp :let @+ = expand("%:p")<CR>
+
 """ }
 
 """ NerdTRee {
@@ -572,16 +574,15 @@ augroup tern
   autocmd FileType vue call tern#Enable()
   autocmd FileType vue setlocal completeopt-=preview
 
-  autocmd FileType javascript,vue let g:tern_map_keys=1
-  autocmd FileType javascript,vue let g:tern_show_argument_hints = 'on_hold'
-
-  autocmd FileType javascript,vue nnoremap <silent> <leader>td :TernDef<CR>
-  autocmd FileType javascript,vue nnoremap <silent> <leader>tpd :TernDefPreview<CR>
-  autocmd FileType javascript,vue nnoremap <silent> <leader>tsd :TernDefSplit<CR>
-  autocmd FileType javascript,vue nnoremap <silent> <leader>tD :TernDoc<CR>
-  autocmd FileType javascript,vue nnoremap <silent> <leader>tT :TernType<CR>
-  autocmd FileType javascript,vue nnoremap <silent> <leader>tR :TernRefs<CR>
-  autocmd FileType javascript,vue nnoremap <silent> <leader>tr :TernRename<CR>
+  autocmd FileType javascript,javascript.jsx,vue let g:tern_map_keys=1
+  autocmd FileType javascript,javascript.jsx,vue let g:tern_show_argument_hints = 'on_hold'
+  autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>td :TernDef<CR>
+  autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tpd :TernDefPreview<CR>
+  autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tsd :TernDefSplit<CR>
+  autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tD :TernDoc<CR>
+  autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tT :TernType<CR>
+  autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tR :TernRefs<CR>
+  autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tr :TernRename<CR>
 
 augroup END
 """ }
@@ -596,16 +597,16 @@ augroup tsuquyomi
   " autocmd FileType typescript setlocal completeopt-=preview
   " autocmd FileType typescript setlocal completeopt-=menu
 
-  autocmd FileType typescript nmap <silent> <leader>te  :TsuquyomiAsyncGeterr<CR>
-  autocmd FileType typescript nmap <silent> <leader>td  <plug>(TsuquyomiDefinition)
-  autocmd FileType typescript nmap <silent> <leader>tsd <plug>(TsuquyomiSplitDefinition)
-  autocmd FileType typescript nmap <silent> <leader>th  <plug>(TsuquyomiSignatureHelp)
-  autocmd FileType typescript nmap <silent> <leader>tb  <plug>(TsuquyomiGoBack)
-  autocmd FileType typescript nmap <buffer> <leader>tt  : <C-u>echo tsuquyomi#hint()<CR>
-  autocmd FileType typescript nmap <silent> <leader>tT  <plug>(TsuquyomiTypeDefinition)
-  autocmd FileType typescript nmap <silent> <leader>tR  <plug>(TsuquyomiReferences)
-  autocmd FileType typescript nmap <silent> <leader>ti  <plug>(TsuquyomiImplementation)
-  autocmd FileType typescript nmap <silent> <leader>tr  <plug>(TsuquyomiRenameSymbolC)
+  autocmd FileType typescript,typescript.tsx nmap <silent> <leader>te  :TsuquyomiAsyncGeterr<CR>
+  autocmd FileType typescript,typescript.tsx nmap <silent> <leader>td  <plug>(TsuquyomiDefinition)
+  autocmd FileType typescript,typescript.tsx nmap <silent> <leader>tsd <plug>(TsuquyomiSplitDefinition)
+  autocmd FileType typescript,typescript.tsx nmap <silent> <leader>th  <plug>(TsuquyomiSignatureHelp)
+  autocmd FileType typescript,typescript.tsx nmap <silent> <leader>tb  <plug>(TsuquyomiGoBack)
+  autocmd FileType typescript,typescript.tsx nmap <buffer> <leader>tt  : <C-u>echo tsuquyomi#hint()<CR>
+  autocmd FileType typescript,typescript.tsx nmap <silent> <leader>tT  <plug>(TsuquyomiTypeDefinition)
+  autocmd FileType typescript,typescript.tsx nmap <silent> <leader>tR  <plug>(TsuquyomiReferences)
+  autocmd FileType typescript,typescript.tsx nmap <silent> <leader>ti  <plug>(TsuquyomiImplementation)
+  autocmd FileType typescript,typescript.tsx nmap <silent> <leader>tr  <plug>(TsuquyomiRenameSymbolC)
 
 augroup END
 """ }
@@ -637,10 +638,10 @@ let g:ale_fixers = {
 \   'typescript': ['prettier', 'tslint', 'eslint'],
 \   'vue': ['prettier', 'eslint'],
 \   'json': ['jq', 'prettier'],
-\   'css': ['stylelint'],
-\   'scss': ['stylelint'],
-\   'xml': ['xmllint'],
-\   'solidity': ['solium'],
+\   'css': ['stylelint', 'prettier'],
+\   'scss': ['stylelint', 'prettier'],
+\   'xml': ['xmllint', 'prettier'],
+\   'solidity': ['prettier'],
 \   'python': ['autopep8', 'yapf'],
 \   'html': ['prettier'],
 \}
@@ -944,14 +945,14 @@ nnoremap <Space> /
 
 let g:ctrlp_use_caching = 0
 if executable('ag')
-    set grepprg=ag\ --nogroup\ --nocolor\ --smart-case
+  set grepprg=ag\ --nogroup\ --nocolor\ --smart-case
 
-    let g:ctrlp_user_command = 'ag %s -l --nocolor --smart-case --hidden -g ""'
+  let g:ctrlp_user_command = 'ag %s -l --nocolor --smart-case --hidden -g ""'
 else
   let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . -co --exclude-standard', 'find %s -type f']
   let g:ctrlp_prompt_mappings = {
-    \ 'AcceptSelection("e")': ['<space>', '<cr>', '<2-LeftMouse>'],
-    \ }
+        \ 'AcceptSelection("e")': ['<space>', '<cr>', '<2-LeftMouse>'],
+        \ }
 endif
 
 " bind K to grep word under cursor
@@ -1063,9 +1064,10 @@ augroup END
 """ }
 
 """ vim-test {
-let test#javascript#ava#file_pattern = '\.test\.js'
-let test#javascript#jest#file_pattern = '\.test\.js'
-let test#javascript#mocha#file_pattern = '\.test\.js'
+let test#javascript#ava#file_pattern = '\.(test|spec)\.(t|j)sx?'
+let test#javascript#jest#file_pattern = '\.(test|spec)\.(t|j)sx?'
+let test#javascript#mocha#file_pattern = '\.(test|spec)\.(t|j)sx?'
+
 let test#strategy = "vimux"
 
 nnoremap <silent> <leader>te :TestFile
