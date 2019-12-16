@@ -50,7 +50,10 @@ if [ -f ~/.zplug/init.zsh ]; then
       as:command, \
       rename-to:jq
   zplug "unixorn/bitbucket-git-helpers.plugin.zsh"
-  zplug "zdharma/zsh-diff-so-fancy"
+  # zplug "zdharma/zsh-diff-so-fancy"
+  zplug "so-fancy/diff-so-fancy", \
+      as:command, \
+      use:"diff-so-fancy"
   zplug "adrieankhisbe/diractions"
   zplug "junegunn/fzf-bin", \
       from:gh-r, \
@@ -58,6 +61,11 @@ if [ -f ~/.zplug/init.zsh ]; then
       rename-to:fzf, \
       use:"*linux*amd64*"
   zplug "junegunn/fzf", use:"shell/*.zsh", defer:2
+  zplug "BurntSushi/ripgrep", \
+    from:gh-r, \
+    as:command, \
+    rename-to:rg, \
+    if:"[[ $OSTYPE = linux* && ! -f /proc/syno_cpu_arch ]]"
 
   export NVM_AUTO_USE=true
   # export ZSH_TMUX_AUTOSTART=true
