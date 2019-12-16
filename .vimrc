@@ -2,7 +2,7 @@ call plug#begin('~/.vim/plugged')
 
 function! BuildYCM(info)
   if a:info.status == 'installed' || a:info.force
-    !python3 ./install.py
+    !./install.py
   endif
 endfunction
 
@@ -106,7 +106,7 @@ Plug 'justinj/vim-textobj-reactprop'
 
 " Snippets
 Plug 'epilande/vim-es2015-snippets'
-Plug 'hbarcelos/vim-react-snippets'
+" Plug 'hbarcelos/vim-react-snippets'
 Plug 'honza/vim-snippets'
 Plug 'ahmedelgabri/vim-ava-snippets'
 
@@ -121,7 +121,7 @@ Plug 'tpope/vim-markdown'
 " Javascript
 " Plug 'pangloss/vim-javascript'
 " Plug 'mxw/vim-jsx'
-Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'typescript', 'flow.javascript', 'vue', 'javascript.jsx'], 'do': function('BuildTern') }
+" Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'typescript', 'flow.javascript', 'vue'], 'do': function('BuildTern') }
 Plug 'chemzqm/vim-jsx-improve'
 Plug '1995eaton/vim-better-javascript-completion'
 Plug 'elzr/vim-json'
@@ -133,7 +133,8 @@ Plug 'posva/vim-vue'
 " Typescript
 Plug 'leafgarland/typescript-vim'
 " Plug 'herringtondarkholme/yats.vim'
-Plug 'quramy/tsuquyomi'
+Plug 'quramy/tsuquyomi', { 'for' : ['javascript', 'javascript.jsx', 'typescript', 'typescript.tsx', 'vue'] }
+Plug 'ianks/vim-tsx'
 
 " Javascript + Typescript
 Plug 'Quramy/vim-js-pretty-template'
@@ -542,7 +543,7 @@ let g:ctrlp_show_hidden = 1
 
 """ ultisnips {
 
-let g:UltiSnipsSnippetDirectories=["UltiSnips", $HOME."/my-snippets/UltiSnips"]
+let g:UltiSnipsSnippetDirectories=["UltiSnips", $HOME."/.snippets/UltiSnips"]
 
 """ }
 
@@ -568,23 +569,23 @@ map <leader>gdc :YcmCompleter GoToDeclaration<CR>
 """ }
 
 """ tern {
-augroup tern
-  autocmd!
+" augroup tern
+"   autocmd!
 
-  autocmd FileType vue call tern#Enable()
-  autocmd FileType vue setlocal completeopt-=preview
+"   autocmd FileType vue call tern#Enable()
+"   autocmd FileType vue setlocal completeopt-=preview
 
-  autocmd FileType javascript,javascript.jsx,vue let g:tern_map_keys=1
-  autocmd FileType javascript,javascript.jsx,vue let g:tern_show_argument_hints = 'on_hold'
-  autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>td :TernDef<CR>
-  autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tpd :TernDefPreview<CR>
-  autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tsd :TernDefSplit<CR>
-  autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tD :TernDoc<CR>
-  autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tT :TernType<CR>
-  autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tR :TernRefs<CR>
-  autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tr :TernRename<CR>
+"   autocmd FileType javascript,javascript.jsx,vue let g:tern_map_keys=1
+"   autocmd FileType javascript,javascript.jsx,vue let g:tern_show_argument_hints = 'on_hold'
+"   autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>td :TernDef<CR>
+"   autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tpd :TernDefPreview<CR>
+"   autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tsd :TernDefSplit<CR>
+"   autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tD :TernDoc<CR>
+"   autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tT :TernType<CR>
+"   autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tR :TernRefs<CR>
+"   autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tr :TernRename<CR>
 
-augroup END
+" augroup END
 """ }
 
 """ tsuquyomi {
@@ -593,20 +594,21 @@ augroup tsuquyomi
 
   let g:tsuquyomi_disable_default_mappings = 1
   let g:tsuquyomi_disable_quickfix = 1
+  let g:tsuquyomi_javascript_support = 1
 
   " autocmd FileType typescript setlocal completeopt-=preview
   " autocmd FileType typescript setlocal completeopt-=menu
 
-  autocmd FileType typescript,typescript.tsx nmap <silent> <leader>te  :TsuquyomiAsyncGeterr<CR>
-  autocmd FileType typescript,typescript.tsx nmap <silent> <leader>td  <plug>(TsuquyomiDefinition)
-  autocmd FileType typescript,typescript.tsx nmap <silent> <leader>tsd <plug>(TsuquyomiSplitDefinition)
-  autocmd FileType typescript,typescript.tsx nmap <silent> <leader>th  <plug>(TsuquyomiSignatureHelp)
-  autocmd FileType typescript,typescript.tsx nmap <silent> <leader>tb  <plug>(TsuquyomiGoBack)
-  autocmd FileType typescript,typescript.tsx nmap <buffer> <leader>tt  : <C-u>echo tsuquyomi#hint()<CR>
-  autocmd FileType typescript,typescript.tsx nmap <silent> <leader>tT  <plug>(TsuquyomiTypeDefinition)
-  autocmd FileType typescript,typescript.tsx nmap <silent> <leader>tR  <plug>(TsuquyomiReferences)
-  autocmd FileType typescript,typescript.tsx nmap <silent> <leader>ti  <plug>(TsuquyomiImplementation)
-  autocmd FileType typescript,typescript.tsx nmap <silent> <leader>tr  <plug>(TsuquyomiRenameSymbolC)
+  autocmd FileType *.ts,*.tsx,*.js,*.jsx,*.vue nmap <silent> <leader>te  :TsuquyomiAsyncGeterr<CR>
+  autocmd FileType *.ts,*.tsx,*.js,*.jsx,*.vue nmap <silent> <leader>td  <plug>(TsuquyomiDefinition)
+  autocmd FileType *.ts,*.tsx,*.js,*.jsx,*.vue nmap <silent> <leader>tsd <plug>(TsuquyomiSplitDefinition)
+  autocmd FileType *.ts,*.tsx,*.js,*.jsx,*.vue nmap <silent> <leader>th  <plug>(TsuquyomiSignatureHelp)
+  autocmd FileType *.ts,*.tsx,*.js,*.jsx,*.vue nmap <silent> <leader>tb  <plug>(TsuquyomiGoBack)
+  autocmd FileType *.ts,*.tsx,*.js,*.jsx,*.vue nmap <buffer> <leader>tt  : <C-u>echo tsuquyomi#hint()<CR>
+  autocmd FileType *.ts,*.tsx,*.js,*.jsx,*.vue nmap <silent> <leader>tT  <plug>(TsuquyomiTypeDefinition)
+  autocmd FileType *.ts,*.tsx,*.js,*.jsx,*.vue nmap <silent> <leader>tR  <plug>(TsuquyomiReferences)
+  autocmd FileType *.ts,*.tsx,*.js,*.jsx,*.vue nmap <silent> <leader>ti  <plug>(TsuquyomiImplementation)
+  autocmd FileType *.ts,*.tsx,*.js,*.jsx,*.vue nmap <silent> <leader>tr  <plug>(TsuquyomiRenameSymbolC)
 
 augroup END
 """ }
@@ -646,17 +648,19 @@ let g:ale_fixers = {
 \   'html': ['prettier'],
 \}
 
-let g:ale_javascript_prettier_use_local_config = 1
-
 let g:ale_sign_error = '‼️'
 let g:ale_sign_warning = '⚠️'
+
 highlight clear ALEErrorSign " otherwise uses error bg color (typically red)
 highlight clear ALEWarningSign " otherwise uses error bg color (typically red)
 
+let g:ale_javascript_prettier_use_local_config = 1
+let g:ale_fix_on_save = 1
+
 nnoremap <silent> <leader>lf :ALEFix<CR>
 
-nmap <silent> <leader>k <Plug>(ale_previous_wrap)
-nmap <silent> <leader>j <Plug>(ale_next_wrap)
+nnoremap <silent> <leader>k <Plug>(ale_previous_wrap)
+nnoremap <silent> <leader>j <Plug>(ale_next_wrap)
 
 """ }
 
@@ -1038,7 +1042,7 @@ function! CloseOnExit()
   endif
 endfunction
 
-call CustomVimuxSetWindowMode()
+call CustomVimuxSetPaneMode()
 
 " closes the runner automatically when closing vim
 augroup vimux
@@ -1119,9 +1123,10 @@ let g:dispatch_no_maps = 1
 
 """ vim-closetag {
 
-let g:closetag_filetypes = 'html,xhtml,phtml,jsx,tsx,vue'
-let g:closetag_xhtml_filetypes = 'xhtml,jsx,tsx,vue'
+let g:closetag_filetypes = 'html,xhtml,phtml,javascript.jsx,jsx,typescript.tsx,tsx,vue'
+let g:closetag_xhtml_filetypes = 'xhtml,javascript.jsx,jsx,typescript.tsx,tsx,vue'
 let g:closetag_emptyTags_caseSensitive = 1
+let g:closetag_close_shortcut = '<leader>>'
 
 " Disables auto-close if not in a valid region (based on filetype)
 "
@@ -1130,3 +1135,13 @@ let g:closetag_regions = {
     \ 'javascript.jsx': 'jsxRegion',
     \ }
 """}
+
+nmap <leader>cp :let @+=expand("%:p")<CR>
+
+""" emmet-vim {
+let g:user_emmet_settings = {
+\  'javascript' : {
+\      'extends' : 'jsx',
+\  },
+\}
+""" }
