@@ -32,6 +32,7 @@ Plug 'SirVer/ultisnips'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'djoshea/vim-autoread'
+Plug 'jremmen/vim-ripgrep'
 
 """ }
 
@@ -222,7 +223,7 @@ set wrap
 set foldmethod=manual
 
 " Wild menu conf
-set wildignore=*.swp,*.bak,*.pyc,*.class
+set wildignore=*.swp,*.bak,*.pyc,*.class,*/.git/*
 set wildignore+=*/tmp/*,*.so,*.swp,*.zip     " MacOSX/Linux
 set wildignore+=*\\tmp\\*,*.swp,*.zip,*.exe  " Windows
 
@@ -945,26 +946,38 @@ nnoremap <Space> /
 
 """ }
 
-""" silver searcher {
+""" grep {
 
 let g:ctrlp_use_caching = 0
-if executable('ag')
+
+if executable('rg')
+  set grepprg=rg\ --no-heading\ --color=never\ --smart-case
+
+  let g:ctrlp_use_caching = 0
+  let g:ctrlp_user_command = 'rg %s --files --color=never --smart-case --glob ""'
+
+  nnoremap <leader>K :execute 'Rg "\b"'.expand("<cword>").'"\b"'<CR>
+  nnoremap <leader><Space> :Rg<SPACE>
+
+elseif executable('ag')
+" if executable('ag')
   set grepprg=ag\ --nogroup\ --nocolor\ --smart-case
 
+  let g:ctrlp_use_caching = 0
   let g:ctrlp_user_command = 'ag %s -l --nocolor --smart-case --hidden -g ""'
+
+  " bind K to grep word under cursor
+  nnoremap <leader>K :execute 'grep! "\b"'.expand("<cword>").'"\b"'<CR>:rightb<SPACE>cw<CR>
+
+  command! -nargs=+ -complete=file -bar Ag silent! grep! <args>|copen|redraw!
+  " bind ,<SPACE> to grep shortcut
+  nnoremap <leader><Space> :Ag<SPACE>
 else
   let g:ctrlp_user_command = ['.git', 'cd %s && git ls-files . -co --exclude-standard', 'find %s -type f']
   let g:ctrlp_prompt_mappings = {
         \ 'AcceptSelection("e")': ['<space>', '<cr>', '<2-LeftMouse>'],
         \ }
 endif
-
-" bind K to grep word under cursor
-nnoremap <leader>K :execute 'grep! "\b"'.expand("<cword>").'"\b"'<CR>:rightb<SPACE>cw<CR>
-
-command! -nargs=+ -complete=file -bar Ag silent! grep! <args>|cwindow|redraw!
-" bind ,<SPACE> to grep shortcut
-nnoremap <leader><Space> :Ag<SPACE>
 
 """ }
 
