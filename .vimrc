@@ -157,7 +157,9 @@ Plug 'fatih/vim-go' ", { 'do': ':GoUpdateBinaries' }
 
 " CSS
 Plug 'hail2u/vim-css3-syntax'
-" Plug 'ap/vim-css-color', { 'for': ['css', 'scss', 'html', 'jsx'] }
+Plug 'stephenway/postcss.vim', { 'for': ['scss'] }
+Plug 'ap/vim-css-color'
+Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
 
 " Solidity
 " Plug 'tomlion/vim-solidity'
@@ -1157,4 +1159,9 @@ let g:user_emmet_settings = {
 \      'extends' : 'jsx',
 \  },
 \}
+""" }
+
+""" vim-styled-components {
+autocmd BufEnter *.{js,jsx,ts,tsx} :syntax sync fromstart
+" autocmd BufLeave *.{js,jsx,ts,tsx} :syntax sync clear
 """ }
