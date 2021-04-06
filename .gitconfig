@@ -10,16 +10,6 @@
 	pager = diff-so-fancy | less --tabs=4 -RFX
 [difftool]
     trustExitCode = true
-[alias]
-	current-branch = rev-parse --abbrev-ref HEAD
-	cbr = !git current-branch
-	ps = push
-	pl = pull
-	pst = push --tags
-  cleanup = !git branch --merged master | grep  -v '\\*\\|master' | xargs -n 1 -I {} git branch -d {}
-  cl = !git cleanup
-  cleanup-remote= !git checkout master && git pull && git branch -r --merged master | grep -v '^.*\\(master\\)' | sed s:origin/:: | xargs -n 1 -I {} git push origin --delete {}
-  clr = !git cleanup-remote
 [color]
 	ui = true
 [color "diff-highlight"]

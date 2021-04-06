@@ -14,6 +14,16 @@
   dfc = diff --color-words=.
 	dc = diff --cached
 
+	current-branch = rev-parse --abbrev-ref HEAD
+	cbr = !git current-branch
+	ps = push
+	pl = pull
+	pst = push --tags
+  cleanup = !git branch --merged master | grep  -v '\\*\\|master' | xargs -I {} git branch -d {}
+  cln = !git cleanup
+  cleanup-remote= !git checkout master && git pull && git branch -r --merged master | grep -v '^.*\\(master\\)' | sed s:origin/:: | xargs -n 1 -I {} git push origin --delete {}
+  clnr = !git cleanup-remote
+
 	r = reset
 	r1 = reset HEAD^
 	r2 = reset HEAD^^
@@ -49,7 +59,6 @@
   ours = "!f() { git co --ours $@ && git add $@; }; f"
   theirs = "!f() { git co --theirs $@ && git add $@; }; f"
 
-  delete-merged-branches = "!git co master && git branch --merged | grep -v '\\*' | xargs -n 1 git branch -d"
 	tidy = rebase -i @{upstream}
 	spush = push --recurse-submodules=on-demand
 	g = grep --extended-regexp --break --heading --line-number

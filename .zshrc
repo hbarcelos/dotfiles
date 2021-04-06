@@ -1,3 +1,4 @@
+zmodload zsh/zprof
 # Configuration of global environment variables
 export DISABLE_AUTO_TITLE=true
 export EDITOR='vim'
@@ -6,17 +7,25 @@ export TERM="screen-256color"
 # Fixes weird characters on Vim when running out of tmux
 alias vim='TERM="xterm-256color" vim'
 
-if [ -f "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh" ]; then
-  source "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh"
-fi
+# if [ -f "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh" ]; then
+#   source "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh"
+# fi
 
 if [ -f ~/.zplug/init.zsh ]; then
   source ~/.zplug/init.zsh
 
   zplug "zplug/zplug", hook-build:"zplug --self-manage"
   zplug "robbyrussell/oh-my-zsh", as:plugin, use:"lib/*.zsh"
-  # export NVM_LAZY_LOAD=true
+
+  # export NVM_NO_USE=true
+  export NVM_COMPLETION=true
+  export NVM_AUTO_USE=true
+  export NVM_LAZY_LOAD=true
+  export NVM_LAZY_LOAD_EXTRA_COMMANDS=('vim' 'yarn')
+  export NVM_SYMLINK_CURRENT=true
+  zplug "plugins/nvm", from:oh-my-zsh
   zplug "lukechilds/zsh-nvm"
+  zplug "plugins/nvm", from:oh-my-zsh
 
   zplug "plugins/aws", from:oh-my-zsh
   zplug "plugins/colored-man-pages", from:oh-my-zsh
@@ -25,13 +34,12 @@ if [ -f ~/.zplug/init.zsh ]; then
   zplug "plugins/cp", from:oh-my-zsh
   zplug "plugins/docker", from:oh-my-zsh
   zplug "plugins/docker-compose", from:oh-my-zsh
-  zplug "plugins/dotenv", from:oh-my-zsh
+  # zplug "plugins/dotenv", from:oh-my-zsh
   zplug "plugins/fasd", from:oh-my-zsh
   zplug "plugins/git", from:oh-my-zsh
   zplug "plugins/git-extras", from:oh-my-zsh
   zplug "plugins/node", from:oh-my-zsh
   zplug "plugins/npm", from:oh-my-zsh
-  zplug "plugins/nvm", from:oh-my-zsh
   zplug "plugins/sudo", from:oh-my-zsh
   zplug "plugins/tmux", from:oh-my-zsh
   zplug "plugins/yarn", from:oh-my-zsh
@@ -50,7 +58,6 @@ if [ -f ~/.zplug/init.zsh ]; then
       as:command, \
       rename-to:jq
   zplug "unixorn/bitbucket-git-helpers.plugin.zsh"
-  # zplug "zdharma/zsh-diff-so-fancy"
   zplug "so-fancy/diff-so-fancy", \
       as:command, \
       use:"diff-so-fancy"
@@ -60,14 +67,22 @@ if [ -f ~/.zplug/init.zsh ]; then
       as:command, \
       rename-to:fzf, \
       use:"*linux*amd64*"
-  zplug "junegunn/fzf", use:"shell/*.zsh", defer:2
+  zplug "junegunn/fzf",\
+      use:"shell/*.zsh",\
+      defer:2
   zplug "BurntSushi/ripgrep", \
-    from:gh-r, \
-    as:command, \
-    rename-to:rg, \
-    if:"[[ $OSTYPE = linux* && ! -f /proc/syno_cpu_arch ]]"
+      from:gh-r, \
+      as:command, \
+      rename-to:rg, \
+      if:"[[ $OSTYPE = linux* && ! -f /proc/syno_cpu_arch ]]"
+  # Enable when issue #576 is fixed:
+  # https://github.com/ogham/exa/issues/576
+  #
+  # zplug "DarrinTisdale/zsh-aliases-exa", \
+  #     from:gh-r, \
+  #     as:plugin, \
+  #     defer:2
 
-  export NVM_AUTO_USE=true
   # export ZSH_TMUX_AUTOSTART=true
   # export ZSH_TMUX_AUTOSTART_ONCE=true
 
@@ -78,9 +93,9 @@ if [ -f ~/.zplug/init.zsh ]; then
 
   # zplug check returns true if all packages are installed
   # Therefore, when it returns false, run zplug install
-  if ! zplug check; then
-    zplug install
-  fi
+  # if ! zplug check; then
+  #   zplug install
+  # fi
 
   # source plugins and add commands to the PATH
   zplug load
@@ -96,8 +111,10 @@ if [ -f ~/.zplug/init.zsh ]; then
   # ZSH autosuggestions config
   bindkey '^ ' autosuggest-accept
 else
-  echo -e "Please install zplug:\n"
+  echo -e "Zplug not installed yet."
+  echo -e "Installing...\n"
   echo -e "    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh\n"
+  curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
 fi
 
 # pacaur, yaourt, makepkg: use powerpill instead of pacman
