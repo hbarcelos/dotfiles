@@ -1,3 +1,4 @@
+set nocompatible
 call plug#begin('~/.vim/plugged')
 
 """ General {
@@ -14,16 +15,17 @@ Plug 'junegunn/vader.vim'
 
 """ Interface {
 
-" Plug 'dense-analysis/ale'
-Plug '~/labs/ale'
+Plug 'dense-analysis/ale'
 Plug 'tpope/vim-dispatch'
-Plug 'janko-m/vim-test'
 Plug 'brooth/far.vim'
 Plug 'junegunn/vim-peekaboo'
 Plug 'Yilin-Yang/vim-markbar'
 Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-rhubarb'
 Plug 'dsummersl/gundo.vim'
 Plug 'ctrlpvim/ctrlp.vim'
+
+Plug 'janko/vim-test'
 
 function! BuildYCM(info)
   if a:info.status == 'installed' || a:info.force
@@ -64,6 +66,7 @@ Plug 'benmills/vimux'
 """ Editing {
 
 Plug 'tpope/vim-surround'
+Plug 'AndrewRadev/dsf.vim'
 Plug 'tpope/vim-repeat'
 Plug 'haya14busa/vim-metarepeat'
 Plug 'tpope/vim-commentary'
@@ -98,6 +101,7 @@ Plug 'thinca/vim-textobj-between'
 Plug 'Julian/vim-textobj-variable-segment'
 " Must come after Julian/vim-textobj-variable-segment
 Plug 'vimtaku/vim-textobj-keyvalue'
+Plug 'osyo-manga/vim-textobj-blockwise'
 
 " Snippets
 Plug 'SirVer/ultisnips'
@@ -113,21 +117,6 @@ Plug '~/labs/vim-snippets'
 
 " Plug 'tpope/vim-git'
 " Plug 'tpope/vim-markdown'
-Plug '1995eaton/vim-better-javascript-completion'
-Plug 'chemzqm/vim-jsx-improve'
-
-"function! InstallFlow(info)
-"  if a:info.status == 'installed' || a:info.force
-"    !npm install -g flow-bin
-"  endif
-"endfunction
-"Plug 'flowtype/vim-flow', { 'do': function('InstallFlow') }
-
-Plug 'posva/vim-vue', { 'for' : ['vue'] }
-Plug 'elzr/vim-json'
-Plug 'leafgarland/typescript-vim'
-Plug 'ianks/vim-tsx'
-Plug 'Quramy/vim-js-pretty-template'
 " Plug 'othree/html5.vim'
 " Plug 'hashivim/vim-terraform'
 " Plug 'dag/vim2hs'
@@ -138,33 +127,36 @@ Plug 'Quramy/vim-js-pretty-template'
 
 """ vim-polyglot {
 
-" let g:polyglot_disabled = ['solidity']
-let g:polyglot_disabled = ['javascript', 'typescript']
+let g:polyglot_disabled = ['javascript', 'typescript', 'solidity']
+
+" Solidity
+Plug 'thesis/vim-solidity'
+
+
+" TS/JS support {
+
+Plug 'neoclide/vim-jsx-improve'
+Plug 'leafgarland/typescript-vim'
+Plug 'ianks/vim-tsx'
+Plug 'maxmellon/vim-jsx-pretty'
+
+Plug 'posva/vim-vue', { 'for' : ['vue'] }
+
+Plug 'elzr/vim-json'
+
+" Template strings
+Plug 'Quramy/vim-js-pretty-template'
+
+" Node.js
+Plug 'moll/vim-node'
+
+" " Javascript + Typescript
+" Plug 'jason0x43/vim-js-indent'
+" }
 
 """ }
 
 Plug 'sheerun/vim-polyglot'
-
-" Git
-Plug 'vim-scripts/gitignore'
-
-" Javascript
-Plug 'pangloss/vim-javascript'
-Plug 'mxw/vim-jsx'
-
-"function! BuildTern(info)
-"  if a:info.status == 'installed' || a:info.force
-"    !npm install
-"  endif
-"endfunction
-"
-" Plug 'ternjs/tern_for_vim', { 'for': ['javascript', 'typescript', 'flow.javascript', 'vue'], 'do': function('BuildTern') }
-"
-" Node.js
-Plug 'moll/vim-node'
-
-" Javascript + Typescript
-Plug 'jason0x43/vim-js-indent'
 
 " HTML
 Plug 'alvan/vim-closetag'
@@ -175,9 +167,6 @@ Plug 'eagletmt/neco-ghc'
 " CSS
 Plug 'ap/vim-css-color'
 Plug 'styled-components/vim-styled-components', { 'branch': 'main' }
-
-" Solidity
-" Plug 'thesis/vim-solidity'
 
 " Python
 Plug 'vim-scripts/indentpython.vim'
@@ -194,6 +183,8 @@ Plug 'jasonshell/vim-svg-indent'
 " Plug 'hbarcelos/polar-ice-vim', { 'do': './setup.sh' }
 Plug '~/labs/polar-ice-vim', { 'do': './setup.sh' }
 
+Plug 'rickhowe/diffchar.vim'
+
 " For fun
 Plug 'johngrib/vim-game-code-break'
 
@@ -203,6 +194,13 @@ call plug#end()
 
 """ General {
 syntax on
+
+" Set memmaxpattern to 5000 instead of the default 1000
+set mmp=5000
+
+" Allow local .vimrc
+set exrc
+set secure
 
 """ GUI only {
 set guifont=Hasklig\ Medium\ 11
@@ -225,9 +223,6 @@ set undodir=~/.tmp
 
 " Show line numbers
 set number
-
-" Lines larger than the screen size don't wrap
-set nowrap
 
 " opening a new file when the current buffer has unsaved
 " changes causes fileto be hidden instead of closed
@@ -336,6 +331,14 @@ augroup QuitIfQuickfixIsLast
   au BufEnter * call MyLastWindow()
 augroup END
 
+
+augroup SpellCheck
+    autocmd! * <buffer
+    autocmd FileType markdown setlocal spell
+    autocmd FileType gitcommit setlocal spell
+    autocmd BufRead,BufNewFile *.md setlocal spell
+augroup END
+
 function! MyLastWindow()
   " if the window is quickfix go on
   if &buftype == "quickfix"
@@ -368,8 +371,10 @@ cnoremap w!! w !sudo tee % >/dev/null
 nnoremap <silent> <leader><leader>u :%s/<C-V><cr>//ge<cr>
 
 " Moves for wrapped lines
-" nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
-" nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
+nnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
+nnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
+vnoremap <expr> j (v:count == 0 ? 'gj' : 'j')
+vnoremap <expr> k (v:count == 0 ? 'gk' : 'k')
 
 " Moves for line boundaries
 nnoremap gh ^
@@ -493,9 +498,9 @@ inoremap jj <Esc>
 nnoremap <leader>o <c-w>o
 
 " Copies absolute path of current file to clipboard
-nnoremap <silent> <leader><leader>p :let @+ = expand("%:p")<CR>
+nnoremap <leader><leader>ap :let @+ = expand("%:p")<CR>
 " Copies relative path of current file to clipboard
-nnoremap <silent> <leader><leader>rp :let @+ = expand("%")<CR>
+nnoremap <leader><leader>rp :let @+ = expand("%")<CR>
 
 """ }
 
@@ -744,26 +749,6 @@ augroup END
 
 """ }
 
-""" tern {
-" augroup tern
-"   autocmd!
-
-"   autocmd FileType vue call tern#Enable()
-"   autocmd FileType vue setlocal completeopt-=preview
-
-"   autocmd FileType javascript,javascript.jsx,vue let g:tern_map_keys=1
-"   autocmd FileType javascript,javascript.jsx,vue let g:tern_show_argument_hints = 'on_hold'
-"   autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>td :TernDef<CR>
-"   autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tpd :TernDefPreview<CR>
-"   autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tsd :TernDefSplit<CR>
-"   autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tD :TernDoc<CR>
-"   autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tT :TernType<CR>
-"   autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tR :TernRefs<CR>
-"   autocmd FileType javascript,javascript.jsx,vue nnoremap <silent> <leader>tr :TernRename<CR>
-
-" augroup END
-""" }
-
 """ tsuquyomi {
 
 " let g:tsuquyomi_disable_default_mappings = 1
@@ -800,11 +785,12 @@ augroup END
 """ ALE {
 
 let g:ale_linters = {
-\   'javascript': ['prettier', 'eslint'],
-\   'typescript': ['prettier', 'eslint', 'tsserver'],
-\   'vue': ['prettier', 'eslint'],
+\   'javascript': ['prettier', 'eslint', 'prettier-eslint'],
+\   'typescript': ['prettier', 'eslint', 'prettier-eslint', 'tsserver'],
+\   'vue': ['prettier', 'eslint', 'prettier-eslint'],
 \   'css': ['stylelint'],
 \   'scss': ['stylelint'],
+\   'less': ['stylelint'],
 \   'xml': ['xmllint'],
 \   'solidity': ['solhint', 'solium'],
 \   'python': ['flake8', 'pylint'],
@@ -815,12 +801,13 @@ let g:ale_linters = {
 \}
 
 let g:ale_fixers = {
-\   'javascript': ['prettier', 'eslint'],
-\   'typescript': ['prettier', 'eslint'],
-\   'vue': ['prettier', 'eslint'],
+\   'javascript': ['prettier', 'eslint', 'prettier-eslint'],
+\   'typescript': ['prettier', 'eslint', 'prettier-eslint'],
+\   'vue': ['prettier', 'eslint', 'prettier-eslint'],
 \   'json': ['jq', 'prettier'],
 \   'css': ['prettier', 'stylelint'],
 \   'scss': ['prettier', 'stylelint'],
+\   'less': ['prettier', 'stylelint'],
 \   'xml': ['prettier', 'xmllint'],
 \   'solidity': ['prettier'],
 \   'python': ['autopep8', 'yapf'],
@@ -861,7 +848,7 @@ nmap <silent> <leader>k <Plug>(ale_previous_wrap)
 """ }
 
 """ lighline {
-"\ 'colorscheme': 'nord',
+" \ 'colorscheme': 'nord',
 
 let g:lightline = {
       \ 'colorscheme': 'PolarIce',
@@ -1327,14 +1314,15 @@ augroup END
 """ }
 
 """ vim-test {
-" let test#javascript#ava#file_pattern = '.*'
-" let test#javascript#jest#file_pattern = '.*'
+
+let test#javascript#jest#file_pattern = '\.test\.\(js\|jsx\)$'
 " let test#javascript#mocha#file_pattern = '\.test\.(js|jsx|ts|tsx)'
-let test#javascript#ava#executable = 'yarn test'
+" let test#javascript#ava#executable = 'yarn test'
 let test#javascript#jest#executable = 'yarn test'
-let test#javascript#mocha#executable = 'yarn test'
+" let test#javascript#mocha#executable = 'yarn test'
 
 let test#strategy = 'vimux'
+let test#javascript#jest#options = "--color=always"
 
 " nnoremap <silent> <leader>te :TestFile
 " nnoremap <silent> <leader>tt :TestFile<CR>
@@ -1364,6 +1352,7 @@ let g:AutoPairsShortcutToggle = '<esc>t'
 """ vim-bbye {
 
 nnoremap <Leader>q :Bwipeout<CR>
+nnoremap <Leader>Q :Bwipeout!<CR>
 
 """ }
 
@@ -1381,8 +1370,8 @@ let g:dispatch_no_maps = 1
 
 """ vim-closetag {
 
-let g:closetag_filetypes = 'html,xhtml,phtml,javascript.jsx,jsx,typescript.tsx,tsx,vue'
-let g:closetag_xhtml_filetypes = 'xhtml,javascript.jsx,jsx,typescript.tsx,tsx,vue'
+let g:closetag_filetypes = 'html,xhtml,phtml,javascript,javascript.jsx,jsx,typescript,typescript.tsx,tsx,vue'
+let g:closetag_xhtml_filetypes = 'xhtml,javascript,javascript.jsx,jsx,typescript,typescript.tsx,tsx,vue'
 let g:closetag_emptyTags_caseSensitive = 1
 let g:closetag_close_shortcut = '<leader>>'
 
@@ -1405,7 +1394,7 @@ let g:user_emmet_settings = {
 """ vim-styled-components {
 
 augroup FixStyledComponentsHighlight
-  autocmd!
+  autocmd! * <buffer>
   autocmd BufEnter *.{js,jsx,ts,tsx} :syntax sync fromstart
   autocmd BufLeave *.{js,jsx,ts,tsx} :syntax sync clear
 augroup END
@@ -1474,3 +1463,62 @@ xmap aK	<Plug>(textobj-key-a)
 omap iK	<Plug>(textobj-key-i)
 xmap iK	<Plug>(textobj-key-i)
 """}
+
+
+""" thinca/vim-textobj-between {
+let g:textobj_between_no_default_key_mappings = 1
+omap aF	<Plug>(textobj-between-a)
+xmap aF	<Plug>(textobj-between-a)
+omap iF	<Plug>(textobj-between-i)
+xmap iF	<Plug>(textobj-between-i)
+"""}
+
+""" AndrewRadev/dsf.vim {
+let g:dsf_no_mappings = 1
+
+nmap dsf <Plug>DsfDelete
+nmap csf <Plug>DsfChange
+
+nmap dsnf <Plug>DsfNextDelete
+nmap csnf <Plug>DsfNextChange
+
+omap af <Plug>DsfTextObjectA
+xmap af <Plug>DsfTextObjectA
+omap if <Plug>DsfTextObjectI
+xmap if <Plug>DsfTextObjectI
+""" }
+
+""" diffchar.vim {
+let g:DiffUnit = 'Char'
+let g:DiffColors = 1
+let g:DiffPairVisible = 1
+nmap <silent> <leader><leader>d <Plug>ToggleDiffCharAllLines
+"""}
+
+""" Custom text objects {
+
+onoremap ad a"
+xnoremap ad a"
+onoremap id i"
+xnoremap id i"
+nnoremap csd cs"
+nnoremap dsd ds"
+let g:surround_{char2nr("d")} = "\"\r\""
+
+onoremap as a'
+xnoremap as a'
+onoremap is i'
+xnoremap is i'
+nnoremap css cs'
+nnoremap dss ds'
+let g:surround_{char2nr("s")} = "'\r'"
+
+onoremap aa a`
+xnoremap aa a`
+onoremap ia i`
+xnoremap ia i`
+nnoremap csa cs`
+nnoremap dsa ds`
+let g:surround_{char2nr("a")} = "`\r`"
+
+""" }

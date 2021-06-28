@@ -21,7 +21,7 @@
 	pst = push --tags
   cleanup = !git branch --merged master | grep  -v '\\*\\|master' | xargs -I {} git branch -d {}
   cln = !git cleanup
-  cleanup-remote= !git checkout master && git pull && git branch -r --merged master | grep -v '^.*\\(master\\)' | sed s:origin/:: | xargs -n 1 -I {} git push origin --delete {}
+  cleanup-remote= !git checkout master && git pull && git branch -r --merged master | grep -v '^.*\\(master\\)' | sed s:origin/:: | xargs -I {} git push origin --delete {}
   clnr = !git cleanup-remote
 
 	r = reset

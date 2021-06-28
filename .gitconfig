@@ -29,3 +29,5 @@
 [user]
 	name = Henrique Barcelos
 	email = hbarcelos909@gmail.com
+[fetch]
+	prune = true
