@@ -77,7 +77,8 @@ Plug 'ervandew/supertab'
 " Plug 'raimondi/delimitmate'
 Plug 'jiangmiao/auto-pairs'
 Plug 'easymotion/vim-easymotion'
-Plug 'bkad/CamelCaseMotion'
+" Plug 'bkad/CamelCaseMotion'
+Plug 'chaoren/vim-wordmotion'
 Plug 'junegunn/vim-easy-align'
 Plug 'PeterRincker/vim-argumentative'
 Plug 'FooSoft/vim-argwrap'
@@ -98,7 +99,7 @@ Plug 'justinj/vim-textobj-reactprop'
 Plug 'lucapette/vim-textobj-underscore'
 Plug 'beloglazov/vim-textobj-quotes'
 Plug 'thinca/vim-textobj-between'
-Plug 'Julian/vim-textobj-variable-segment'
+" Plug 'Julian/vim-textobj-variable-segment'
 " Must come after Julian/vim-textobj-variable-segment
 Plug 'vimtaku/vim-textobj-keyvalue'
 Plug 'osyo-manga/vim-textobj-blockwise'
@@ -472,14 +473,14 @@ nnoremap <leader>gs :%s/\<<C-r><C-w>\>//g<left><left>
 " Bring the 2nd MRU buffer to screen
 nnoremap <silent> <tab> :e #<CR>
 
+" Cycle through open buffers with g,Tab and g,Shift+Tab
+nnoremap <silent> g<tab> :bn<CR>
+nnoremap <silent> g<s-tab> :bp<CR>
+
 " Toggle line numbers
 noremap <silent> <F10> :set number!<CR>
 inoremap <silent> <F10> <C-o>:set number!<CR>
 cnoremap <silent> <F10> <C-c>:set number!<CR>
-" Toggle relative line numbers
-noremap <silent> <F12> :set relativenumber!<CR>
-inoremap <silent> <F12> <C-o>:set relativenumber!<CR>
-cnoremap <silent> <F12> <C-c>:set relativenumber!<CR>
 
 
 " Toggle list of special chars
@@ -487,7 +488,8 @@ noremap <silent> <F3> :set list!<CR>
 inoremap <silent> <F3> <C-o>:set list!<CR>
 cnoremap <silent> <F3> <C-c>:set list!<CR>
 
-" Maps \ to the same behavior of ` because it's simpler to type
+" Maps \ to the same behavior of ` because it's easier to type on en-US
+" keyboards
 nnoremap \ `
 nnoremap \\ ``
 
@@ -1211,10 +1213,39 @@ nnoremap <leader><Space> :Grep<SPACE>
 """ camel case motion {
 
 " call camelcasemotion#CreateMotionMappings('<leader>')
-nmap <silent> ]v <Plug>CamelCaseMotion_w
-vmap <silent> ]v <Plug>CamelCaseMotion_w
-nmap <silent> [v <Plug>CamelCaseMotion_b
-vmap <silent> [v <Plug>CamelCaseMotion_b
+
+" map <silent> ]v <Plug>CamelCaseMotion_w
+" map <silent> [v <Plug>CamelCaseMotion_b
+" map <silent> ]V <Plug>CamelCaseMotion_e
+" map <silent> [V <Plug>CamelCaseMotion_ge
+
+" omap <silent> iv <Plug>CamelCaseMotion_ie
+" xmap <silent> iv <Plug>CamelCaseMotion_ie
+" omap <silent> av <Plug>CamelCaseMotion_iw
+" xmap <silent> av <Plug>CamelCaseMotion_iw
+" omap <silent> agv <Plug>CamelCaseMotion_ib
+" xmap <silent> agv <Plug>CamelCaseMotion_ib
+
+""" }
+
+""" vim-wordmotion {
+
+let g:wordmotion_mappings = {
+	\ 'w' : ']v',
+	\ 'W' : ']V',
+	\ 'b' : '[v',
+	\ 'B' : '[V',
+	\ 'e' : ']gv',
+	\ 'E' : ']gV',
+	\ 'ge' : '[gv',
+	\ 'gE' : '[gE',
+	\ 'aw' : 'av',
+	\ 'aW' : '',
+	\ 'iw' : 'iv',
+	\ 'iW' : '',
+	\ '<C-R><C-W>' : '',
+	\ '<C-R><C-A>' : ''
+\ }
 
 """ }
 
@@ -1456,22 +1487,41 @@ let g:peekaboo_delay = 500
 """ vimtaku/vim-textobj-keyvalue {
 omap aV	<Plug>(textobj-value-a)
 xmap aV	<Plug>(textobj-value-a)
-omap iV	<Plug>(textobj-value-i)
-xmap iV	<Plug>(textobj-value-i)
 omap aK	<Plug>(textobj-key-a)
 xmap aK	<Plug>(textobj-key-a)
-omap iK	<Plug>(textobj-key-i)
-xmap iK	<Plug>(textobj-key-i)
 """}
 
 
 """ thinca/vim-textobj-between {
 let g:textobj_between_no_default_key_mappings = 1
+
 omap aF	<Plug>(textobj-between-a)
 xmap aF	<Plug>(textobj-between-a)
 omap iF	<Plug>(textobj-between-i)
 xmap iF	<Plug>(textobj-between-i)
-"""}
+
+call textobj#user#plugin('prefix', {
+  \   'path_a': {
+  \     'select': 'a/',
+  \     'pattern': '\(\<\([^/]\)\+/\)\|\(/[^/]\+\>\)\|\(\.\{1,2}/\)',
+  \     'scan': 'cursor',
+  \   },
+  \   'path_i': {
+  \     'select': 'i/',
+  \     'pattern': '\(/\zs[^/]\+\ze\(/\|\>\)\)\|\(\(/\|\<\)\zs[^/]\+\ze\/\)\|\(\.\{1,2}\ze/\)',
+  \     'scan': 'cursor',
+  \   },
+  \   'prop_a': {
+  \     'select': 'a.',
+  \     'pattern': '\(\_s*\<\([^.]\)\+\_s*\.\)\|\(\.\_s*[^.]\+\>\_s*\)',
+  \     'scan': 'line',
+  \   },
+  \   'prop_i': {
+  \     'select': 'i.',
+  \     'pattern': '\(\.\zs\_s*[^.]\+\ze\_s*\(\.\|\>\)\)\|\(\(\.\|\<\)\zs\_s*[^.]\+\ze\_s*\.\)',
+  \     'scan': 'line',
+  \   },
+  \ })
 
 """ AndrewRadev/dsf.vim {
 let g:dsf_no_mappings = 1
@@ -1497,28 +1547,28 @@ nmap <silent> <leader><leader>d <Plug>ToggleDiffCharAllLines
 
 """ Custom text objects {
 
+let g:surround_{char2nr("d")} = "\"\r\""
+nmap dsd <Plug>Dsurround"
+nmap csd <Plug>Csurround"
 onoremap ad a"
 xnoremap ad a"
 onoremap id i"
 xnoremap id i"
-nnoremap csd cs"
-nnoremap dsd ds"
-let g:surround_{char2nr("d")} = "\"\r\""
 
+let g:surround_{char2nr("s")} = "'\r'"
+nmap dss <Plug>Dsurround'
+nmap css <Plug>Csurround'
 onoremap as a'
 xnoremap as a'
 onoremap is i'
 xnoremap is i'
-nnoremap css cs'
-nnoremap dss ds'
-let g:surround_{char2nr("s")} = "'\r'"
 
+let g:surround_{char2nr("a")} = "`\r`"
+nmap dsa <Plug>Dsurround`
+nmap csa <Plug>Csurround`
 onoremap aa a`
 xnoremap aa a`
 onoremap ia i`
 xnoremap ia i`
-nnoremap csa cs`
-nnoremap dsa ds`
-let g:surround_{char2nr("a")} = "`\r`"
 
 """ }
