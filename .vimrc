@@ -132,6 +132,7 @@ let g:polyglot_disabled = ['javascript', 'typescript', 'solidity']
 
 " Solidity
 Plug 'thesis/vim-solidity'
+" Plug 'TovarishFin/vim-solidity'
 
 
 " TS/JS support {
@@ -592,6 +593,21 @@ let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
 let g:NERDTreeDirArrowExpandable = "\u00a0"
 let g:NERDTreeDirArrowCollapsible = "\u00a0"
 
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols = {}
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['graphql'] = ''
+
+let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols = {}
+let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['.babelrc'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['.prettierrc'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['.eslintrc'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['.editorconfig'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['yarn.lock'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['package-lock.json'] = ''
+
+let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols = {}
+let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols['\..*ignore$'] = ''
+
+
 augroup NERDTree
   autocmd!
   autocmd FileType nerdtree setlocal signcolumn=no
@@ -790,6 +806,7 @@ let g:ale_linters = {
 \   'javascript': ['prettier', 'eslint', 'prettier-eslint'],
 \   'typescript': ['prettier', 'eslint', 'prettier-eslint', 'tsserver'],
 \   'vue': ['prettier', 'eslint', 'prettier-eslint'],
+\   'json': ['jq', 'jsonlint'],
 \   'css': ['stylelint'],
 \   'scss': ['stylelint'],
 \   'less': ['stylelint'],
@@ -1335,11 +1352,11 @@ augroup END
 augroup custom_filetypes
   autocmd! * <buffer>
 
-  autocmd BufNewFile,BufRead .stylelintrc,.eslintrc,.babelrc,.jshintrc,.prettierrc,.postcssrc set syntax=json
+  autocmd BufNewFile,BufRead .babelrc,.stylelintrc,.eslintrc,.jshintrc,.prettierrc,.postcssrc setlocal filetype=json
 
-  autocmd BufNewFile,BufRead *.flow set filetype=javascript
+  autocmd BufNewFile,BufRead *.flow setlocal filetype=javascript
 
-  autocmd BufNewFile,BufRead *.jsx set filetype=javascript.jsx
+  autocmd BufNewFile,BufRead *.jsx setlocal filetype=javascript.jsx
 
 augroup END
 """ }
