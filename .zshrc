@@ -19,7 +19,6 @@ if [ -f ~/.zplug/init.zsh ]; then
   zplug "zplug/zplug", hook-build:"zplug --self-manage"
   zplug "robbyrussell/oh-my-zsh", as:plugin, use:"lib/*.zsh"
 
-  zplug "RiverGlide/zsh-nodenv", from:gitlab
   # export NVM_NO_USE=true
   # export NVM_COMPLETION=true
   # export NVM_AUTO_USE=true
@@ -42,6 +41,7 @@ if [ -f ~/.zplug/init.zsh ]; then
   zplug "plugins/git-extras", from:oh-my-zsh
   zplug "plugins/node", from:oh-my-zsh
   zplug "plugins/npm", from:oh-my-zsh
+  zplug "cowboyd/zsh-volta", from:github
   zplug "plugins/sudo", from:oh-my-zsh
   zplug "plugins/tmux", from:oh-my-zsh
   zplug "plugins/yarn", from:oh-my-zsh
@@ -195,50 +195,23 @@ which fasd > /dev/null && eval "$(fasd --init auto)"
 # Zsh fpath config
 fpath+=${ZDOTDIR:-~}/.zsh_functions
 
-# Profile
-[ -f ~/.profile ] && source ~/.profile
-
 # Yarn
 export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-
-# Nodenv {
-
-function install-nodenv-plugin() {
-  local plugin="$1"
-  local plugin_dir="$(nodenv root)"/plugins/"${plugin##*/}"
-
-  if [ ! -d "$plugin_dir" ]; then
-    echo "Adding plugin: nodenv/${plugin}..."
-    git clone https://github.com/"${plugin}".git "$plugin_dir"
-  fi
-}
-
-# Automatically install plugins if missing
-function load-nodenv-plugins() {
-  local nodenv_plugins=(
-    'nodenv/node-build-update-defs'
-    'nodenv/nodenv-aliases'
-    'nodenv/nodenv-package-json-engine'
-    'nodenv/nodenv-package-rehash'
-    'nodenv/nodenv-npm-migrate'
-    'nodenv/nodenv-update'
-    'ouchxp/nodenv-nvmrc'
-  )
-
-  FUNCS=$(functions install-nodenv-plugin)
-
-  printf "%s\0" "${nodenv_plugins[@]}" | xargs -0 -I% -P4 zsh -c "eval $FUNCS; install-nodenv-plugin %"
-}
-
-load-nodenv-plugins
-
-function nodenv-install-latest() {
-  nodenv install $(nodenv install --list | grep "^\s*""${1}""\." | sort -rn | head -1)
-}
-#}
 
 # Added by Krypton
 export GPG_TTY=$(tty)
 
 # Enpass CLI config
 alias enp='enpasscli -vault="/home/henrique/Documentos/Enpass/Vaults/primary/" -sort'
+
+# Volta config
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
+
+# Rust/Cargo config
+[ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
+
+# Disable alias if the binary is installed
+[ -f "/usr/bin/duf" ] && unalias duf
+
+[ -f "${HOME}/.config/broot/launcher/bash/br" ] && source "${HOME}/.config/broot/launcher/bash/br"

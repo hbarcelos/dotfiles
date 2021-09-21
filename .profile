@@ -21,3 +21,8 @@ export MAVEN_OPTS="-Xms256m -Xmx512m"
 
 # Python config
 export PYTHONPATH=$(python -c "import site, os; print(os.path.join(site.USER_BASE, 'lib', 'python', 'site-packages'))"):$PYTHONPATH
+
+# Volta config
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
+. "$HOME/.cargo/env"
