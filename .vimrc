@@ -219,6 +219,7 @@ set guioptions -=T
 let mapleader=','
 
 set formatoptions+=or
+set keymap=accents
 
 set undofile
 set undodir=~/.tmp
