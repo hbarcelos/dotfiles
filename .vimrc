@@ -219,7 +219,7 @@ set guioptions -=T
 let mapleader=','
 
 set formatoptions+=or
-set keymap=accents
+" set keymap=accents
 
 set undofile
 set undodir=~/.tmp
@@ -969,7 +969,7 @@ function! LightLineMode()
 endfunction
 
 function! CtrlPMark()
-  if expand('%:t') =~ 'ControlP'
+  if expand('%:t') =~ 'ControlP' && has_key(g:lightline, 'ctrlp_regex')
     call lightline#link('iR'[g:lightline.ctrlp_regex])
     return lightline#concatenate([g:lightline.ctrlp_prev, g:lightline.ctrlp_item
           \ , g:lightline.ctrlp_next], 0)
@@ -1122,7 +1122,7 @@ xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
 let g:easy_align_delimiters = {
-  \ ':': { 'pattern': ':', 'left_margin': 1, 'right_margin': 1, 'stick_to_left': 0 }
+  \ ':': { 'pattern': ':', 'left_margin': 0, 'right_margin': 1, 'stick_to_left': 1 }
 \}
 """ }
 
