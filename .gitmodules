@@ -1,0 +1,6 @@
+[submodule ".config/kitty/vim-kitty-navigator"]
+	path = .config/kitty/vim-kitty-navigator
+	url = https://github.com/knubie/vim-kitty-navigator.git
+[submodule ".config/kitty/kitty_grab"]
+	path = .config/kitty/kitty_grab
+	url = https://github.com/yurikhan/kitty_grab.git
