@@ -4,16 +4,17 @@ zmodload zsh/zprof
 # Configuration of global environment variables
 export DISABLE_AUTO_TITLE=true
 export EDITOR='vim'
-export TERM="screen-256color"
+# export TERM="screen-256color"
 
 # Fixes weird characters on Vim when running out of tmux
-alias vim='TERM="xterm-256color" vim'
+# alias vim='TERM="xterm-256color" vim'
 
-# if [ -f "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh" ]; then
-#   source "$HOME/.vim/bundle/gruvbox/gruvbox_256palette.sh"
-# fi
-
-if [ -f ~/.zplug/init.zsh ]; then
+if [ ! -f ~/.zplug/init.zsh ]; then
+  echo -e "Zplug not installed yet."
+  echo -e "Installing...\n"
+  echo -e "    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh\n"
+  curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
+else
   source ~/.zplug/init.zsh
 
   zplug "zplug/zplug", hook-build:"zplug --self-manage"
@@ -43,7 +44,7 @@ if [ -f ~/.zplug/init.zsh ]; then
   zplug "plugins/npm", from:oh-my-zsh
   zplug "cowboyd/zsh-volta", from:github
   zplug "plugins/sudo", from:oh-my-zsh
-  zplug "plugins/tmux", from:oh-my-zsh
+  # zplug "plugins/tmux", from:oh-my-zsh
   zplug "plugins/yarn", from:oh-my-zsh
 
   zplug "chrissicool/zsh-256color"
@@ -54,13 +55,13 @@ if [ -f ~/.zplug/init.zsh ]; then
   zplug "webyneter/docker-aliases"
   zplug "MichaelAquilina/zsh-emojis"
   zplug "Seinh/git-prune"
-  zplug "stedolan/jq", from:gh-r, as:command, rename-to:jq
+  # zplug "stedolan/jq", from:gh-r, as:command, rename-to:jq
   zplug "unixorn/bitbucket-git-helpers.plugin.zsh"
-  zplug "so-fancy/diff-so-fancy", as:command, use:"diff-so-fancy"
+  # zplug "so-fancy/diff-so-fancy", as:command, use:"diff-so-fancy"
   zplug "adrieankhisbe/diractions"
   zplug "junegunn/fzf-bin", from:gh-r, as:command, rename-to:fzf, use:"*linux*amd64*"
   zplug "junegunn/fzf", use:"shell/*.zsh", defer:2
-  zplug "BurntSushi/ripgrep", from:gh-r, as:command, rename-to:rg, if:"[[ $OSTYPE = linux* && ! -f /proc/syno_cpu_arch ]]"
+  # zplug "BurntSushi/ripgrep", from:gh-r, as:command, rename-to:rg, if:"[[ $OSTYPE = linux* && ! -f /proc/syno_cpu_arch ]]"
 
   # export ZSH_TMUX_AUTOSTART=true
   # export ZSH_TMUX_AUTOSTART_ONCE=true
@@ -81,11 +82,12 @@ if [ -f ~/.zplug/init.zsh ]; then
   SPACESHIP_GIT_STATUS_MODIFIED='✹'
   SPACESHIP_GIT_STATUS_ADDED='✚'
   SPACESHIP_GIT_STATUS_DELETED='✖'
+  SPACESHIP_NODE_SHOW=false #034
   SPACESHIP_NODE_COLOR=green #034
   SPACESHIP_PACKAGE_SHOW=false
   SPACESHIP_BATTERY_THRESHOLD=15
   SPACESHIP_EXEC_TIME_SHOW=false
-  zplug "denysdovhan/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
+  zplug "spaceship-prompt/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
 
   # Plugins below must be declared in this order {
   ZSH_AUTOSUGGEST_STRATEGY=(history completion)
@@ -135,12 +137,6 @@ if [ -f ~/.zplug/init.zsh ]; then
   bindkey -e '\ev' select-vi
 
   # }
-
-else
-  echo -e "Zplug not installed yet."
-  echo -e "Installing...\n"
-  echo -e "    curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh\n"
-  curl -sL --proto-redir -all,https https://raw.githubusercontent.com/zplug/installer/master/installer.zsh | zsh
 fi
 
 setopt append_history # better concurrent shell history sharing
@@ -205,8 +201,6 @@ export GPG_TTY=$(tty)
 alias enp='enpasscli -vault="/home/henrique/Documentos/Enpass/Vaults/primary/" -sort'
 
 # Volta config
-export VOLTA_HOME="$HOME/.volta"
-export PATH="$VOLTA_HOME/bin:$PATH"
 
 # Rust/Cargo config
 [ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
@@ -215,3 +209,22 @@ export PATH="$VOLTA_HOME/bin:$PATH"
 [ -f "/usr/bin/duf" ] && unalias duf
 
 [ -f "${HOME}/.config/broot/launcher/bash/br" ] && source "${HOME}/.config/broot/launcher/bash/br"
+
+export VOLTA_HOME="$HOME/.volta"
+export PATH="$VOLTA_HOME/bin:$PATH"
+
+if [ -e /home/henrique/.nix-profile/etc/profile.d/nix.sh ]; then source /home/henrique/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
+
+# Convenient ETH scripts
+[ -f "${HOME}/.ethrc" ] && source "${HOME}/.ethrc"
+
+# Zoxide
+[ -x "$(command -v zoxide)" ] && eval "$(zoxide init zsh)"
+
+# Kitty
+if [[ -n $KITTY_INSTALLATION_DIR ]]; then
+  export KITTY_SHELL_INTEGRATION="no-cursor"
+  autoload -Uz -- "$KITTY_INSTALLATION_DIR"/shell-integration/zsh/kitty-integration
+  kitty-integration
+  unfunction kitty-integration
+fi

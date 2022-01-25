@@ -1,3 +1,5 @@
 .tmux/plugins
 .tmux/resurrect
 .zsh_functions/_volta
+*.bak
+.*.bak

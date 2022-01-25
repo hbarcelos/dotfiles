@@ -10,6 +10,9 @@ Plug 'ntpeters/vim-better-whitespace'
 Plug 'djoshea/vim-autoread'
 " Plug 'jremmen/vim-ripgrep'
 Plug 'junegunn/vader.vim'
+Plug 'nanotee/zoxide.vim'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 
 """ }
 
@@ -44,7 +47,7 @@ Plug 'haya14busa/incsearch.vim'
 Plug 'haya14busa/incsearch-easymotion.vim'
 Plug 'haya14busa/incsearch-fuzzy.vim'
 Plug 'nelstrom/vim-visual-star-search'
-Plug 'vim-scripts/colorsupport.vim'
+" Plug 'vim-scripts/colorsupport.vim'
 
 " NERDTree
 Plug 'scrooloose/nerdtree'
@@ -58,8 +61,9 @@ Plug 'ryanoasis/vim-devicons'
 " Tmux
 Plug 'tmux-plugins/vim-tmux'
 Plug 'tmux-plugins/vim-tmux-focus-events'
-Plug 'christoomey/vim-tmux-navigator'
-Plug 'benmills/vimux'
+" Plug 'christoomey/vim-tmux-navigator'
+" Plug 'benmills/vimux'
+Plug 'knubie/vim-kitty-navigator'
 
 """ }
 
@@ -182,8 +186,8 @@ Plug 'jasonshell/vim-svg-indent'
 " To install the NORD theme in Gnome Terminal, run:
 " curl -s https://raw.githubusercontent.com/arcticicestudio/nord-gnome-terminal/develop/src/nord.sh | bash -
 " Plug 'arcticicestudio/nord-vim'
-" Plug 'hbarcelos/polar-ice-vim', { 'do': './setup.sh' }
-Plug '~/labs/polar-ice-vim', { 'do': './setup.sh' }
+Plug 'hbarcelos/polar-ice-vim', { 'do': './setup.sh' }
+" Plug '~/labs/polar-ice-vim', { 'do': './setup.sh' }
 
 Plug 'rickhowe/diffchar.vim'
 
@@ -191,6 +195,8 @@ Plug 'rickhowe/diffchar.vim'
 Plug 'johngrib/vim-game-code-break'
 
 """ }
+
+Plug 'fladson/vim-kitty'
 
 call plug#end()
 
@@ -205,7 +211,7 @@ set exrc
 set secure
 
 """ GUI only {
-set guifont=Hasklig\ Medium\ 11
+set guifont=Hasklug\ Nerd\ Font\ Mono\ Medium\ 14
 " Hide menu bar
 set guioptions -=m
 " Hide scrollbars
@@ -516,9 +522,9 @@ augroup NERDTreeConfig
   autocmd FileType nerdtree setlocal nolist
 augroup END
 
-if winwidth(0) >= 150
-  let g:NERDTreeWinSize=41 " original + 10
-endif
+" if winwidth(0) >= 150
+"   let g:NERDTreeWinSize=41 " original + 10
+" endif
 
 let NERDTreeHijackNetrw=1
 let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git$', '\.hg', '\.svn', '\.bzr']
@@ -604,6 +610,7 @@ let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['.eslintrc'] = ''
 let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['.editorconfig'] = ''
 let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['yarn.lock'] = ''
 let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['package-lock.json'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['.dapprc'] = ''
 
 let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols = {}
 let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols['\..*ignore$'] = ''
@@ -1297,57 +1304,57 @@ augroup END
 
 """ }
 
-""" vimux {
+" """ vimux {
 
-" Prompt for a command to run
-nnoremap <silent> <Leader>vp :VimuxPromptCommand<CR>
+" " Prompt for a command to run
+" nnoremap <silent> <Leader>vp :VimuxPromptCommand<CR>
 
-" Run last command executed by VimuxRunCommand
-nnoremap <silent> <Leader>vl :VimuxRunLastCommand<CR>
+" " Run last command executed by VimuxRunCommand
+" nnoremap <silent> <Leader>vl :VimuxRunLastCommand<CR>
 
-" Inspect runner pane
-nnoremap <silent> <Leader>vi :VimuxInspectRunner<CR>
+" " Inspect runner pane
+" nnoremap <silent> <Leader>vi :VimuxInspectRunner<CR>
 
-" Zoom the tmux runner pane
-nnoremap <silent> <Leader>vz :VimuxZoomRunner<CR>
+" " Zoom the tmux runner pane
+" nnoremap <silent> <Leader>vz :VimuxZoomRunner<CR>
 
-" Interrupt the tmux runner
-nnoremap <silent> <Leader>vc :VimuxInterruptRunner<CR>
+" " Interrupt the tmux runner
+" nnoremap <silent> <Leader>vc :VimuxInterruptRunner<CR>
 
-" Interrupt the tmux runner
-nnoremap <silent> <Leader>vk :VimuxCloseRunner<CR>
+" " Interrupt the tmux runner
+" nnoremap <silent> <Leader>vk :VimuxCloseRunner<CR>
 
-" Open a tmux runner
-nnoremap <silent> <leader>vo :call VimuxOpenRunner()<CR>
+" " Open a tmux runner
+" nnoremap <silent> <leader>vo :call VimuxOpenRunner()<CR>
 
-let g:VimuxOrientation = 'h'
+" let g:VimuxOrientation = 'h'
 
-function! CustomVimuxSetWindowMode()
-  let g:VimuxUseNearest = 0
-  let g:VimuxRunnerType = 'window'
-endfunction
+" function! CustomVimuxSetWindowMode()
+"   let g:VimuxUseNearest = 0
+"   let g:VimuxRunnerType = 'window'
+" endfunction
 
-function! CustomVimuxSetPaneMode()
-  let g:VimuxUseNearest = 1
-  let g:VimuxRunnerType = 'pane'
-endfunction
+" function! CustomVimuxSetPaneMode()
+"   let g:VimuxUseNearest = 1
+"   let g:VimuxRunnerType = 'pane'
+" endfunction
 
-function! CloseOnExit()
-  if g:VimuxRunnerType == 'window' && g:VimuxUseNearest == 0
-    VimuxCloseRunner
-  endif
-endfunction
+" function! CloseOnExit()
+"   if g:VimuxRunnerType == 'window' && g:VimuxUseNearest == 0
+"     VimuxCloseRunner
+"   endif
+" endfunction
 
-call CustomVimuxSetPaneMode()
+" call CustomVimuxSetPaneMode()
 
-" closes the runner automatically when closing vim
-augroup vimux
-  autocmd! * <buffer>
+" " closes the runner automatically when closing vim
+" augroup vimux
+"   autocmd! * <buffer>
 
-  autocmd VimLeave * :call CloseOnExit()
-augroup END
+"   autocmd VimLeave * :call CloseOnExit()
+" augroup END
 
-""" }
+" """ }
 
 """ Custom file types {
 augroup custom_filetypes
@@ -1359,6 +1366,7 @@ augroup custom_filetypes
 
   autocmd BufNewFile,BufRead *.jsx setlocal filetype=javascript.jsx
 
+  autocmd BufNewFile,BufRead .dapprc,.sethrc, setlocal filetype=bash
 augroup END
 """ }
 
@@ -1370,7 +1378,7 @@ let test#javascript#jest#file_pattern = '\.test\.\(js\|jsx\)$'
 let test#javascript#jest#executable = 'yarn test'
 " let test#javascript#mocha#executable = 'yarn test'
 
-let test#strategy = 'vimux'
+let test#strategy = 'kitty'
 let test#javascript#jest#options = "--color=always"
 
 " nnoremap <silent> <leader>te :TestFile
