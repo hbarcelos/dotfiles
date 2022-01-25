@@ -1,0 +1,120 @@
+# Ethereum helper methods
+# source this in your .bashrc or .zshrc file with `. ~/.ethrc`
+
+# --- Token Mainnet addresses ---
+aave=0x7Fc66500c84A76Ad7e9c93437bFc5Ac33E2DDaE9
+comp=0xc00e94Cb662C3520282E6f5717214004A7f26888
+crv=0xD533a949740bb3306d119CC777fa900bA034cd52
+dai=0x6B175474E89094C44Da98b954EedeAC495271d0F
+gtc=0xDe30da39c46104798bB5aA3fe8B9e0e1F348163F
+mkr=0x9f8F72aA9304c8B593d555F12eF6589cC3A579A2
+snx=0xC011a73ee8576Fb46F5E1c5751cA3B9Fe0af2a6F
+tbtc=0x8dAEBADE922dF735c38C80C7eBD708Af50815fAa
+uni=0x1f9840a85d5aF5bf1D1762F925BDADdC4201F984
+usdc=0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48
+usdn=0x674C6Ad92Fd080e4004b2312b45f796a192D27a0
+usdt=0xdAC17F958D2ee523a2206206994597C13D831ec7
+wbtc=0x2260FAC5E5542a773Aa44fBCfeDf7C193bc2C599
+weth=0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2
+yfi=0x0bc529c00C6401aEF6D220BE8C6Ea1667F6Ad93e
+
+# --- Prices / gas ---
+# Returns the price in USD of the specified token
+# https://www.coingecko.com/en/api/documentation
+# example: `price eth`
+# example: `price $gtc`
+# example: `price <token>`
+price() {
+  if [[ $1 = 'eth' ]]; then
+    echo $(curl -s https://api.coingecko.com/api/v3/simple/price\?ids\=ethereum\&vs_currencies\=usd | jq '.ethereum.usd')
+  else
+    echo $(curl -s https://api.coingecko.com/api/v3/coins/ethereum/contract/$1 | jq '.market_data.current_price.usd')
+  fi
+}
+
+# prints the basefee in gwei, and the cost in USD of sending transactions based on current basefee and no priority fee
+gas() {
+  wad=1000000000000000000 # 1e18
+  price_eth=$(price eth)
+  price_gas=$(seth basefee)
+  price_gas_gwei=$(seth --to-fix 9 $price_gas)
+  cost_transfer=$(bc <<< "scale=10;$price_eth*$price_gas*21000/$wad") # ETH transfer
+  cost_swap=$(bc <<< "scale=10;$price_eth*$price_gas*130000/$wad") # Uniswap V3 swap
+  cost_deploy=$(bc <<< "scale=10;$price_eth*$price_gas*1000000/$wad") # Something expensive, like contract deployment
+  LC_NUMERIC=en_US.UTF-8 printf 'Basefee  \t%1.4f\n' $price_gas_gwei
+  echo ""
+  LC_NUMERIC=en_US.UTF-8 printf 'Transfer \t21k gas  \t $%1.2f\n' $cost_transfer
+  LC_NUMERIC=en_US.UTF-8 printf 'Swap     \t130k gas \t $%1.2f\n' $cost_swap
+  LC_NUMERIC=en_US.UTF-8 printf 'Deploy   \t1M gas   \t $%1.2f\n' $cost_deploy
+}
+
+# --- 4byte lookups ---
+# https://www.4byte.directory/docs/
+
+# Pass in a 4 byte function signature and get matching functions from 4byte.directory. This will also strip
+# any appended calldata after the first four bytes
+# example: `4byte 0x70a08231`
+# example: `4byte 0xa9059cbb000000000000000000000000ae804d5b383350c487748c364ad7ec8f480e5b63000000000000000000000000000000000000000000000660a546d2d9a8e73ce3`
+4byte() {
+  curl -s "https://www.4byte.directory/api/v1/signatures/?hex_signature=${1:0:10}" | jq .
+}
+
+# Pass in a 32 byte topic and get matching events from 4byte.directory
+# example: `4byte-event 0xddf252ad1be2c89b69c2b068fc378daa952ba7f163c4a11628f55a4df523b3ef`
+4byte-event() {
+  curl -s "https://www.4byte.directory/api/v1/event-signatures/?hex_signature=$1" | jq .
+}
+
+# --- Calls ---
+# example: `balance-of <token> <address>`
+# example: `balance-of $dai <address>`
+balance-of() {
+  seth call $1 "balanceOf(address)(uint256)" $2
+}
+
+# --- Seth helpers ---
+# returns the basefee in gwei
+basefee() {
+  price_gas_gwei=$(seth --from-wei $(seth basefee) gwei)
+  LC_NUMERIC=en_US.UTF-8 printf '%1.4f\n' $price_gas_gwei
+}
+
+# example: `trace-tx <txhash>` (`trace` is a builtin command)
+trace-tx() {
+  seth run-tx $1 --trace
+}
+
+# example: `debug-tx <txhash>`
+debug-tx() {
+  seth bundle-source $(seth tx $1 to) > tmp.json && \ # often might need to bundle other sources
+  seth run-tx $1 --source=tmp.json --debug && \
+  rm tmp.json # <toContractName>.sol is often leftover, so delete that manually afterwards
+}
+
+# Returns the function selector for given data
+# example: `selector <sig>`
+selector() {
+  hash=$(seth keccak $1)
+  echo ${hash:0:10}
+}
+
+# ABI encode values, and return encoded values without the function signature
+# example: `abi-encode <sig> [<args>]`
+abi-encode() {
+  x=$(seth calldata $@);
+  echo "0x${x:10}" # slice off the function signature, i.e. provided function name doesn't matter
+}
+
+# Returns the slot used to store the value of a Solidity mapping for a specified address
+# example: `solidity-address-slot <address> <mappingSlot>`
+solidity-address-slot() {
+  echo $(seth keccak $(abi-encode "x(address,uint256)" $1 $2))
+}
+
+# Returns the slot used to store the value of a Vyper mapping for a specified address
+# note: not guaranteed to work for all Vyper versions since storage layout is not yet stable. More info: https://twitter.com/big_tech_sux/status/1420159854170152963
+# example: `vyper-address-slot <address> <mappingSlot>`
+vyper-address-slot() {
+  echo $(seth keccak $(abi-encode "x(uint256,address)" $2 $1))
+}
+
