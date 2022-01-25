@@ -5,27 +5,35 @@
   path = ~/.gitconfig.d/grep.gitconfig
   path = ~/.gitconfig.d/user.gitconfig
   path = ~/.gitconfig.d/submodule.gitconfig
+  path = ~/.config/delta/themes.gitconfig
 
 [core]
 	editor = vim
-	pager = diff-so-fancy | less --tabs=4 -RFX
-
+	; pager = diff-so-fancy | less --tabs=4 -RFX
+    ; pager = delta --diff-so-fancy
+    pager = delta
+[merge]
+    conflictstyle = diff3
+[diff]
+    colorMoved = default
+[interactive]
+    diffFilter = delta --color-only --features=interactive
 [difftool]
     trustExitCode = true
 [color]
 	ui = true
-[color "diff-highlight"]
-	oldNormal = red bold
-	oldHighlight = red bold 52
-	newNormal = green bold
-	newHighlight = green bold 22
-[color "diff"]
-	meta = 227
-	frag = magenta bold
-	commit = 227 bold
-	old = red bold
-	new = green bold
-	whitespace = red reverse
+; [color "diff-highlight"]
+; 	oldNormal = red bold
+; 	oldHighlight = red bold 52
+; 	newNormal = green bold
+; 	newHighlight = green bold 22
+; [color "diff"]
+; 	meta = 227
+; 	frag = magenta bold
+; 	commit = 227 bold
+; 	old = red bold
+; 	new = green bold
+; 	whitespace = red reverse
 [merge]
 	ff = false
 [user]
@@ -33,3 +41,8 @@
 	email = hbarcelos909@gmail.com
 [fetch]
 	prune = true
+
+[delta]
+	features = polar-ice-bear
+    navigate = true
+    line-numbers = true
