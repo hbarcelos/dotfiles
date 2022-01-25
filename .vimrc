@@ -63,7 +63,8 @@ Plug 'tmux-plugins/vim-tmux'
 Plug 'tmux-plugins/vim-tmux-focus-events'
 " Plug 'christoomey/vim-tmux-navigator'
 " Plug 'benmills/vimux'
-Plug 'knubie/vim-kitty-navigator'
+" Plug 'knubie/vim-kitty-navigator'
+Plug 'hbarcelos/vim-kitty-navigator'
 
 """ }
 
