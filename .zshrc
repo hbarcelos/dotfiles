@@ -55,13 +55,13 @@ else
   zplug "webyneter/docker-aliases"
   zplug "MichaelAquilina/zsh-emojis"
   zplug "Seinh/git-prune"
-  # zplug "stedolan/jq", from:gh-r, as:command, rename-to:jq
-  zplug "unixorn/bitbucket-git-helpers.plugin.zsh"
-  # zplug "so-fancy/diff-so-fancy", as:command, use:"diff-so-fancy"
   zplug "adrieankhisbe/diractions"
-  zplug "junegunn/fzf-bin", from:gh-r, as:command, rename-to:fzf, use:"*linux*amd64*"
-  zplug "junegunn/fzf", use:"shell/*.zsh", defer:2
-  # zplug "BurntSushi/ripgrep", from:gh-r, as:command, rename-to:rg, if:"[[ $OSTYPE = linux* && ! -f /proc/syno_cpu_arch ]]"
+  zplug "stedolan/jq", from:gh-r, as:command, rename-to:jq
+  zplug "junegunn/fzf", from:github, as:command, hook-build:"./install --all"
+  zplug "junegunn/fzf", from:github, as:plugin, use:"shell/*.zsh", defer:2
+  zplug "BurntSushi/ripgrep", from:gh-r, as:command, rename-to:rg, if:"[[ $OSTYPE = linux* && ! -f /proc/syno_cpu_arch ]]"
+  # zplug "so-fancy/diff-so-fancy", as:command, use:"diff-so-fancy"
+  # zplug "dandavison/delta", from:gh-r, as:command, use:"*x86_64-unknown-linux-gnu*"
 
   # export ZSH_TMUX_AUTOSTART=true
   # export ZSH_TMUX_AUTOSTART_ONCE=true
@@ -74,34 +74,35 @@ else
   SPACESHIP_PROMPT_SEPARATE_LINE=false
   SPACESHIP_PROMPT_FIRST_PREFIX_SHOW=true
   SPACESHIP_PROMPT_DEFAULT_PREFIX=''
+  SPACESHIP_GIT_BRANCH_PREFIX=""
   SPACESHIP_DIR_PREFIX=' '
   SPACESHIP_GIT_PREFIX=''
-  SPACESHIP_GIT_BRANCH_COLOR=223 #215
-  SPACESHIP_GIT_STATUS_COLOR=223 #215
-  SPACESHIP_GIT_STATUS_UNTRACKED='?'
+  SPACESHIP_GIT_BRANCH_COLOR=216 #222
+  SPACESHIP_GIT_STATUS_COLOR=216 #222
   SPACESHIP_GIT_STATUS_MODIFIED='✹'
   SPACESHIP_GIT_STATUS_ADDED='✚'
   SPACESHIP_GIT_STATUS_DELETED='✖'
-  SPACESHIP_NODE_SHOW=false #034
-  SPACESHIP_NODE_COLOR=green #034
+  SPACESHIP_NODE_DEFAULT_VERSION="$(node --version 2> /dev/null)"
   SPACESHIP_PACKAGE_SHOW=false
   SPACESHIP_BATTERY_THRESHOLD=15
   SPACESHIP_EXEC_TIME_SHOW=false
   zplug "spaceship-prompt/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
 
+  zplug 'zsh-users/zsh-completions', depth:1 # more completions
+
   # Plugins below must be declared in this order {
   ZSH_AUTOSUGGEST_STRATEGY=(history completion)
-  ZSH_AUTOSUGGEST_USE_ASYNC=true
   zplug "zsh-users/zsh-autosuggestions"
 
+  # Set the priority when loading
+  # e.g., zsh-syntax-highlighting must be loaded
+  # after executing compinit command and sourcing other plugins
+  # (If the defer tag is given 2 or above, run after compinit command)
   zplug "zsh-users/zsh-syntax-highlighting", defer:2
 
-  KEYTIMEOUT=10
+  KEYTIMEOUT=30
   VIM_MODE_ESC_PREFIXED_WANTED='bdfhul.g'  # Default is 'bdf.g'
-  zplug "softmoth/zsh-vim-mode"
-  # }
-
-  zplug 'zsh-users/zsh-completions', depth:1 # more completions
+  # zplug "softmoth/zsh-vim-mode", defer:2
 
   # zplug check returns true if all packages are installed
   # Therefore, when it returns false, run zplug install
@@ -182,38 +183,26 @@ if (( ${+terminfo[smkx]} )) && (( ${+terminfo[rmkx]} )); then
   zle-line-finish() { echoti rmkx }; zle -N zle-line-finish
 fi
 
-# pacaur, yaourt, makepkg: use powerpill instead of pacman
-pacman -Q powerpill >& /dev/null && export PACMAN=/usr/bin/powerpill
-
 # fasd initialization
 which fasd > /dev/null && eval "$(fasd --init auto)"
 
 # Zsh fpath config
 fpath+=${ZDOTDIR:-~}/.zsh_functions
 
-# Yarn
-export PATH="$HOME/.yarn/bin:$HOME/.config/yarn/global/node_modules/.bin:$PATH"
-
 # Added by Krypton
 export GPG_TTY=$(tty)
 
 # Enpass CLI config
-alias enp='enpasscli -vault="/home/henrique/Documentos/Enpass/Vaults/primary/" -sort'
-
-# Volta config
-
-# Rust/Cargo config
-[ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
+alias enp="enpasscli -vault='${HOME}/Documentos/Enpass/Vaults/primary/' -sort"
 
 # Disable alias if the binary is installed
 [ -f "/usr/bin/duf" ] && unalias duf
 
+# Bat
+[ -x "$(command -v bat)" ] && export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+
+# Broot
 [ -f "${HOME}/.config/broot/launcher/bash/br" ] && source "${HOME}/.config/broot/launcher/bash/br"
-
-export VOLTA_HOME="$HOME/.volta"
-export PATH="$VOLTA_HOME/bin:$PATH"
-
-if [ -e /home/henrique/.nix-profile/etc/profile.d/nix.sh ]; then source /home/henrique/.nix-profile/etc/profile.d/nix.sh; fi # added by Nix installer
 
 # Convenient ETH scripts
 [ -f "${HOME}/.ethrc" ] && source "${HOME}/.ethrc"
@@ -221,10 +210,81 @@ if [ -e /home/henrique/.nix-profile/etc/profile.d/nix.sh ]; then source /home/he
 # Zoxide
 [ -x "$(command -v zoxide)" ] && eval "$(zoxide init zsh)"
 
+# Fzf
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+
 # Kitty
 if [[ -n $KITTY_INSTALLATION_DIR ]]; then
-  export KITTY_SHELL_INTEGRATION="no-cursor"
+  export KITTY_SHELL_INTEGRATION="no-cursor no-title"
   autoload -Uz -- "$KITTY_INSTALLATION_DIR"/shell-integration/zsh/kitty-integration
   kitty-integration
   unfunction kitty-integration
 fi
+
+autoload -Uz add-zsh-hook
+
+function get-right-most-paths() {
+  local partial_path=$1
+  local _limit=${2:-20}
+
+  if [ ${#partial_path} -gt $_limit ]; then
+    echo "/.../$(basename $partial_path)"
+  else
+    echo $partial_path
+  fi
+}
+
+function get-custom-cwd() {
+  if [[ "$PWD" = "$HOME"* ]]; then
+    local custom_path=$(get-right-most-paths "${PWD#"$HOME"}" 20)
+    echo '~'"${custom_path}"
+  else
+    echo $(get-right-most-paths "$PWD" 20)
+  fi
+}
+
+function xterm-title-precmd () {
+	print -n -- '\e]2;'"$(get-custom-cwd)"'\a'
+	[[ "$TERM" == 'screen'* ]] && print -Pn -- '\e_\005{g}\005{B}%~\005{-}\e\\'
+}
+
+function xterm-title-preexec () {
+	print -n -- '\e]2;'"${(q)1}"' # ' && print -n -- "$(get-custom-cwd)"'\a'
+	[[ "$TERM" == 'screen'* ]] && { print -Pn -- '\e_\005{g}\005{B}%~\005{-} %# ' && print -n -- "${(q)1}\e\\"; }
+}
+
+if [[ "$TERM" == (Eterm*|alacritty*|aterm*|gnome*|konsole*|kterm*|putty*|rxvt*|screen*|tmux*|xterm*) ]]; then
+	add-zsh-hook -Uz precmd xterm-title-precmd
+	add-zsh-hook -Uz preexec xterm-title-preexec
+fi
+
+########
+
+# GOLANG
+export GOPATH="${GOPATH:-${HOME}/go}"
+
+# Yarn Config
+export PATH="${HOME}/.yarn/bin:${HOME}/.config/yarn/global/node_modules/.bin:${PATH}:${HOME}/.local/bin:${PATH}"
+
+# Python config
+export PYTHONPATH="$(python -c "import site, os; print(os.path.join(site.USER_BASE, 'lib', 'python', 'site-packages'))"):${PYTHONPATH}"
+
+# Volta config
+export VOLTA_HOME="${HOME}/.volta"
+export PATH="${VOLTA_HOME}/bin:${PATH}"
+
+# Rust/Cargo config
+[ -f "$HOME/.cargo/env" ] && source "$HOME/.cargo/env"
+export PATH="${HOME}/.cargo/bin:${PATH}"
+
+# Foundry
+export PATH="${HOME}/.foundry/bin:${PATH}"
+
+# Zplug binaries
+[ -d ~/.zplug/repos/zplug/zplug/bin ] && \
+  export PATH="${HOME}/.zplug/repos/zplug/zplug/bin:${PATH}"
+[ -d ~/.zplug/bin ] && \
+  export PATH="${HOME}/.zplug/bin:${PATH}"
+[ -d ~/.zplug/repos/unixorn/bitbucket-git-helpers.plugin.zsh/bin ] && \
+  export PATH="${HOME}/.zplug/repos/unixorn/bitbucket-git-helpers.plugin.zsh/bin:${PATH}"
+
