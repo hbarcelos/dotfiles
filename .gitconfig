@@ -1,25 +1,28 @@
-[include]
-  path = ~/.gitconfig.d/alias.gitconfig
-  path = ~/.gitconfig.d/branching.gitconfig
-  path = ~/.gitconfig.d/core.gitconfig
-  path = ~/.gitconfig.d/grep.gitconfig
-  path = ~/.gitconfig.d/user.gitconfig
-  path = ~/.gitconfig.d/submodule.gitconfig
-  path = ~/.config/delta/themes.gitconfig
-
 [core]
 	editor = vim
 	; pager = diff-so-fancy | less --tabs=4 -RFX
     ; pager = delta --diff-so-fancy
     pager = delta
+
 [merge]
     conflictstyle = diff3
+
 [diff]
     colorMoved = default
-[interactive]
-    diffFilter = delta --color-only --features=interactive
+	submodule = log
+    tool = difftastic
+
 [difftool]
     trustExitCode = true
+    prompt = false
+
+[difftool "difftastic"]
+    cmd = difft "$LOCAL" "$REMOTE"
+
+# Use a pager for large output, just like other git commands.
+[pager]
+    difftool = true
+
 [color]
 	ui = true
 ; [color "diff-highlight"]
@@ -34,15 +37,59 @@
 ; 	old = red bold
 ; 	new = green bold
 ; 	whitespace = red reverse
-[merge]
-	ff = false
-[user]
-	name = Henrique Barcelos
-	email = hbarcelos909@gmail.com
+[init]
+	defaultBranch = master
+
 [fetch]
 	prune = true
+	recurseSubmodules = on-demand
+
+[pull]
+    rebase = true
+
+[push]
+    default = current
+	autoSetupRemote = true
+
+[merge]
+	ff = false
+
+[grep]
+	extendRegexp = true
+	lineNumber = true
+
+[status]
+	submoduleSummary = true
 
 [delta]
 	features = polar-ice-bear
     navigate = true
     line-numbers = true
+
+[delta "meta"]
+    file-style = blue
+    hunk-header-style = syntax
+
+[delta "diff-filter"]
+
+[interactive]
+    diffFilter = delta --color-only --features='polar-ice-bear diff-filter'
+
+[gpg]
+	program = /usr/bin/krgpg
+[commit]
+	gpgSign = true
+[tag]
+	forceSignAnnotated = true
+
+[user]
+	name = Henrique Barcelos
+	email = 16565602+hbarcelos@users.noreply.github.com
+
+[include]
+  path = ~/.gitconfig.d/alias.gitconfig
+  path = ~/.config/delta/themes.gitconfig
+  path = ~/.gitconfig.d/overrides.gitconfig
+
+[includeIf "gitdir:~/work/"]
+  path = ~/work/.gitconfig

@@ -3,3 +3,4 @@
 .zsh_functions/_volta
 *.bak
 .*.bak
+.gitconfig.d/overrides.gitconfig

@@ -1,19 +1,34 @@
 [alias]
 	co = checkout
 	cob = checkout -b
-	br = branch
+	sw = switch
+	swc = switch -c
+	swC = switch -C
+
 	ci = commit
 	cia = commit -a
 	cam = commit --amend
 	cama = commit --amend -a
-	st = status
-	sts = status -s
-	cl = clone
-	df = diff
-	dfw = diff --word-diff
-	dfc = diff --color-words=.
-	dc = diff --cached
 
+	s = status -s
+	sts = status -s
+	st = status
+
+	cl = clone
+	clr = clone --recurse-submodules
+
+	d = diff
+	dw = diff --word-diff
+	dd = diff --color-words=.
+	dc = diff --cached
+	dcw = diff --word-diff
+	dcd = diff --color-words=.
+	dft = difftool
+	# Diff split mode with Delta
+	ds = !git diff | DELTA_FEATURES='+polar-ice-bear' delta --side-by-side
+	dsc = !git diff --cached | DELTA_FEATURES='+polar-ice-bear' delta --side-by-side
+
+	br = branch
 	current-branch = rev-parse --abbrev-ref HEAD
 	cbr = !git current-branch
 	ps = push
@@ -63,4 +78,3 @@
 	spush = push --recurse-submodules=on-demand
 	g = grep --extended-regexp --break --heading --line-number
 	search = log --no-merges -i -E --pretty='%h (%ad) - [%an] %s %d' --date='short' --grep
-
