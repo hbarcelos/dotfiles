@@ -1,4 +1,9 @@
-set nocompatible
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+
 call plug#begin('~/.vim/plugged')
 
 """ General {
@@ -19,6 +24,7 @@ Plug 'junegunn/fzf.vim'
 """ Interface {
 
 Plug 'dense-analysis/ale'
+" Plug '~/labs/ale'
 Plug 'tpope/vim-dispatch'
 Plug 'brooth/far.vim'
 Plug 'junegunn/vim-peekaboo'
@@ -31,8 +37,8 @@ Plug 'ctrlpvim/ctrlp.vim'
 Plug 'janko/vim-test'
 
 function! BuildYCM(info)
-  if a:info.status == 'installed' || a:info.force
-    !git submodule update --init --recursive && GOFLAGS=-modcacherw python3 install.py --go-completer --ts-completer
+  if a:info.status ==? 'installed' || a:info.status ==? 'updated' || a:info.force
+    !git submodule sync --recursive && git submodule update --init --recursive && GOFLAGS=-modcacherw python3 install.py --ts-completer --go-completer --rust-completer
   endif
 endfunction
 Plug 'ycm-core/YouCompleteMe', { 'do': function('BuildYCM') }
@@ -64,14 +70,16 @@ Plug 'tmux-plugins/vim-tmux-focus-events'
 " Plug 'christoomey/vim-tmux-navigator'
 " Plug 'benmills/vimux'
 " Plug 'knubie/vim-kitty-navigator'
-Plug 'hbarcelos/vim-kitty-navigator'
+" Plug 'hbarcelos/vim-kitty-navigator'
+Plug '~/labs/vim-kitty-navigator'
 
 """ }
 
 """ Editing {
 
-Plug 'tpope/vim-surround'
-Plug 'AndrewRadev/dsf.vim'
+" Plug 'tpope/vim-surround'
+Plug 'machakann/vim-sandwich'
+" Plug 'AndrewRadev/dsf.vim'
 Plug 'tpope/vim-repeat'
 Plug 'haya14busa/vim-metarepeat'
 Plug 'tpope/vim-commentary'
@@ -80,7 +88,7 @@ Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-speeddating'
 Plug 'ervandew/supertab'
 " Plug 'raimondi/delimitmate'
-Plug 'jiangmiao/auto-pairs'
+Plug 'LunarWatcher/auto-pairs'
 Plug 'easymotion/vim-easymotion'
 " Plug 'bkad/CamelCaseMotion'
 Plug 'chaoren/vim-wordmotion'
@@ -97,21 +105,20 @@ Plug 'kana/vim-textobj-user'
 Plug 'kana/vim-textobj-entire'
 Plug 'kana/vim-textobj-indent'
 Plug 'kana/vim-textobj-line'
-Plug 'kana/vim-textobj-function'
 Plug 'glts/vim-textobj-comment'
-Plug 'thinca/vim-textobj-function-javascript'
 Plug 'justinj/vim-textobj-reactprop'
-Plug 'lucapette/vim-textobj-underscore'
-Plug 'beloglazov/vim-textobj-quotes'
-Plug 'thinca/vim-textobj-between'
+Plug 'osyo-manga/vim-textobj-blockwise'
+" Plug 'kana/vim-textobj-function'
+" Plug 'thinca/vim-textobj-function-javascript'
+" Plug 'lucapette/vim-textobj-underscore'
+" Plug 'beloglazov/vim-textobj-quotes'
+" Plug 'thinca/vim-textobj-between'
 " Plug 'Julian/vim-textobj-variable-segment'
 " Must come after Julian/vim-textobj-variable-segment
-Plug 'vimtaku/vim-textobj-keyvalue'
-Plug 'osyo-manga/vim-textobj-blockwise'
 
 " Snippets
 Plug 'SirVer/ultisnips'
-Plug '~/labs/vim-snippets'
+" Plug '~/labs/vim-snippets'
 " Plug 'epilande/vim-es2015-snippets'
 " Plug 'hbarcelos/vim-react-snippets'
 " Plug 'honza/vim-snippets'
@@ -133,23 +140,27 @@ Plug '~/labs/vim-snippets'
 
 """ vim-polyglot {
 
+Plug 'sheerun/vim-polyglot'
+
 let g:polyglot_disabled = ['javascript', 'typescript', 'solidity']
+" let g:polyglot_disabled = ['javascript', 'typescript']
 
 " Solidity
+" Plug 'tomlion/vim-solidity'
 Plug 'thesis/vim-solidity'
 " Plug 'TovarishFin/vim-solidity'
-
-
 " TS/JS support {
 
-Plug 'neoclide/vim-jsx-improve'
+" Plug 'ianks/vim-tsx'
 Plug 'leafgarland/typescript-vim'
-Plug 'ianks/vim-tsx'
+Plug 'peitalin/vim-jsx-typescript'
+" Plug 'neoclide/vim-jsx-improve'
+Plug 'pangloss/vim-javascript'
 Plug 'maxmellon/vim-jsx-pretty'
 
-Plug 'posva/vim-vue', { 'for' : ['vue'] }
+" " Plug 'posva/vim-vue', { 'for' : ['vue'] }
 
-Plug 'elzr/vim-json'
+" Plug 'elzr/vim-json'
 
 " Template strings
 Plug 'Quramy/vim-js-pretty-template'
@@ -157,16 +168,18 @@ Plug 'Quramy/vim-js-pretty-template'
 " Node.js
 Plug 'moll/vim-node'
 
-" " Javascript + Typescript
+" " " Javascript + Typescript
 " Plug 'jason0x43/vim-js-indent'
 " }
 
 """ }
 
-Plug 'sheerun/vim-polyglot'
+" Markdown
+Plug 'mzlogin/vim-markdown-toc'
 
 " HTML
 Plug 'alvan/vim-closetag'
+" Plug 'hbarcelos/vim-closetag'
 
 " Haskell
 Plug 'eagletmt/neco-ghc'
@@ -187,8 +200,10 @@ Plug 'jasonshell/vim-svg-indent'
 " To install the NORD theme in Gnome Terminal, run:
 " curl -s https://raw.githubusercontent.com/arcticicestudio/nord-gnome-terminal/develop/src/nord.sh | bash -
 " Plug 'arcticicestudio/nord-vim'
-Plug 'hbarcelos/polar-ice-vim', { 'do': './setup.sh' }
 " Plug '~/labs/polar-ice-vim', { 'do': './setup.sh' }
+Plug 'hbarcelos/polar-ice-vim', { 'do': './setup.sh' }
+" Plug '~/labs/gui-font-size.vim'
+Plug 'hbarcelos/gui-font-size.vim'
 
 Plug 'rickhowe/diffchar.vim'
 
@@ -204,14 +219,15 @@ call plug#end()
 """ General {
 syntax on
 
-" Set memmaxpattern to 5000 instead of the default 1000
-set mmp=5000
+" Set maxmempattern to 5000 instead of the default 1000
+set maxmempattern=5000
 
 " Allow local .vimrc
 set exrc
 set secure
 
 """ GUI only {
+
 set guifont=Hasklug\ Nerd\ Font\ Mono\ Medium\ 14
 " Hide menu bar
 set guioptions -=m
@@ -220,6 +236,7 @@ set guioptions -=r
 set guioptions -=L
 " Hide toolbar
 set guioptions -=T
+
 """ }
 
 " change the mapleader from \ to ,
@@ -310,13 +327,13 @@ set showmatch
 set matchtime=2
 
 " set list
-set listchars=eol:$,tab:>-,trail:~,extends:>,precedes:<
+set listchars=eol:$,tab:>-,lead:·,trail:~,extends:>,precedes:<
 
 "Recursively set the path of the project.
 set path=$PWD/**
 
 " Set utf8 as standard encoding
-set encoding=UTF-8
+set encoding=utf-8
 
 " Not show current line for each minimized file
 set winminwidth=0
@@ -351,7 +368,7 @@ augroup END
 
 function! MyLastWindow()
   " if the window is quickfix go on
-  if &buftype == "quickfix"
+  if &buftype == 'quickfix'
     " if this window is last on screen quit without warning
     if winbufnr(2) == -1
       quit!
@@ -375,7 +392,7 @@ noremap <c-k> <c-w><c-k>
 " nnoremap <C-O> <C-]>
 
 " Allow saving of files as sudo when I forgot to start vim using sudo.
-cnoremap w!! w !sudo tee % >/dev/null
+cnoremap W! w !sudo tee % >/dev/null
 
 " Converts DOS-style EOL (\r\n) do Unix-style (\n)
 nnoremap <silent> <leader><leader>u :%s/<C-V><cr>//ge<cr>
@@ -392,9 +409,17 @@ nnoremap gl $
 vnoremap gh ^
 vnoremap gl $
 
-" Emacs like shortcuts in insert mode
+" Emacs/Shell like shortcuts for insert and command/ex mode
+
+" <C-a>: move to head.
 inoremap <C-a> <C-o>^
+cnoremap <C-a> <Home>
+" <C-e>: move to end.
 inoremap <C-e> <C-o>$
+cnoremap <C-e> <End>
+" <C-k>: delete to the end.
+cnoremap <expr> <C-k>
+      \ repeat("\<Del>", strchars(getcmdline()[getcmdpos() - 1:]))
 
 " Clipboard copy and paste
 nnoremap <leader>y "+y
@@ -486,16 +511,20 @@ nnoremap <silent> <tab> :e #<CR>
 nnoremap <silent> g<tab> :bn<CR>
 nnoremap <silent> g<s-tab> :bp<CR>
 
+" Toggle list of special chars
+noremap <silent> <F3> :set list!<CR>
+inoremap <silent> <F3> <C-o>:set list!<CR>
+cnoremap <silent> <F3> <C-c>:set list!<CR>
+
 " Toggle line numbers
 noremap <silent> <F10> :set number!<CR>
 inoremap <silent> <F10> <C-o>:set number!<CR>
 cnoremap <silent> <F10> <C-c>:set number!<CR>
 
-
-" Toggle list of special chars
-noremap <silent> <F3> :set list!<CR>
-inoremap <silent> <F3> <C-o>:set list!<CR>
-cnoremap <silent> <F3> <C-c>:set list!<CR>
+" Toggle line wrapping
+noremap <silent> <F12> :set wrap!<CR>
+inoremap <silent> <F12> <C-o>:set wrap!<CR>
+cnoremap <silent> <F12> <C-c>:set wrap!<CR>
 
 " Maps \ to the same behavior of ` because it's easier to type on en-US
 " keyboards
@@ -513,7 +542,12 @@ nnoremap <leader><leader>ap :let @+ = expand("%:p")<CR>
 " Copies relative path of current file to clipboard
 nnoremap <leader><leader>rp :let @+ = expand("%")<CR>
 
+" Replaces all non-digit characters from the current line
+nnoremap <leader><leader>D :s/\D//g<CR>
 """ }
+
+" Shift+Insert pastes text from the clipboard in command mode
+cnoremap <S-Insert> <C-R>+
 
 """ NERDTree {
 
@@ -554,10 +588,10 @@ noremap <silent> <F4> :NERDTreeToggle<Cr>
 noremap <leader>n :NERDTreeFind<Cr>
 
 function! s:CloseIfOnlyControlWinLeft()
-  if winnr("$") != 1
+  if winnr('$') != 1
     return
   endif
-  if (exists("t:NERDTreeBufName") && bufwinnr(t:NERDTreeBufName) != -1)
+  if (exists('t:NERDTreeBufName') && bufwinnr(t:NERDTreeBufName) != -1)
         \ || &buftype == 'quickfix'
     q
   endif
@@ -678,6 +712,15 @@ nnoremap <silent> <leader>gD :YcmCompleter GoToDefinition<CR>
 nnoremap <silent> <leader>gI :YcmCompleter GoToImplementation<CR>
 nnoremap <silent> <leader>gh <plug>(YCMHover)
 
+let g:ycm_language_server = []
+  " \ [
+  " \   {
+  " \     'name': 'solidity',
+  " \     'cmdline': [ 'solc', '--lsp' ],
+  " \     'filetypes': [ 'solidity' ]
+  " \   },
+  " \ ]
+
 set regexpengine=1
 let g:ycm_auto_hover = 0
 let g:ycm_filepath_blacklist = {}
@@ -694,85 +737,85 @@ augroup YcmHighlightFix
   autocmd VimEnter * :highlight! YcmWarningSection ctermfg=11 guifg=#F2DB94
 augroup END
 
- " https://github.com/ycm-core/YouCompleteMe/issues/3601#issuecomment-585445618
- " Milliseconds - tweak to liking
- let s:debounce = 250
+" https://github.com/ycm-core/YouCompleteMe/issues/3601#issuecomment-585445618
+" Milliseconds - tweak to liking
+let s:debounce = 250
 
- " --------
- "  Below here is evil. You should not read, use or otherwise acknowledge
- "  its existence.
- "
- "  YOU HAVE BEEN WARNED.
- " --------
+" --------
+"  Below here is evil. You should not read, use or otherwise acknowledge
+"  its existence.
+"
+"  YOU HAVE BEEN WARNED.
+" --------
 
- let g:ycm_auto_trigger = 0
+let g:ycm_auto_trigger = 0
 
- " Find the SID of autoload/youcompleteme.vim
- function! s:FindYouCompleteMeInternal()
-   let scripts = split( execute( 'scriptnames' ), '\n' )
-   for line in scripts
-     let match = matchlist( line,
-                          \ '\m\v^\s*(\d+): \f+autoload\/youcompleteme.vim$' )
+" Find the SID of autoload/youcompleteme.vim
+function! s:FindYouCompleteMeInternal()
+  let scripts = split( execute( 'scriptnames' ), '\n' )
+  for line in scripts
+    let match = matchlist( line,
+                         \ '\m\v^\s*(\d+): \f+autoload\/youcompleteme.vim$' )
 
-     if len( match ) > 0 && match[ 0 ] !=# ''
-       return match[ 1 ]
-     endif
-   endfo
+    if len( match ) > 0 && match[ 0 ] !=# ''
+      return match[ 1 ]
+    endif
+  endfo
 
-   return -1
- endfunction
+  return -1
+endfunction
 
- let s:youcompleteme_internal = -1
- let s:timer = 0
+let s:youcompleteme_internal = -1
+let s:timer = 0
 
- function! s:CallYCMInt( f )
-   if s:youcompleteme_internal < 0
-     return
-   endif
+function! s:CallYCMInt( f )
+  if s:youcompleteme_internal < 0
+    return
+  endif
 
-   exe "call \<SNR>" . s:youcompleteme_internal . '_' . a:f
- endfunction
+  exe "call \<SNR>" . s:youcompleteme_internal . '_' . a:f
+endfunction
 
- function! s:TriggerUserDefinedCompletion( ... )
-   call s:CallYCMInt( 'Complete()' )
-   call s:CallYCMInt( 'RequestCompletion()' )
-   call s:CallYCMInt( 'UpdateSignatureHelp()' )
-   call s:CallYCMInt( 'RequestSignatureHelp()' )
- endfunction
+function! s:TriggerUserDefinedCompletion( ... )
+  call s:CallYCMInt( 'Complete()' )
+  call s:CallYCMInt( 'RequestCompletion()' )
+  call s:CallYCMInt( 'UpdateSignatureHelp()' )
+  call s:CallYCMInt( 'RequestSignatureHelp()' )
+endfunction
 
- let s:looked = 0
+let s:looked = 0
 
- function! s:LookForYCMInt( ... )
-   let s:youcompleteme_internal = s:FindYouCompleteMeInternal()
-   if s:youcompleteme_internal < 0
-     let s:looked += 1
-     if s:looked > 10
-       " abort
-       return
-     endif
-     call timer_start( 500, funcref( 's:LookForYCMInt' ) )
-     return
-   endif
-   augroup Local
-     au InsertCharPre * call s:StartYcmTrigger()
-     au InsertLeave * call s:StopYcmTrigger()
-   augroup END
- endfunction
+function! s:LookForYCMInt( ... )
+  let s:youcompleteme_internal = s:FindYouCompleteMeInternal()
+  if s:youcompleteme_internal < 0
+    let s:looked += 1
+    if s:looked > 10
+      " abort
+      return
+    endif
+    call timer_start( 500, funcref( 's:LookForYCMInt' ) )
+    return
+  endif
+  augroup Local
+    au InsertCharPre * call s:StartYcmTrigger()
+    au InsertLeave * call s:StopYcmTrigger()
+  augroup END
+endfunction
 
- function! s:StartYcmTrigger() abort
-   call timer_stop( s:timer )
-   let s:timer = timer_start( s:debounce,
-                            \ funcref( 's:TriggerUserDefinedCompletion' ) )
- endf
+function! s:StartYcmTrigger() abort
+  call timer_stop( s:timer )
+  let s:timer = timer_start( s:debounce,
+                           \ funcref( 's:TriggerUserDefinedCompletion' ) )
+endf
 
- function! s:StopYcmTrigger() abort
-   call timer_stop( s:timer )
- endf
+function! s:StopYcmTrigger() abort
+  call timer_stop( s:timer )
+endf
 
- augroup LocalStartup
-   au!
-   au VimEnter * call s:LookForYCMInt()
- augroup END
+augroup LocalStartup
+  au!
+  au VimEnter * call s:LookForYCMInt()
+augroup END
 
 """ }
 
@@ -801,9 +844,15 @@ augroup END
 " augroup END
 """ }
 
+
+augroup js_ts_highlight
+  autocmd! * <buffer>
+  autocmd BufEnter *.{js,jsx,ts,tsx} :syntax sync fromstart
+  autocmd BufLeave *.{js,jsx,ts,tsx} :syntax sync clear
+augroup END
+
 augroup vim_js_pretty_template
   autocmd! * <buffer>
-
   autocmd FileType typescript JsPreTmpl
   " For leafgarland/typescript-vim users only. Please see #1 for details.
   autocmd FileType typescript syn clear foldBraces
@@ -812,37 +861,49 @@ augroup END
 """ ALE {
 
 let g:ale_linters = {
-\   'javascript': ['prettier', 'eslint', 'prettier-eslint'],
-\   'typescript': ['prettier', 'eslint', 'prettier-eslint', 'tsserver'],
-\   'vue': ['prettier', 'eslint', 'prettier-eslint'],
-\   'json': ['jq', 'jsonlint'],
-\   'css': ['stylelint'],
-\   'scss': ['stylelint'],
-\   'less': ['stylelint'],
-\   'xml': ['xmllint'],
-\   'solidity': ['solhint', 'solium'],
-\   'python': ['flake8', 'pylint'],
-\   'html': ['prettier'],
-\   'svg': ['prettier'],
-\   'c': ['clang'],
-\   'cpp': ['clang++', 'g++']
-\}
+  \  'javascript': ['prettier', 'eslint', 'prettier-eslint'],
+  \  'javascriptreact': ['prettier', 'eslint', 'prettier-eslint'],
+  \  'typescript': ['prettier', 'eslint', 'prettier-eslint', 'tsserver'],
+  \  'typescriptreact': ['prettier', 'eslint', 'prettier-eslint', 'tsserver'],
+  \  'vue': ['prettier', 'eslint', 'prettier-eslint'],
+  \  'json': ['jq', 'jsonlint'],
+  \  'jsonc': ['jq', 'jsonlint'],
+  \  'css': ['stylelint'],
+  \  'scss': ['stylelint'],
+  \  'less': ['stylelint'],
+  \  'xml': ['xmllint'],
+  \  'solidity': ['solhint', 'solium'],
+  \  'python': ['flake8', 'pylint'],
+  \  'html': ['prettier'],
+  \  'svg': ['prettier'],
+  \  'c': ['clang'],
+  \  'cpp': ['clang++', 'g++'],
+  \  'vim': ['vint'],
+\ }
 
 let g:ale_fixers = {
-\   'javascript': ['prettier', 'eslint', 'prettier-eslint'],
-\   'typescript': ['prettier', 'eslint', 'prettier-eslint'],
-\   'vue': ['prettier', 'eslint', 'prettier-eslint'],
-\   'json': ['jq', 'prettier'],
-\   'css': ['prettier', 'stylelint'],
-\   'scss': ['prettier', 'stylelint'],
-\   'less': ['prettier', 'stylelint'],
-\   'xml': ['prettier', 'xmllint'],
-\   'solidity': ['prettier'],
-\   'python': ['autopep8', 'yapf'],
-\   'html': ['prettier'],
-\   'svg': ['prettier'],
-\   'c': ['clang-format'],
-\   'cpp': ['clang-format']
+  \  'javascript': ['prettier', 'eslint', 'prettier-eslint'],
+  \  'typescript': ['prettier', 'eslint', 'prettier-eslint'],
+  \  'javascriptreact': ['prettier', 'eslint', 'prettier-eslint'],
+  \  'typescriptreact': ['prettier', 'eslint', 'prettier-eslint'],
+  \  'vue': ['prettier', 'eslint', 'prettier-eslint'],
+  \  'json': ['jq', 'prettier'],
+  \  'jsonc': ['jq', 'prettier'],
+  \  'css': ['prettier', 'stylelint'],
+  \  'scss': ['prettier', 'stylelint'],
+  \  'less': ['prettier', 'stylelint'],
+  \  'xml': ['prettier', 'xmllint'],
+  \  'solidity': ['prettier'],
+  \  'toml': ['prettier'],
+  \  'python': ['autopep8', 'yapf'],
+  \  'html': ['prettier'],
+  \  'svg': ['prettier'],
+  \  'markdown': ['prettier'],
+  \  'sh': ['shfmt'],
+  \  'bash': ['shfmt'],
+  \  'zsh': ['shfmt'],
+  \  'c': ['clang-format'],
+  \  'cpp': ['clang-format'],
 \}
 
 let g:ale_c_clang_options = '-Wall -O2 -std=c99'
@@ -1130,8 +1191,39 @@ xmap ga <Plug>(EasyAlign)
 nmap ga <Plug>(EasyAlign)
 
 let g:easy_align_delimiters = {
-  \ ':': { 'pattern': ':', 'left_margin': 0, 'right_margin': 1, 'stick_to_left': 1 }
-\}
+\ '>': {
+\     'pattern': '>>\|=>\|>'
+\   },
+\ ';': {
+\     'pattern':         ';\+',
+\     'delimiter_align': 'l',
+\     'left_margin':     0,
+\     'right_margin':    1,
+\   },
+\ '/': {
+\     'pattern':         '//\+\|/\*\|\*/',
+\     'delimiter_align': 'l',
+\     'ignore_groups':   ['!Comment']
+\   },
+\ ']': {
+\     'pattern':       '[[\]]',
+\     'left_margin':   0,
+\     'right_margin':  0,
+\     'stick_to_left': 0
+\   },
+\ ')': {
+\     'pattern':       '[()]',
+\     'left_margin':   0,
+\     'right_margin':  0,
+\     'stick_to_left': 0
+\   },
+\ 'd': {
+\     'pattern':      ' \(\S\+\s*[;=]\)\@=',
+\     'left_margin':  0,
+\     'right_margin': 0
+\   }
+\ }
+
 """ }
 
 """ incsearch {
@@ -1192,6 +1284,8 @@ map g# <Plug>(incsearch-nohl-g#)
 
 """ FAR {
 let g:far#enable_undo=1
+
+let g:far#glob_mode='rg'
 """ }
 
 """ grep {
@@ -1207,7 +1301,7 @@ if executable('rg')
   let g:ctrlp_user_command = 'rg %s --files --color=never --ignore-case --smart-case --hidden --iglob "!.{git,svn,hg}/" --glob ""'
 
   " bind K to grep word under cursor
-  nnoremap <leader>K :execute 'grep! "\b"'.expand("<cword>").'"\b"'<CR>:rightb<SPACE>cw<CR>
+  nnoremap <leader>K :execute 'grep! "\b"'.expand("<cword>").'"\b"'<CR>:rightb<SPACE>cw<CR><CR>
 
   """ FAR {
   let g:far#source = 'rg'
@@ -1221,7 +1315,7 @@ elseif executable('ag')
   let g:ctrlp_user_command = 'ag %s -l --nocolor --smart-case --hidden --ignore ".git" -g ""'
 
   " bind K to grep word under cursor
-  nnoremap <leader>K :execute 'grep! "\b"'.expand("<cword>").'"\b"'<CR>:rightb<SPACE>cw<CR>
+  nnoremap <leader>K :execute 'grep! "\b"'.expand("<cword>").'"\b"'<CR>:rightb<SPACE>cw<CR><CR>
 
   """ FAR {
   let g:far#source = 'ag'
@@ -1257,22 +1351,67 @@ nnoremap <leader><Space> :Grep<SPACE>
 """ vim-wordmotion {
 
 let g:wordmotion_mappings = {
-	\ 'w' : ']v',
-	\ 'W' : ']V',
-	\ 'b' : '[v',
-	\ 'B' : '[V',
-	\ 'e' : ']gv',
-	\ 'E' : ']gV',
-	\ 'ge' : '[gv',
-	\ 'gE' : '[gE',
-	\ 'aw' : 'av',
+	\ 'w' : '',
+	\ 'W' : '',
+	\ 'b' : '',
+	\ 'B' : '',
+	\ 'e' : '',
+	\ 'E' : '',
+	\ 'ge' : '',
+	\ 'gE' : '',
+	\ 'aw' : '',
 	\ 'aW' : '',
-	\ 'iw' : 'iv',
+	\ 'iw' : '',
 	\ 'iW' : '',
 	\ '<C-R><C-W>' : '',
-	\ '<C-R><C-A>' : ''
+	\ '<C-R><C-A>' : '',
 \ }
 
+nnoremap ]v <Plug>WordMotion_w
+onoremap ]v <Plug>WordMotion_w
+xnoremap ]v <Plug>WordMotion_w
+
+nnoremap [v <Plug>WordMotion_b
+onoremap [v <Plug>WordMotion_b
+xnoremap [v <Plug>WordMotion_b
+
+nnoremap ]gv <Plug>WordMotion_e
+onoremap ]gv <Plug>WordMotion_e
+xnoremap ]gv <Plug>WordMotion_e
+
+nnoremap [gv <Plug>WordMotion_ge
+onoremap [gv <Plug>WordMotion_ge
+xnoremap [gv <Plug>WordMotion_ge
+
+nnoremap ]V <Plug>WordMotion_W
+onoremap ]V <Plug>WordMotion_W
+xnoremap ]V <Plug>WordMotion_W
+
+nnoremap [V <Plug>WordMotion_B
+onoremap [V <Plug>WordMotion_B
+xnoremap [V <Plug>WordMotion_B
+
+nnoremap ]gV <Plug>WordMotion_E
+onoremap ]gV <Plug>WordMotion_E
+xnoremap ]gV <Plug>WordMotion_E
+
+nnoremap [gV <Plug>WordMotion_gE
+onoremap [gV <Plug>WordMotion_gE
+xnoremap [gV <Plug>WordMotion_gE
+
+onoremap av <Plug>WordMotion_aw
+xnoremap av <Plug>WordMotion_aw
+
+onoremap iv <Plug>WordMotion_iw
+xnoremap iv <Plug>WordMotion_iw
+
+onoremap aV <Plug>WordMotion_aW
+xnoremap aV <Plug>WordMotion_aW
+
+onoremap iV <Plug>WordMotion_iW
+xnoremap iV <Plug>WordMotion_iW
+
+cmap <C-R><C-V> <Plug>WordMotion_<C-R><C-W>
 """ }
 
 """ vim-json {
@@ -1296,12 +1435,17 @@ nnoremap <silent> <leader>a :ArgWrap<CR>
 
 """ vim-markdown {
 
-let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'javascript']
+let g:markdown_fenced_languages = ['html', 'python', 'bash=sh', 'javascript', 'solidity']
 
-augroup markdown
-  autocmd! * <buffer>
-  au FileType markdown setl sw=4 sts=4 et
-augroup END
+""" }
+
+""" mzlogin/vim-markdown-toc {
+
+" Use - as the marker for list items
+let g:vmt_list_item_char = '-'
+
+" Indent by 2 spaces
+let g:vmt_list_indent_text = '  '
 
 """ }
 
@@ -1380,7 +1524,7 @@ let test#javascript#jest#executable = 'yarn test'
 " let test#javascript#mocha#executable = 'yarn test'
 
 let test#strategy = 'kitty'
-let test#javascript#jest#options = "--color=always"
+let test#javascript#jest#options = '--color=always'
 
 " nnoremap <silent> <leader>te :TestFile
 " nnoremap <silent> <leader>tt :TestFile<CR>
@@ -1400,10 +1544,29 @@ let g:bufExplorerShowRelativePath=1
 
 """ }
 
-""" AutoPairs {
+""" auto-pairs {
 
 " let g:AutoPairsFlyMode = 1
-let g:AutoPairsShortcutToggle = '<esc>t'
+" let g:AutoPairsShortcutToggle = '<leader><leader>pt'
+let g:AutoPairsCompatibleMaps = 0
+
+let g:AutoPairsMapBS = 1
+let g:AutoPairsBSAfter = 1
+let g:AutoPairsMultilineClose = 1
+let g:AutoPairsMultilineBackspace = 1
+
+let g:AutoPairsShortcutToggle               = '<C-g><C-t>'
+let g:AutoPairsShortcutFastWrap             = '<C-g><C-f>'
+let g:AutoPairsShortcutJump                 = '<C-g><C-n>'
+let g:AutoPairsShortcutBackInsert           = '<C-g><C-b>'
+let g:AutoPairsShortcutToggleMultilineClose = '<C-g><C-m>'
+let g:AutoPairsShortcutIgnore               = '<C-g><C-e>'
+let g:AutoPairsMoveExpression               = '<C-g>%key'
+
+let g:AutoPairs = autopairs#AutoPairsDefine([
+  \ {'open': '**', 'close': '**', 'filetype': 'markdown'},
+  \ {'open': '<!--', 'close': '-->', 'filetype': 'markdown', 'multiline': 1},
+\ ])
 
 """ }
 
@@ -1428,23 +1591,29 @@ let g:dispatch_no_maps = 1
 
 """ vim-closetag {
 
-let g:closetag_filetypes = 'html,xhtml,phtml,javascript,javascript.jsx,jsx,typescript,typescript.tsx,tsx,vue'
-let g:closetag_xhtml_filetypes = 'xhtml,javascript,javascript.jsx,jsx,typescript,typescript.tsx,tsx,vue'
-let g:closetag_emptyTags_caseSensitive = 1
-let g:closetag_close_shortcut = '<leader>>'
+let g:closetag_filenames = '*.html,*.jsx,*.tsx,*.vue,*.xhml,*.xml'
 
 " Disables auto-close if not in a valid region (based on filetype)
 "
 let g:closetag_regions = {
-    \ 'typescript.tsx': 'jsxRegion,tsxRegion',
-    \ 'javascript.jsx': 'jsxRegion',
-    \ }
+  \ 'typescript.tsx': 'jsxRegion,tsxRegion',
+  \ 'javascript.jsx': 'jsxRegion',
+  \ 'typescriptreact': 'jsxRegion,tsxRegion',
+  \ 'javascriptreact': 'jsxRegion',
+  \ }
+
+" Add > at current position without closing the current tag, default is ''
+let g:closetag_close_shortcut = '<leader>>'
+
 """}
 
 """ emmet-vim {
 let g:user_emmet_settings = {
 \  'javascript' : {
 \      'extends' : 'jsx',
+\  },
+\  'typescript' : {
+\      'extends' : 'tsx',
 \  },
 \}
 """ }
@@ -1511,58 +1680,62 @@ nmap <Leader>m <Plug>ToggleMarkbar
 let g:peekaboo_delay = 500
 """ }
 
-""" vimtaku/vim-textobj-keyvalue {
-omap aV	<Plug>(textobj-value-a)
-xmap aV	<Plug>(textobj-value-a)
-omap aK	<Plug>(textobj-key-a)
-xmap aK	<Plug>(textobj-key-a)
-"""}
-
-
-""" thinca/vim-textobj-between {
-let g:textobj_between_no_default_key_mappings = 1
-
-omap aF	<Plug>(textobj-between-a)
-xmap aF	<Plug>(textobj-between-a)
-omap iF	<Plug>(textobj-between-i)
-xmap iF	<Plug>(textobj-between-i)
-
-call textobj#user#plugin('prefix', {
-  \   'path_a': {
-  \     'select': 'a/',
-  \     'pattern': '\(\<\([^/]\)\+/\)\|\(/[^/]\+\>\)\|\(\.\{1,2}/\)',
-  \     'scan': 'cursor',
-  \   },
-  \   'path_i': {
-  \     'select': 'i/',
-  \     'pattern': '\(/\zs[^/]\+\ze\(/\|\>\)\)\|\(\(/\|\<\)\zs[^/]\+\ze\/\)\|\(\.\{1,2}\ze/\)',
-  \     'scan': 'cursor',
-  \   },
-  \   'prop_a': {
-  \     'select': 'a.',
-  \     'pattern': '\(\_s*\<\([^.]\)\+\_s*\.\)\|\(\.\_s*[^.]\+\>\_s*\)',
-  \     'scan': 'line',
-  \   },
-  \   'prop_i': {
-  \     'select': 'i.',
-  \     'pattern': '\(\.\zs\_s*[^.]\+\ze\_s*\(\.\|\>\)\)\|\(\(\.\|\<\)\zs\_s*[^.]\+\ze\_s*\.\)',
-  \     'scan': 'line',
+""" justinj/vim-textobj-reactprop {
+call textobj#user#plugin('reactprop', {
+  \   '-': {
+  \     '*sfile*': expand('<sfile>:p'),
+  \     'select-a-function': 's:ReactPropA',
+  \     'select-a': 'aR',
+  \     'select-i-function': 's:ReactPropI',
+  \     'select-i': 'iR',
   \   },
   \ })
+""" }
+
+""" thinca/vim-textobj-between {
+" let g:textobj_between_no_default_key_mappings = 1
+
+" omap aF	<Plug>(textobj-between-a)
+" xmap aF	<Plug>(textobj-between-a)
+" omap iF	<Plug>(textobj-between-i)
+" xmap iF	<Plug>(textobj-between-i)
+
+" call textobj#user#plugin('prefix', {
+"   \   'path_a': {
+"   \     'select': 'a/',
+"   \     'pattern': '\(\<\([^/]\)\+/\)\|\(/[^/]\+\>\)\|\(\.\{1,2}/\)',
+"   \     'scan': 'cursor',
+"   \   },
+"   \   'path_i': {
+"   \     'select': 'i/',
+"   \     'pattern': '\(/\zs[^/]\+\ze\(/\|\>\)\)\|\(\(/\|\<\)\zs[^/]\+\ze\/\)\|\(\.\{1,2}\ze/\)',
+"   \     'scan': 'cursor',
+"   \   },
+"   \   'prop_a': {
+"   \     'select': 'a.',
+"   \     'pattern': '\(\_s*\<\([^.]\)\+\_s*\.\)\|\(\.\_s*[^.]\+\>\_s*\)',
+"   \     'scan': 'line',
+"   \   },
+"   \   'prop_i': {
+"   \     'select': 'i.',
+"   \     'pattern': '\(\.\zs\_s*[^.]\+\ze\_s*\(\.\|\>\)\)\|\(\(\.\|\<\)\zs\_s*[^.]\+\ze\_s*\.\)',
+"   \     'scan': 'line',
+"   \   },
+"   \ })
 
 """ AndrewRadev/dsf.vim {
-let g:dsf_no_mappings = 1
+" let g:dsf_no_mappings = 1
 
-nmap dsf <Plug>DsfDelete
-nmap csf <Plug>DsfChange
+" nmap dsf <Plug>DsfDelete
+" nmap csf <Plug>DsfChange
 
-nmap dsnf <Plug>DsfNextDelete
-nmap csnf <Plug>DsfNextChange
+" nmap dsnf <Plug>DsfNextDelete
+" nmap csnf <Plug>DsfNextChange
 
-omap af <Plug>DsfTextObjectA
-xmap af <Plug>DsfTextObjectA
-omap if <Plug>DsfTextObjectI
-xmap if <Plug>DsfTextObjectI
+" omap af <Plug>DsfTextObjectA
+" xmap af <Plug>DsfTextObjectA
+" omap if <Plug>DsfTextObjectI
+" xmap if <Plug>DsfTextObjectI
 """ }
 
 """ diffchar.vim {
@@ -1574,28 +1747,185 @@ nmap <silent> <leader><leader>d <Plug>ToggleDiffCharAllLines
 
 """ Custom text objects {
 
-let g:surround_{char2nr("d")} = "\"\r\""
-nmap dsd <Plug>Dsurround"
-nmap csd <Plug>Csurround"
-onoremap ad a"
-xnoremap ad a"
-onoremap id i"
-xnoremap id i"
+" let g:surround_{char2nr("d")} = "\"\r\""
+" nmap dsd <Plug>Dsurround"
+" nmap csd <Plug>Csurround"
+" onoremap ad a"
+" xnoremap ad a"
+" onoremap id i"
+" xnoremap id i"
 
-let g:surround_{char2nr("s")} = "'\r'"
-nmap dss <Plug>Dsurround'
-nmap css <Plug>Csurround'
-onoremap as a'
-xnoremap as a'
-onoremap is i'
-xnoremap is i'
+" let g:surround_{char2nr("s")} = "'\r'"
+" nmap dss <Plug>Dsurround'
+" nmap css <Plug>Csurround'
+" onoremap as a'
+" xnoremap as a'
+" onoremap is i'
+" xnoremap is i'
 
-let g:surround_{char2nr("a")} = "`\r`"
-nmap dsa <Plug>Dsurround`
-nmap csa <Plug>Csurround`
-onoremap aa a`
-xnoremap aa a`
-onoremap ia i`
-xnoremap ia i`
+" let g:surround_{char2nr("a")} = "`\r`"
+" nmap dsa <Plug>Dsurround`
+" nmap csa <Plug>Csurround`
+" onoremap aa a`
+" xnoremap aa a`
+" onoremap ia i`
+" xnoremap ia i`
+
+""" }
+
+""" vim-kitty=navigator {
+let g:kitty_navigator_installation_path='./vim-kitty-navigator'
+""" }
+
+""" vim-sandwich {
+let g:sandwich#recipes = deepcopy(g:sandwich#default_recipes)
+
+" " Use vim-surround keymaps
+" runtime macros/sandwich/keymap/surround.vim
+
+" Text objects to select a text surrounded by brackets or user-specified characters
+xmap is <Plug>(textobj-sandwich-query-i)
+xmap as <Plug>(textobj-sandwich-query-a)
+omap is <Plug>(textobj-sandwich-query-i)
+omap as <Plug>(textobj-sandwich-query-a)
+
+" Text objects to select the nearest surrounded text automatically
+xmap iss <Plug>(textobj-sandwich-auto-i)
+xmap ass <Plug>(textobj-sandwich-auto-a)
+omap iss <Plug>(textobj-sandwich-auto-i)
+omap ass <Plug>(textobj-sandwich-auto-a)
+
+" Text objects to select a text surrounded by user-specified characters
+xmap im <Plug>(textobj-sandwich-literal-query-i)
+xmap am <Plug>(textobj-sandwich-literal-query-a)
+omap im <Plug>(textobj-sandwich-literal-query-i)
+omap am <Plug>(textobj-sandwich-literal-query-a)
+
+" Shortcut text objects for different quote types
+omap id isd
+omap ad asd
+xmap id isd
+xmap ad asd
+
+omap iq isq
+omap aq asq
+xmap iq isq
+xmap aq asq
+
+omap ig isg
+omap ag asg
+xmap ig isg
+xmap ag asg
+
+" Restore b as )
+nmap sdb sd)
+nmap srb sr)
+xmap ib i)
+omap ib i)
+xmap ab a)
+omap ab a)
+
+" Make r as ] (squaRe bracket)
+xmap ir i]
+omap ir i]
+xmap ar a]
+omap ar a]
+
+" Add sandwich for the entire line
+onoremap <SID>line :normal! ^vg_<CR>
+nmap <silent> sass <Plug>(sandwich-add)<SID>line
+
+" Rethink auto-delete and auto-replace
+nmap sds <Plug>(sandwich-delete-auto)
+nmap srs <Plug>(sandwich-replace-auto)
+
+" Use d (Double-quote) for ", q (Quote) for ' and g (Grave accent) for `
+" Use vim-surround convention of adding spaces to {,( and [ surroundings
+" Use insert mode for surround with function
+" Add Markdown specific surround
+let g:sandwich#recipes += [
+  \   {'buns': ['"', '"'], 'quoteescape': 1, 'input': ['d']},
+  \   {'buns': ["'", "'"], 'quoteescape': 1, 'input': ['q']},
+  \   {'buns': ['`', '`'], 'quoteescape': 1, 'input': ['g']},
+  \   {'buns': ['{', '}'], 'nesting': 1, 'skip_break': 1, 'input': ['{', '}', 'B']},
+  \   {'buns': ['[', ']'], 'nesting': 1, 'input': ['[', ']', 'r']},
+  \   {'buns': ['(', ')'], 'nesting': 1, 'input': ['(', ')', 'b']},
+  \   {'buns': ['{ ', ' }'], 'nesting': 1, 'match_syntax': 1, 'kind': ['add', 'replace'], 'action': ['add'], 'input': ['{']},
+  \   {'buns': ['[ ', ' ]'], 'nesting': 1, 'match_syntax': 1, 'kind': ['add', 'replace'], 'action': ['add'], 'input': ['[']},
+  \   {'buns': ['( ', ' )'], 'nesting': 1, 'match_syntax': 1, 'kind': ['add', 'replace'], 'action': ['add'], 'input': ['(']},
+  \   {'buns': ['{\s*', '\s*}'],   'regex': 1, 'nesting': 1, 'match_syntax': 1, 'kind': ['delete', 'replace', 'textobj'], 'action': ['delete'], 'input': ['{']},
+  \   {'buns': ['\[\s*', '\s*\]'], 'regex': 1, 'nesting': 1, 'match_syntax': 1, 'kind': ['delete', 'replace', 'textobj'], 'action': ['delete'], 'input': ['[']},
+  \   {'buns': ['(\s*', '\s*)'],   'regex': 1, 'nesting': 1, 'match_syntax': 1, 'kind': ['delete', 'replace', 'textobj'], 'action': ['delete'], 'input': ['(']},
+  \   {'buns': ['(', ')'], 'cursor': 'head', 'command': ['startinsert'], 'kind': ['add', 'replace'], 'action': ['add'], 'input': ['f']},
+  \   {
+  \     'buns':       ['```', '```'],
+  \     'cursor':     'headend',
+  \     'nesting':    0,
+  \     'linewise':   1,
+  \     'skip_break': 1,
+  \     'kind':       ['add', 'replace'],
+  \     'action':     ['add'],
+  \     'filetype':   ['markdown'],
+  \     'input':      ['G'],
+  \   },
+  \   {
+  \     'buns':       ['```\w*\s*', '```'],
+  \     'motionwise': ['line'],
+  \     'regex':      1,
+  \     'nesting':    0,
+  \     'linewise':   1,
+  \     'skip_break': 1,
+  \     'kind':       ['delete', 'replace', 'textobj'],
+  \     'action':     ['delete'],
+  \     'filetype':   ['markdown'],
+  \     'input':      ['G'],
+  \   },
+  \   {
+  \     'buns':    ['[', ']()'],
+  \     'nesting': 0,
+  \     'cursor':  'tail',
+  \     'command': ['startinsert'],
+  \     'kind':    ['add', 'replace'],
+  \     'action':  ['add'],
+  \     'input':   ['l']
+  \   },
+  \   {
+  \     'buns':     ['\[', '\]\(([^)]*)\|\[\d\+\]\)'],
+  \     'regex':    1,
+  \     'nesting':  0,
+  \     'kind':     ['delete', 'replace', 'textobj'],
+  \     'action':   ['delete'],
+  \     'filetype': ['markdown'],
+  \     'input':    ['l'],
+  \   },
+  \   {
+  \     'buns':    ['![', ']()'],
+  \     'nesting': 0,
+  \     'cursor':  'tail',
+  \     'command': ['startinsert'],
+  \     'kind':    ['add', 'replace'],
+  \     'action':  ['add'],
+  \     'input':   ['I']
+  \   },
+  \   {
+  \     'buns':     ['!\[', '\]\(([^)]*)\|\[\d\+\]\)'],
+  \     'regex':    1,
+  \     'nesting':  0,
+  \     'kind':     ['delete', 'replace', 'textobj'],
+  \     'action':   ['delete'],
+  \     'filetype': ['markdown'],
+  \     'input':    ['I'],
+  \   },
+  \ ]
+
+" Make f match `obj.method(|)` as well as `func(|)`
+let g:sandwich#magicchar#f#patterns = [
+  \   {
+  \     'header' : '\<\%(\h\k*\.\)*\h\k*',
+  \     'bra'    : '(',
+  \     'ket'    : ')',
+  \     'footer' : '',
+  \   },
+  \ ]
 
 """ }
