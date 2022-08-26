@@ -1,0 +1,88 @@
+[core]
+    pager = delta
+
+[delta]
+	features = polar-ice-bear
+    navigate = true
+    line-numbers = true
+    light = false      # set to true if you're in a terminal w/ a light background color (e.g. the default macOS terminal)
+
+[interactive]
+    diffFilter = delta --color-only --features='polar-ice-bear diff-filter'
+
+[add.interactive]
+    useBuiltin = false # required for git 2.37.0
+
+[merge]
+    conflictstyle = diff3
+
+[diff]
+    colorMoved = default
+
+[alias]
+	# Diff split mode with Delta
+	ds = "!f() { git diff $@ | DELTA_FEATURES='+polar-ice-bear-sxs' delta --side-by-side; }; f"
+	dsc = "!f() { git diff --cached $@ | DELTA_FEATURES='+polar-ice-bear-sxs' delta --side-by-side; }; f"
+
+[delta "meta"]
+    file-style = blue
+    hunk-header-style = syntax
+
+[delta "diff-filter"]
+
+
+[delta "polar-ice-bear"]
+    dark = true
+    syntax-theme = polar-ice
+    file-style = bold yellow
+    file-decoration-style = yellow ol ul
+    hunk-label = @
+    hunk-header-style = line-number syntax
+    hunk-header-file-style = magenta
+    hunk-header-line-number-style = magenta
+    hunk-header-decoration-style = none
+    file-modified-label = ✎
+    file-removed-label = ✖
+    file-added-label = ✚
+    file-copied-label = ⎘
+    file-renamed-label = ➜
+    minus-style = red
+    minus-emph-style = lightgrey "#e11418"
+    plus-style = green
+    plus-emph-style = lightgrey "#61ab16"
+    line-numbers = true
+    line-numbers-minus-style = red
+    line-numbers-zero-style = "#697981"
+    line-numbers-plus-style = green
+    line-numbers-left-format = "{nm:>4}┊"
+    line-numbers-right-format = "{np:>4}│"
+    line-numbers-left-style = "#697981"
+    line-numbers-right-style = "#697981"
+
+[delta "polar-ice-bear-sxs"]
+    dark = true
+    syntax-theme = polar-ice
+    file-style = bold yellow
+    file-decoration-style = yellow ol ul
+    hunk-label = @
+    hunk-header-style = line-number syntax
+    hunk-header-file-style = magenta
+    hunk-header-line-number-style = magenta
+    hunk-header-decoration-style = none
+    file-modified-label = ✎
+    file-removed-label = ✖
+    file-added-label = ✚
+    file-copied-label = ⎘
+    file-renamed-label = ➜
+    minus-style = red
+    minus-emph-style = lightgrey "#e11418"
+    plus-style = green
+    plus-emph-style = lightgrey "#61ab16"
+    line-numbers = true
+    line-numbers-minus-style = red
+    line-numbers-zero-style = "#697981"
+    line-numbers-plus-style = green
+    line-numbers-left-format = "{nm:>4}│"
+    line-numbers-right-format = "{np:>4}│"
+    line-numbers-left-style = "#697981"
+    line-numbers-right-style = "#697981"

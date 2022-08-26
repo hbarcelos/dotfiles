@@ -2,7 +2,7 @@
 	editor = vim
 	; pager = diff-so-fancy | less --tabs=4 -RFX
     ; pager = delta --diff-so-fancy
-    pager = delta
+    ; pager = delta
 
 [merge]
     conflictstyle = diff3
@@ -61,20 +61,6 @@
 [status]
 	submoduleSummary = true
 
-[delta]
-	features = polar-ice-bear
-    navigate = true
-    line-numbers = true
-
-[delta "meta"]
-    file-style = blue
-    hunk-header-style = syntax
-
-[delta "diff-filter"]
-
-[interactive]
-    diffFilter = delta --color-only --features='polar-ice-bear diff-filter'
-
 [gpg]
 	program = /usr/bin/krgpg
 [commit]
@@ -88,8 +74,7 @@
 
 [include]
   path = ~/.gitconfig.d/alias.gitconfig
-  path = ~/.config/delta/themes.gitconfig
-  path = ~/.gitconfig.d/overrides.gitconfig
+  path = ~/.gitconfig.d/delta.gitconfig
 
 [includeIf "gitdir:~/work/"]
   path = ~/work/.gitconfig

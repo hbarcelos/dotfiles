@@ -24,9 +24,6 @@
 	dcw = diff --word-diff
 	dcd = diff --color-words=.
 	dft = difftool
-	# Diff split mode with Delta
-	ds = !git diff | DELTA_FEATURES='+polar-ice-bear' delta --side-by-side
-	dsc = !git diff --cached | DELTA_FEATURES='+polar-ice-bear' delta --side-by-side
 
 	br = branch
 	current-branch = rev-parse --abbrev-ref HEAD
