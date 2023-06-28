@@ -1,27 +1,27 @@
 [core]
 	editor = vim
 	; pager = diff-so-fancy | less --tabs=4 -RFX
-    ; pager = delta --diff-so-fancy
-    ; pager = delta
+	; pager = delta --diff-so-fancy
+	; pager = delta
 
 [merge]
-    conflictstyle = diff3
+	conflictstyle = diff3
 
 [diff]
-    colorMoved = default
+	colorMoved = default
 	submodule = log
-    tool = difftastic
+	tool = difftastic
 
 [difftool]
-    trustExitCode = true
-    prompt = false
+	trustExitCode = true
+	prompt = false
 
 [difftool "difftastic"]
-    cmd = difft "$LOCAL" "$REMOTE"
+	cmd = difft "$LOCAL" "$REMOTE"
 
 # Use a pager for large output, just like other git commands.
 [pager]
-    difftool = true
+	difftool = true
 
 [color]
 	ui = true
@@ -45,10 +45,10 @@
 	recurseSubmodules = on-demand
 
 [pull]
-    rebase = true
+	rebase = true
 
 [push]
-    default = current
+	default = current
 	autoSetupRemote = true
 
 [merge]
@@ -61,20 +61,23 @@
 [status]
 	submoduleSummary = true
 
-[gpg]
-	program = /usr/bin/krgpg
-[commit]
-	gpgSign = true
 [tag]
-	forceSignAnnotated = true
+	gpgsign = true
+[commit]
+	gpgsign = true
+[gpg]
+	format = "ssh"
+[gpg "ssh"]
+	allowedSignersFile = ~/.config/git/allowed_signers
 
 [user]
 	name = Henrique Barcelos
 	email = 16565602+hbarcelos@users.noreply.github.com
+	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILGOeLVCnob/J0MlJq6EmTap0nIHt1ZCB2v+1safAsJd hbarcelos
 
 [include]
-  path = ~/.gitconfig.d/alias.gitconfig
-  path = ~/.gitconfig.d/delta.gitconfig
+	path = ~/.gitconfig.d/alias.gitconfig
+	path = ~/.gitconfig.d/delta.gitconfig
 
 [includeIf "gitdir:~/work/"]
-  path = ~/work/.gitconfig
+	path = ~/work/.gitconfig
