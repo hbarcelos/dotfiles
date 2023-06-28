@@ -19,16 +19,6 @@ else
 
   zplug "zplug/zplug", hook-build:"zplug --self-manage"
   zplug "robbyrussell/oh-my-zsh", as:plugin, use:"lib/*.zsh"
-
-  # export NVM_NO_USE=true
-  # export NVM_COMPLETION=true
-  # export NVM_AUTO_USE=true
-  # export NVM_LAZY_LOAD=true
-  # export NVM_LAZY_LOAD_EXTRA_COMMANDS=('vim' 'yarn')
-  # export NVM_SYMLINK_CURRENT=true
-  # zplug "plugins/nvm", from:oh-my-zsh
-  # zplug "lukechilds/zsh-nvm"
-
   zplug "plugins/aws", from:oh-my-zsh
   zplug "plugins/colored-man-pages", from:oh-my-zsh
   zplug "plugins/command-not-found", from:oh-my-zsh
@@ -36,15 +26,12 @@ else
   zplug "plugins/cp", from:oh-my-zsh
   zplug "plugins/docker", from:oh-my-zsh
   zplug "plugins/docker-compose", from:oh-my-zsh
-  # zplug "plugins/dotenv", from:oh-my-zsh
-  zplug "plugins/fasd", from:oh-my-zsh
   zplug "plugins/git", from:oh-my-zsh
   zplug "plugins/git-extras", from:oh-my-zsh
   zplug "plugins/node", from:oh-my-zsh
   zplug "plugins/npm", from:oh-my-zsh
   zplug "cowboyd/zsh-volta", from:github
   zplug "plugins/sudo", from:oh-my-zsh
-  # zplug "plugins/tmux", from:oh-my-zsh
   zplug "plugins/yarn", from:oh-my-zsh
 
   zplug "chrissicool/zsh-256color"
@@ -56,41 +43,13 @@ else
   zplug "MichaelAquilina/zsh-emojis"
   zplug "Seinh/git-prune"
   zplug "adrieankhisbe/diractions"
-  zplug "stedolan/jq", from:gh-r, as:command, rename-to:jq
   zplug "junegunn/fzf", from:github, as:command, hook-build:"./install --all"
   zplug "junegunn/fzf", from:github, as:plugin, use:"shell/*.zsh", defer:2
-  zplug "BurntSushi/ripgrep", from:gh-r, as:command, rename-to:rg, if:"[[ $OSTYPE = linux* && ! -f /proc/syno_cpu_arch ]]"
-  # zplug "so-fancy/diff-so-fancy", as:command, use:"diff-so-fancy"
-  # zplug "dandavison/delta", from:gh-r, as:command, use:"*x86_64-unknown-linux-gnu*"
-
-  # export ZSH_TMUX_AUTOSTART=true
-  # export ZSH_TMUX_AUTOSTART_ONCE=true
-
-  # Load the theme.
-  # zplug "themes/robbyrussell", from:oh-my-zsh, as:theme
-  # zplug "NelsonBrandao/absolute", as:theme
-  # zplug mafredri/zsh-async, from:github
-  # zplug sindresorhus/pure, use:pure.zsh, from:github, as:theme
-  SPACESHIP_PROMPT_SEPARATE_LINE=false
-  SPACESHIP_PROMPT_FIRST_PREFIX_SHOW=true
-  SPACESHIP_PROMPT_DEFAULT_PREFIX=''
-  SPACESHIP_GIT_BRANCH_PREFIX=""
-  SPACESHIP_DIR_PREFIX=' '
-  SPACESHIP_GIT_PREFIX=''
-  SPACESHIP_GIT_BRANCH_COLOR=216 #222
-  SPACESHIP_GIT_STATUS_COLOR=216 #222
-  SPACESHIP_GIT_STATUS_MODIFIED='✹'
-  SPACESHIP_GIT_STATUS_ADDED='✚'
-  SPACESHIP_GIT_STATUS_DELETED='✖'
-  SPACESHIP_NODE_DEFAULT_VERSION="$(node --version 2> /dev/null)"
-  SPACESHIP_PACKAGE_SHOW=false
-  SPACESHIP_BATTERY_THRESHOLD=15
-  SPACESHIP_EXEC_TIME_SHOW=false
   zplug "spaceship-prompt/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
 
   zplug 'zsh-users/zsh-completions', depth:1 # more completions
 
-  # Plugins below must be declared in this order {
+  ### Plugins below must be declared in this order {
   ZSH_AUTOSUGGEST_STRATEGY=(history completion)
   zplug "zsh-users/zsh-autosuggestions"
 
@@ -99,10 +58,7 @@ else
   # after executing compinit command and sourcing other plugins
   # (If the defer tag is given 2 or above, run after compinit command)
   zplug "zsh-users/zsh-syntax-highlighting", defer:2
-
-  KEYTIMEOUT=30
-  VIM_MODE_ESC_PREFIXED_WANTED='bdfhul.g'  # Default is 'bdf.g'
-  # zplug "softmoth/zsh-vim-mode", defer:2
+  ### }
 
   # zplug check returns true if all packages are installed
   # Therefore, when it returns false, run zplug install
@@ -113,9 +69,6 @@ else
   # source plugins and add commands to the PATH
   zplug load
 
-  # fasd config
-  alias j='fasd_cd -d'
-
   # autosuggest keybindings {
   bindkey '^ ' autosuggest-accept
   bindkey -M vicmd "k" up-line-or-beginning-search
@@ -125,19 +78,8 @@ else
   # Deer config
   autoload -U deer
   zle -N deer
-  bindkey '\ek' deer
+  bindkey '\ed' deer
 
-  # Toggle between emacs and vi mode {
-  select-vi() { spaceship_vi_mode_enable }
-  select-emacs() { spaceship_vi_mode_disable }
-
-  zle -N select-vi
-  zle -N select-emacs
-
-  bindkey -v '\ev' select-emacs
-  bindkey -e '\ev' select-vi
-
-  # }
 fi
 
 setopt append_history # better concurrent shell history sharing
@@ -183,26 +125,14 @@ if (( ${+terminfo[smkx]} )) && (( ${+terminfo[rmkx]} )); then
   zle-line-finish() { echoti rmkx }; zle -N zle-line-finish
 fi
 
-# fasd initialization
-which fasd > /dev/null && eval "$(fasd --init auto)"
-
 # Zsh fpath config
 fpath+=${ZDOTDIR:-~}/.zsh_functions
 
 # Added by Krypton
 export GPG_TTY=$(tty)
 
-# Enpass CLI config
-alias enp="enpasscli -vault='${HOME}/Documentos/Enpass/Vaults/primary/' -sort"
-
-# Disable alias if the binary is installed
-[ -f "/usr/bin/duf" ] && unalias duf
-
 # Bat
 [ -x "$(command -v bat)" ] && export MANPAGER="sh -c 'col -bx | bat -l man -p'"
-
-# Broot
-[ -f "${HOME}/.config/broot/launcher/bash/br" ] && source "${HOME}/.config/broot/launcher/bash/br"
 
 # Convenient ETH scripts
 [ -f "${HOME}/.ethrc" ] && source "${HOME}/.ethrc"
@@ -285,6 +215,3 @@ export PATH="${HOME}/.foundry/bin:${PATH}"
   export PATH="${HOME}/.zplug/repos/zplug/zplug/bin:${PATH}"
 [ -d ~/.zplug/bin ] && \
   export PATH="${HOME}/.zplug/bin:${PATH}"
-[ -d ~/.zplug/repos/unixorn/bitbucket-git-helpers.plugin.zsh/bin ] && \
-  export PATH="${HOME}/.zplug/repos/unixorn/bitbucket-git-helpers.plugin.zsh/bin:${PATH}"
-
