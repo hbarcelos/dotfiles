@@ -132,7 +132,10 @@ fpath+=${ZDOTDIR:-~}/.zsh_functions
 export GPG_TTY=$(tty)
 
 # Bat
-[ -x "$(command -v bat)" ] && export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+# [ -x "$(command -v bat)" ] && {
+#   export MANROFFOPT="-c"
+#   export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+# }
 
 # Convenient ETH scripts
 [ -f "${HOME}/.ethrc" ] && source "${HOME}/.ethrc"
@@ -215,3 +218,4 @@ export PATH="${HOME}/.foundry/bin:${PATH}"
   export PATH="${HOME}/.zplug/repos/zplug/zplug/bin:${PATH}"
 [ -d ~/.zplug/bin ] && \
   export PATH="${HOME}/.zplug/bin:${PATH}"
+
