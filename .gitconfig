@@ -62,22 +62,19 @@
 	submoduleSummary = true
 
 [tag]
-	gpgsign = true
+	gpgSign = true
+    forceSignAnnotated = true
 [commit]
-	gpgsign = true
+	gpgSign = true
 [gpg]
 	format = "ssh"
 [gpg "ssh"]
 	allowedSignersFile = ~/.config/git/allowed_signers
 
-[user]
-	name = Henrique Barcelos
-	email = 16565602+hbarcelos@users.noreply.github.com
-	signingkey = ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAILGOeLVCnob/J0MlJq6EmTap0nIHt1ZCB2v+1safAsJd hbarcelos
-
 [include]
 	path = ~/.gitconfig.d/alias.gitconfig
 	path = ~/.gitconfig.d/delta.gitconfig
+	path = ~/.gitconfig.d/identity.gitconfig
 
 [includeIf "gitdir:~/work/"]
 	path = ~/work/.gitconfig
