@@ -25,23 +25,18 @@ Plug 'junegunn/fzf.vim'
 
 Plug 'dense-analysis/ale'
 " Plug '~/labs/ale'
+
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-rhubarb'
+
 Plug 'tpope/vim-dispatch'
 Plug 'brooth/far.vim'
 Plug 'junegunn/vim-peekaboo'
 Plug 'Yilin-Yang/vim-markbar'
-Plug 'tpope/vim-fugitive'
-Plug 'tpope/vim-rhubarb'
 Plug 'dsummersl/gundo.vim'
 Plug 'ctrlpvim/ctrlp.vim'
 
 Plug 'janko/vim-test'
-
-function! BuildYCM(info)
-  if a:info.status ==? 'installed' || a:info.status ==? 'updated' || a:info.force
-    !git submodule sync --recursive && git submodule update --init --recursive && GOFLAGS=-modcacherw python3 install.py --ts-completer --go-completer --rust-completer
-  endif
-endfunction
-Plug 'ycm-core/YouCompleteMe', { 'do': function('BuildYCM') }
 
 Plug 'itchyny/lightline.vim'
 Plug 'maximbaz/lightline-ale'
@@ -62,16 +57,12 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 " to avoid icons being misaligned when git markers are present
 Plug 'ryanoasis/vim-devicons'
 " Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-" Plug 'evandotpro/nerdtree-chmod'
+Plug 'evandotpro/nerdtree-chmod'
 
 " Tmux
 Plug 'tmux-plugins/vim-tmux'
 Plug 'tmux-plugins/vim-tmux-focus-events'
-" Plug 'christoomey/vim-tmux-navigator'
-" Plug 'benmills/vimux'
-" Plug 'knubie/vim-kitty-navigator'
-" Plug 'hbarcelos/vim-kitty-navigator'
-Plug '~/labs/vim-kitty-navigator'
+Plug 'knubie/vim-kitty-navigator', {'do': 'cp ./*.py ~/.config/kitty/'}
 
 """ }
 
@@ -79,18 +70,16 @@ Plug '~/labs/vim-kitty-navigator'
 
 " Plug 'tpope/vim-surround'
 Plug 'machakann/vim-sandwich'
-" Plug 'AndrewRadev/dsf.vim'
 Plug 'tpope/vim-repeat'
 Plug 'haya14busa/vim-metarepeat'
 Plug 'tpope/vim-commentary'
 Plug 'suy/vim-context-commentstring'
 Plug 'tpope/vim-unimpaired'
 Plug 'tpope/vim-speeddating'
-Plug 'ervandew/supertab'
-" Plug 'raimondi/delimitmate'
+" Plug 'ervandew/supertab'
+Plug 'LutfiLokman/supertab'
 Plug 'LunarWatcher/auto-pairs'
 Plug 'easymotion/vim-easymotion'
-" Plug 'bkad/CamelCaseMotion'
 Plug 'chaoren/vim-wordmotion'
 Plug 'junegunn/vim-easy-align'
 Plug 'PeterRincker/vim-argumentative'
@@ -108,16 +97,25 @@ Plug 'kana/vim-textobj-line'
 Plug 'glts/vim-textobj-comment'
 Plug 'justinj/vim-textobj-reactprop'
 Plug 'osyo-manga/vim-textobj-blockwise'
-" Plug 'kana/vim-textobj-function'
-" Plug 'thinca/vim-textobj-function-javascript'
-" Plug 'lucapette/vim-textobj-underscore'
-" Plug 'beloglazov/vim-textobj-quotes'
-" Plug 'thinca/vim-textobj-between'
-" Plug 'Julian/vim-textobj-variable-segment'
-" Must come after Julian/vim-textobj-variable-segment
+
+" LSP and autocomplete
+Plug 'prabirshrestha/vim-lsp'
+Plug 'mattn/vim-lsp-settings'
+Plug 'thomasfaingnaert/vim-lsp-snippets'
+Plug 'prabirshrestha/async.vim'
+Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-file.vim'
+Plug 'prabirshrestha/asyncomplete-buffer.vim'
+Plug 'prabirshrestha/asyncomplete-emmet.vim'
+Plug 'prabirshrestha/asyncomplete-necosyntax.vim'
+Plug 'andreypopp/asyncomplete-ale.vim'
+Plug 'laixintao/asyncomplete-gitcommit'
+Plug 'prabirshrestha/asyncomplete-emoji.vim'
+Plug 'yami-beta/asyncomplete-omni.vim'
 
 " Snippets
 Plug 'SirVer/ultisnips'
+Plug 'thomasfaingnaert/vim-lsp-ultisnips'
 " Plug '~/labs/vim-snippets'
 " Plug 'epilande/vim-es2015-snippets'
 " Plug 'hbarcelos/vim-react-snippets'
@@ -168,7 +166,7 @@ Plug 'Quramy/vim-js-pretty-template'
 " Node.js
 Plug 'moll/vim-node'
 
-" " " Javascript + Typescript
+""" Javascript + Typescript
 " Plug 'jason0x43/vim-js-indent'
 " }
 
@@ -228,7 +226,7 @@ set secure
 
 """ GUI only {
 
-set guifont=Hasklug\ Nerd\ Font\ Mono\ Medium\ 14
+set guifont=Hasklug\ Nerd\ Font\ Mono\ Medium\ 12
 " Hide menu bar
 set guioptions -=m
 " Hide scrollbars
@@ -635,21 +633,27 @@ let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
 let g:NERDTreeDirArrowExpandable = "\u00a0"
 let g:NERDTreeDirArrowCollapsible = "\u00a0"
 
-let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols = {}
-let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['graphql'] = ''
-
 let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols = {}
 let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['.babelrc'] = ''
 let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['.prettierrc'] = ''
 let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['.eslintrc'] = ''
 let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['.editorconfig'] = ''
-let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['yarn.lock'] = ''
-let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['package-lock.json'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['yarn.lock'] = '󰈡'
+let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['package-lock.json'] = '󰈡'
 let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['.dapprc'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['robots.txt'] = '󰚩'  " nf-md-history
+
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols = {}
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['graphql'] = ''
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['tex'] = ''  " nf-md-stop_circle_outline
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['cs'] = '󰌛'  " nf-md-language_csharp
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['r'] = '󰟔'  " nf-md-language_r
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['rproj'] = '󰗆'  " nf-md-vector_rectangle
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['sol'] = '󰡪'  " nf-md-ethereum
+let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['pem'] = '󰌋'  " nf-md-key_variant
 
 let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols = {}
 let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols['\..*ignore$'] = ''
-
 
 augroup NERDTree
   autocmd!
@@ -688,162 +692,6 @@ let g:ctrlp_show_hidden = 1
 " let g:UltiSnipsSnippetDirectories=["UltiSnips", $HOME."/.snippets/UltiSnips"]
 
 """ }
-
-""" utilsnips + supertab + youcompleteme {
-
-" YouCompleteMe and UltiSnips compatibility, with the help of supertab
-
-let g:SuperTabDefaultCompletionType = '<C-n>'
-let g:SuperTabCrMapping = 0
-let g:SuperTabClosePreviewOnPopupClose = 1
-
-let g:UltiSnipsExpandTrigger = '<C-c>'
-let g:UltiSnipsJumpForwardTrigger = '<tab>'
-let g:UltiSnipsJumpBackwardTrigger = '<s-tab>'
-
-nnoremap <leader>gr :YcmCompleter RefactorRename <C-R><C-W>
-nnoremap <silent> <leader>gt :YcmCompleter GoTo<CR>
-nnoremap <silent> <leader>gT :YcmCompleter GetType<CR>
-nnoremap <silent> <leader>gd :YcmCompleter GoToDeclaration<CR>
-nnoremap <silent> <leader>gD :YcmCompleter GoToDefinition<CR>
-nnoremap <silent> <leader>gR :YcmCompleter GoToReferences<CR>
-nnoremap <silent> <leader>gi :YcmCompleter OrganizeImports<CR>
-nnoremap <silent> <leader>gD :YcmCompleter GoToDefinition<CR>
-nnoremap <silent> <leader>gI :YcmCompleter GoToImplementation<CR>
-nnoremap <silent> <leader>gh <plug>(YCMHover)
-
-let g:ycm_language_server = []
-  " \ [
-  " \   {
-  " \     'name': 'solidity',
-  " \     'cmdline': [ 'solc', '--lsp' ],
-  " \     'filetypes': [ 'solidity' ]
-  " \   },
-  " \ ]
-
-set regexpengine=1
-let g:ycm_auto_hover = 0
-let g:ycm_filepath_blacklist = {}
-let g:ycm_autoclose_preview_window_after_insertion = 1
-
-let g:ycm_error_symbol = "\uf00d"
-let g:ycm_warning_symbol = "\uf071"
-
-augroup YcmHighlightFix
-  autocmd! * <buffer>
-  autocmd VimEnter * :highlight! YcmErrorSign ctermfg=9 guifg=#F59597
-  autocmd VimEnter * :highlight! YcmWarningSign ctermfg=11 guifg=#F2DB94
-  autocmd VimEnter * :highlight! YcmErrorSection ctermfg=9 guifg=#F59597
-  autocmd VimEnter * :highlight! YcmWarningSection ctermfg=11 guifg=#F2DB94
-augroup END
-
-" https://github.com/ycm-core/YouCompleteMe/issues/3601#issuecomment-585445618
-" Milliseconds - tweak to liking
-let s:debounce = 250
-
-" --------
-"  Below here is evil. You should not read, use or otherwise acknowledge
-"  its existence.
-"
-"  YOU HAVE BEEN WARNED.
-" --------
-
-let g:ycm_auto_trigger = 0
-
-" Find the SID of autoload/youcompleteme.vim
-function! s:FindYouCompleteMeInternal()
-  let scripts = split( execute( 'scriptnames' ), '\n' )
-  for line in scripts
-    let match = matchlist( line,
-                         \ '\m\v^\s*(\d+): \f+autoload\/youcompleteme.vim$' )
-
-    if len( match ) > 0 && match[ 0 ] !=# ''
-      return match[ 1 ]
-    endif
-  endfo
-
-  return -1
-endfunction
-
-let s:youcompleteme_internal = -1
-let s:timer = 0
-
-function! s:CallYCMInt( f )
-  if s:youcompleteme_internal < 0
-    return
-  endif
-
-  exe "call \<SNR>" . s:youcompleteme_internal . '_' . a:f
-endfunction
-
-function! s:TriggerUserDefinedCompletion( ... )
-  call s:CallYCMInt( 'Complete()' )
-  call s:CallYCMInt( 'RequestCompletion()' )
-  call s:CallYCMInt( 'UpdateSignatureHelp()' )
-  call s:CallYCMInt( 'RequestSignatureHelp()' )
-endfunction
-
-let s:looked = 0
-
-function! s:LookForYCMInt( ... )
-  let s:youcompleteme_internal = s:FindYouCompleteMeInternal()
-  if s:youcompleteme_internal < 0
-    let s:looked += 1
-    if s:looked > 10
-      " abort
-      return
-    endif
-    call timer_start( 500, funcref( 's:LookForYCMInt' ) )
-    return
-  endif
-  augroup Local
-    au InsertCharPre * call s:StartYcmTrigger()
-    au InsertLeave * call s:StopYcmTrigger()
-  augroup END
-endfunction
-
-function! s:StartYcmTrigger() abort
-  call timer_stop( s:timer )
-  let s:timer = timer_start( s:debounce,
-                           \ funcref( 's:TriggerUserDefinedCompletion' ) )
-endf
-
-function! s:StopYcmTrigger() abort
-  call timer_stop( s:timer )
-endf
-
-augroup LocalStartup
-  au!
-  au VimEnter * call s:LookForYCMInt()
-augroup END
-
-""" }
-
-""" tsuquyomi {
-
-" let g:tsuquyomi_disable_default_mappings = 1
-" let g:tsuquyomi_disable_quickfix = 1
-" let g:tsuquyomi_javascript_support = 1
-
-" augroup tsuquyomi
-"   autocmd!
-
-"   autocmd FileType typescript,typescript.tsx,javascript,javascript.jsx,vue setlocal completeopt-=preview
-"   autocmd FileType typescript,typescript.tsx,javascript,javascript.jsx,vue setlocal completeopt+=menu
-
-"   autocmd FileType typescript,typescript.tsx,javascript,javascript.jsx,vue nmap <buffer> <silent> <leader>te  :TsuquyomiAsyncGeterr<CR>
-"   autocmd FileType typescript,typescript.tsx,javascript,javascript.jsx,vue nmap <buffer> <silent> <leader>td  <plug>(TsuquyomiDefinition)
-"   autocmd FileType typescript,typescript.tsx,javascript,javascript.jsx,vue nmap <buffer> <silent> <leader>tsd <plug>(TsuquyomiSplitDefinition)
-"   autocmd FileType typescript,typescript.tsx,javascript,javascript.jsx,vue nmap <buffer> <silent> <leader>tH  :TsuquyomiSignatureHelp<CR>
-"   autocmd FileType typescript,typescript.tsx,javascript,javascript.jsx,vue nmap <buffer> <silent> <leader>tb  <plug>(TsuquyomiGoBack)
-"   autocmd FileType typescript,typescript.tsx,javascript,javascript.jsx,vue nmap <buffer> <buffer> <leader>th  :<C-u>echo tsuquyomi#hint()<CR>
-"   autocmd FileType typescript,typescript.tsx,javascript,javascript.jsx,vue nmap <buffer> <silent> <leader>tT  <plug>(TsuquyomiTypeDefinition)
-"   autocmd FileType typescript,typescript.tsx,javascript,javascript.jsx,vue nmap <buffer> <silent> <leader>tR  <plug>(TsuquyomiReferences)
-"   autocmd FileType typescript,typescript.tsx,javascript,javascript.jsx,vue nmap <buffer> <silent> <leader>ti  <plug>(TsuquyomiImplementation)
-"   autocmd FileType typescript,typescript.tsx,javascript,javascript.jsx,vue nmap <buffer> <silent> <leader>tr  <plug>(TsuquyomiRenameSymbolCS)
-" augroup END
-""" }
-
 
 augroup js_ts_highlight
   autocmd! * <buffer>
@@ -1153,10 +1001,6 @@ let g:nord_italic_comments = 1
 
 """}
 
-" The "^[" is a single character. You enter it by pressing Ctrl+v and then ESC.
-let &t_8f = "\<Esc>[38;2;%lu;%lu;%lum"
-let &t_8b = "\<Esc>[48;2;%lu;%lu;%lum"
-
 " Makes the background transparent. Leave these out if you're not using a transparent terminal.
 " highlight Normal ctermbg=NONE guibg=NONE
 " highlight NonText ctermbg=NONE guibg=NONE
@@ -1167,6 +1011,54 @@ set termguicolors
 
 " Setting dark mode
 set background=dark
+
+" Mouse support
+set mouse=a
+set ttymouse=sgr
+set balloonevalterm
+" Styled and colored underline support
+let &t_AU = "\e[58:5:%dm"
+let &t_8u = "\e[58:2:%lu:%lu:%lum"
+let &t_Us = "\e[4:2m"
+let &t_Cs = "\e[4:3m"
+let &t_ds = "\e[4:4m"
+let &t_Ds = "\e[4:5m"
+let &t_Ce = "\e[4:0m"
+" Strikethrough
+let &t_Ts = "\e[9m"
+let &t_Te = "\e[29m"
+" Truecolor support
+let &t_8f = "\e[38:2:%lu:%lu:%lum"
+let &t_8b = "\e[48:2:%lu:%lu:%lum"
+let &t_RF = "\e]10;?\e\\"
+let &t_RB = "\e]11;?\e\\"
+" Bracketed paste
+let &t_BE = "\e[?2004h"
+let &t_BD = "\e[?2004l"
+let &t_PS = "\e[200~"
+let &t_PE = "\e[201~"
+" Cursor control
+let &t_RC = "\e[?12$p"
+let &t_SH = "\e[%d q"
+let &t_RS = "\eP$q q\e\\"
+let &t_SI = "\e[5 q"
+let &t_SR = "\e[3 q"
+let &t_EI = "\e[1 q"
+let &t_VS = "\e[?12l"
+" Focus tracking
+let &t_fe = "\e[?1004h"
+let &t_fd = "\e[?1004l"
+execute "set <FocusGained>=\<Esc>[I"
+execute "set <FocusLost>=\<Esc>[O"
+" Window title
+let &t_ST = "\e[22;2t"
+let &t_RT = "\e[23;2t"
+
+" vim hardcodes background color erase even if the terminfo file does
+" not contain bce. This causes incorrect background rendering when
+" using a color theme with a background color in terminals such as
+" kitty that do not support background color erase.
+let &t_ut=''
 
 " Change the color scheme here.
 try
@@ -1928,4 +1820,112 @@ let g:sandwich#magicchar#f#patterns = [
   \   },
   \ ]
 
+""" }
+
+""" vim-lsp {
+
+" let g:lsp_diagnostics_enabled = 0
+
+""" }
+
+""" asyncomplete {
+
+set omnifunc=lsp#complete
+
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
+inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+
+" asyncomplete and UltiSnips compatibility, with the help of supertab {
+
+let g:SuperTabDefaultCompletionType = '<C-n>'
+let g:SuperTabCrMapping = 0
+let g:SuperTabClosePreviewOnPopupClose = 1
+
+let g:UltiSnipsExpandTrigger = '<C-e>'
+let g:UltiSnipsJumpForwardTrigger = '<tab>'
+let g:UltiSnipsJumpBackwardTrigger = '<s-tab>'
+
+" }
+
+imap <c-space> <Plug>(asyncomplete_force_refresh)
+" For Vim 8 (<c-@> corresponds to <c-space>):
+imap <c-@> <Plug>(asyncomplete_force_refresh)
+
+let g:asyncomplete_auto_popup = 0
+
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+inoremap <silent><expr> <TAB>
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>check_back_space() ? "\<TAB>" :
+  \ asyncomplete#force_refresh()
+
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+" allow modifying the completeopt variable, or it will
+" be overridden all the time
+let g:asyncomplete_auto_completeopt = 0
+
+set completeopt=menuone,noinsert,noselect,preview
+
+augroup asyncomplete_autoclose
+  autocmd! * <buffer>
+  autocmd! CompleteDone * if pumvisible() == 0 | pclose | endif
+augroup END
+
+autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#emmet#get_source_options({
+    \ 'name': 'emmet',
+    \ 'whitelist': ['html'],
+    \ 'completor': function('asyncomplete#sources#emmet#completor'),
+    \ }))
+
+autocmd User asyncomplete_setup call asyncomplete#register_source({
+    \ 'name': 'gitcommit',
+    \ 'whitelist': ['gitcommit'],
+    \ 'priority': 10,
+    \ 'completor': function('asyncomplete#sources#gitcommit#completor')
+    \ })
+
+autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#emoji#get_source_options({
+    \ 'name': 'emoji',
+    \ 'allowlist': ['*'],
+    \ 'completor': function('asyncomplete#sources#emoji#completor'),
+    \ }))
+
+autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
+    \ 'name': 'file',
+    \ 'allowlist': ['*'],
+    \ 'priority': 10,
+    \ 'completor': function('asyncomplete#sources#file#completor')
+    \ }))
+
+autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
+    \ 'name': 'omni',
+    \ 'allowlist': ['*'],
+    \ 'blocklist': ['c', 'cpp', 'html'],
+    \ 'completor': function('asyncomplete#sources#omni#completor'),
+    \ 'config': {
+    \   'show_source_kind': 1,
+    \ },
+    \ }))
+
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necosyntax#get_source_options({
+    \ 'name': 'necosyntax',
+    \ 'allowlist': ['*'],
+    \ 'completor': function('asyncomplete#sources#necosyntax#completor'),
+    \ }))
+
+au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
+    \ 'name': 'buffer',
+    \ 'allowlist': ['*'],
+    \ 'blocklist': ['go'],
+    \ 'completor': function('asyncomplete#sources#buffer#completor'),
+    \ 'config': {
+    \    'max_buffer_size': 5000000,
+    \  },
+    \ }))
 """ }
