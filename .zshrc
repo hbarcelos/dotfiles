@@ -201,6 +201,8 @@ export PATH="${HOME}/.yarn/bin:${HOME}/.config/yarn/global/node_modules/.bin:${P
 
 # Python config
 export PYTHONPATH="$(python -c "import site, os; print(os.path.join(site.USER_BASE, 'lib', 'python', 'site-packages'))"):${PYTHONPATH}"
+# Virtualenv Wrapper setup
+[ -f /usr/bin/virtualenvwrapper.sh ] && source /usr/bin/virtualenvwrapper.sh
 
 # Volta config
 export VOLTA_HOME="${HOME}/.volta"
