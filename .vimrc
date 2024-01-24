@@ -10,6 +10,7 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'tpope/vim-sensible'
 Plug 'tpope/vim-abolish'
+Plug 'tpope/vim-scriptease'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'ntpeters/vim-better-whitespace'
 Plug 'djoshea/vim-autoread'
@@ -18,36 +19,32 @@ Plug 'junegunn/vader.vim'
 Plug 'nanotee/zoxide.vim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'arthurxavierx/vim-caser'
 
 """ }
 
 """ Interface {
 
-Plug 'dense-analysis/ale'
 " Plug '~/labs/ale'
-
+Plug 'dense-analysis/ale'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-rhubarb'
-
 Plug 'tpope/vim-dispatch'
 Plug 'brooth/far.vim'
 Plug 'junegunn/vim-peekaboo'
 Plug 'Yilin-Yang/vim-markbar'
 Plug 'dsummersl/gundo.vim'
 Plug 'ctrlpvim/ctrlp.vim'
-
 Plug 'janko/vim-test'
-
 Plug 'itchyny/lightline.vim'
 Plug 'maximbaz/lightline-ale'
 Plug 'jlanzarotta/bufexplorer'
 Plug 'moll/vim-bbye'
 Plug 'mhinz/vim-startify'
 Plug 'mhinz/vim-signify'
-Plug 'haya14busa/incsearch.vim'
-Plug 'haya14busa/incsearch-easymotion.vim'
-Plug 'haya14busa/incsearch-fuzzy.vim'
-Plug 'nelstrom/vim-visual-star-search'
+Plug 'haya14busa/is.vim'
+Plug 'haya14busa/vim-asterisk'
+Plug 'knubie/vim-kitty-navigator', {'do': 'cp ./*.py ~/.config/kitty/'}
 " Plug 'vim-scripts/colorsupport.vim'
 
 " NERDTree
@@ -58,11 +55,6 @@ Plug 'Xuyuanp/nerdtree-git-plugin'
 Plug 'ryanoasis/vim-devicons'
 " Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
 Plug 'evandotpro/nerdtree-chmod'
-
-" Tmux
-Plug 'tmux-plugins/vim-tmux'
-Plug 'tmux-plugins/vim-tmux-focus-events'
-Plug 'knubie/vim-kitty-navigator', {'do': 'cp ./*.py ~/.config/kitty/'}
 
 """ }
 
@@ -144,9 +136,12 @@ let g:polyglot_disabled = ['javascript', 'typescript', 'solidity']
 " let g:polyglot_disabled = ['javascript', 'typescript']
 
 " Solidity
+" Plug '~/labs/vim-solidity'
+Plug 'hbarcelos/vim-solidity'
 " Plug 'tomlion/vim-solidity'
-Plug 'thesis/vim-solidity'
+" Plug 'thesis/vim-solidity', { 'branch': 'main' }
 " Plug 'TovarishFin/vim-solidity'
+
 " TS/JS support {
 
 " Plug 'ianks/vim-tsx'
@@ -170,10 +165,12 @@ Plug 'moll/vim-node'
 " Plug 'jason0x43/vim-js-indent'
 " }
 
+Plug '~/labs/certora-vim'
 """ }
 
 " Markdown
 Plug 'mzlogin/vim-markdown-toc'
+Plug '~/labs/vim-checkbox'
 
 " HTML
 Plug 'alvan/vim-closetag'
@@ -226,7 +223,8 @@ set secure
 
 """ GUI only {
 
-set guifont=Hasklug\ Nerd\ Font\ Mono\ Medium\ 12
+" set guifont=Hasklug\ Nerd\ Font\ Mono\ Medium\ 14
+set guifont=Hasklug\ Nerd\ Font\ Mono\ Medium\ 14
 " Hide menu bar
 set guioptions -=m
 " Hide scrollbars
@@ -350,12 +348,18 @@ set noswapfile
 " Enables current line highlight
 set cursorline
 
+
+" Enables search highlight by default
+set hlsearch
+" Remove search highlight
+noremap <silent> <Leader>. :nohlsearch<CR>
+
+
 " Automatically quit Vim if quickfix window is the last
 augroup QuitIfQuickfixIsLast
   autocmd! * <buffer>
   au BufEnter * call MyLastWindow()
 augroup END
-
 
 augroup SpellCheck
     autocmd! * <buffer
@@ -708,6 +712,25 @@ augroup END
 
 """ ALE {
 
+" Using the signs bellow because they are not glitchy with Kitty + Vim
+" let g:ale_sign_error = '🚨'
+" let g:ale_sign_warning = '💡'
+" highlight clear ALEErrorSign " otherwise uses error bg color (typically red)
+" highlight clear ALEWarningSign " otherwise uses warning bg color (typically yellow)
+"
+let g:ale_sign_error = "\uf00d"
+let g:ale_sign_warning = "\uf071"
+
+" Display virtual text only after current line
+let g:ale_virtualtext_cursor = 'current'
+
+let g:ale_c_clang_options = '-Wall -O2 -std=c99'
+let g:ale_cpp_clang_options = '-Wall -O2 -std=c++17'
+
+let g:ale_javascript_prettier_use_local_config = 1
+let g:ale_fix_on_save = 0
+
+
 let g:ale_linters = {
   \  'javascript': ['prettier', 'eslint', 'prettier-eslint'],
   \  'javascriptreact': ['prettier', 'eslint', 'prettier-eslint'],
@@ -741,7 +764,7 @@ let g:ale_fixers = {
   \  'scss': ['prettier', 'stylelint'],
   \  'less': ['prettier', 'stylelint'],
   \  'xml': ['prettier', 'xmllint'],
-  \  'solidity': ['prettier'],
+  \  'solidity': ['forge', 'prettier'],
   \  'toml': ['prettier'],
   \  'python': ['autopep8', 'yapf'],
   \  'html': ['prettier'],
@@ -754,18 +777,6 @@ let g:ale_fixers = {
   \  'cpp': ['clang-format'],
 \}
 
-let g:ale_c_clang_options = '-Wall -O2 -std=c99'
-let g:ale_cpp_clang_options = '-Wall -O2 -std=c++17'
-
-" Using the signs bellow because they are not glitchy with Kitty + Vim
-" let g:ale_sign_error = '🚨'
-" let g:ale_sign_warning = '💡'
-" highlight clear ALEErrorSign " otherwise uses error bg color (typically red)
-" highlight clear ALEWarningSign " otherwise uses warning bg color (typically yellow)
-"
-let g:ale_sign_error = "\uf00d"
-let g:ale_sign_warning = "\uf071"
-
 augroup ALEHighlightFix
   autocmd! * <buffer>
   autocmd VimEnter * :highlight! ALEErrorSign ctermfg=9 guifg=#F59597
@@ -774,14 +785,17 @@ augroup ALEHighlightFix
   autocmd VimEnter * :highlight! ALEWarning ctermfg=11 guifg=#F2DB94
 augroup END
 
-let g:ale_javascript_prettier_use_local_config = 1
-let g:ale_fix_on_save = 0
-
 nnoremap <silent> <leader>lf :ALEFix<CR>
+nnoremap <silent> <leader>ld :ALEDetail<CR>
 
 nmap <silent> <leader>j <Plug>(ale_next_wrap)
 nmap <silent> <leader>k <Plug>(ale_previous_wrap)
 
+nmap <silent> <leader>gd :ALEGoToDefinition<CR>
+nmap <silent> <leader>gh :ALEHover<CR>
+nmap <silent> <leader>gr :ALERename<CR>
+nmap <silent> <leader>gR :ALEFindReferences<CR>
+nmap <silent> <leader>gT :ALEGoToTypeDefinition<CR>
 """ }
 
 """ lighline {
@@ -1118,59 +1132,18 @@ let g:easy_align_delimiters = {
 
 """ }
 
-""" incsearch {
+""" vim-asterisk {
 
-" incsearch.vim x fuzzy x vim-easymotion
-map <Leader> <Plug>(easymotion-prefix)
+let g:asterisk#keeppos = 1
 
-function! s:incsearch_config(...) abort
-  return incsearch#util#deepextend(deepcopy({
-  \   'modules': [incsearch#config#easymotion#module({'overwin': 1})],
-  \   'keymap': {
-  \     "\<C-e>": '<Over>(easymotion)'
-  \   },
-  \   'is_expr': 0
-  \ }), get(a:, 1, {}))
-endfunction
-
-noremap <silent><expr> /  incsearch#go(<SID>incsearch_config())
-noremap <silent><expr> ?  incsearch#go(<SID>incsearch_config({'command': '?'}))
-noremap <silent><expr> g/ incsearch#go(<SID>incsearch_config({'is_stay': 1}))
-
-function! s:config_easyfuzzymotion(...) abort
-  return extend(deepcopy({
-  \   'converters': [incsearch#config#fuzzy#converter()],
-  \   'modules': [incsearch#config#easymotion#module()],
-  \   'keymap': {
-  \     "\<C-e>": '<Over>(easymotion)'
-  \   },
-  \   'is_expr': 0,
-  \   'is_stay': 0
-  \ }), get(a:, 1, {}))
-endfunction
-
-noremap <silent><expr> z/  incsearch#go(<SID>config_easyfuzzymotion({}))
-noremap <silent><expr> z?  incsearch#go(<SID>incsearch_config({'command': '?'}))
-noremap <silent><expr> gz/ incsearch#go(<SID>config_easyfuzzymotion({ 'is_stay': 1 }))
-
-nmap <Space> /
-nmap z<Space> z/
-
-set hlsearch
-" Remove search highlight
-noremap <silent> <Leader>. :nohlsearch<CR>
-
-" Turn on case-insensitive feature
-let g:EasyMotion_smartcase = 1
-
-let g:incsearch#auto_nohlsearch = 1
-
-map n  <Plug>(incsearch-nohl-n)
-map N  <Plug>(incsearch-nohl-N)
-map *  <Plug>(incsearch-nohl-*)
-map #  <Plug>(incsearch-nohl-#)
-map g* <Plug>(incsearch-nohl-g*)
-map g# <Plug>(incsearch-nohl-g#)
+map *   <Plug>(asterisk-*)
+map #   <Plug>(asterisk-#)
+map g*  <Plug>(asterisk-g*)
+map g#  <Plug>(asterisk-g#)
+map z*  <Plug>(asterisk-z*)
+map gz* <Plug>(asterisk-gz*)
+map z#  <Plug>(asterisk-z#)
+map gz# <Plug>(asterisk-gz#)
 
 """ }
 
@@ -1192,9 +1165,6 @@ if executable('rg')
 
   let g:ctrlp_user_command = 'rg %s --files --color=never --ignore-case --smart-case --hidden --iglob "!.{git,svn,hg}/" --glob ""'
 
-  " bind K to grep word under cursor
-  nnoremap <leader>K :execute 'grep! "\b"'.expand("<cword>").'"\b"'<CR>:rightb<SPACE>cw<CR><CR>
-
   """ FAR {
   let g:far#source = 'rg'
   let g:far#ignore_files+=['.gitignore']
@@ -1206,9 +1176,6 @@ elseif executable('ag')
 
   let g:ctrlp_user_command = 'ag %s -l --nocolor --smart-case --hidden --ignore ".git" -g ""'
 
-  " bind K to grep word under cursor
-  nnoremap <leader>K :execute 'grep! "\b"'.expand("<cword>").'"\b"'<CR>:rightb<SPACE>cw<CR><CR>
-
   """ FAR {
   let g:far#source = 'ag'
   """ }
@@ -1219,6 +1186,12 @@ endif
 
 command! -nargs=+ -complete=file -bar Grep silent! grep! <args>|copen|redraw!
 nnoremap <leader><Space> :Grep<SPACE>
+nnoremap <leader>/ :Grep<SPACE>
+
+" bind K to grep word under cursor
+nnoremap <leader>* :execute 'grep! "\b"'.expand("<cword>").'"\b"'<CR>:rightb<SPACE>cw<CR>
+vnoremap <leader>* :<C-u>execute 'grep! "'.expand("<C-r>=GetVisual()<CR>").'"'<CR>:rightb<SPACE>cw<CR>
+
 
 """ }
 
@@ -1665,10 +1638,6 @@ nmap <silent> <leader><leader>d <Plug>ToggleDiffCharAllLines
 
 """ }
 
-""" vim-kitty=navigator {
-let g:kitty_navigator_installation_path='./vim-kitty-navigator'
-""" }
-
 """ vim-sandwich {
 let g:sandwich#recipes = deepcopy(g:sandwich#default_recipes)
 
@@ -1730,6 +1699,21 @@ nmap <silent> sass <Plug>(sandwich-add)<SID>line
 " Rethink auto-delete and auto-replace
 nmap sds <Plug>(sandwich-delete-auto)
 nmap srs <Plug>(sandwich-replace-auto)
+
+function! s:textobj_line_without_semicolon(a_or_i) abort
+  if a:a_or_i is# 'a'
+    normal! v0og_
+  else
+    normal! v^og_
+  endif
+  if getline('.') =~# ';$'
+    normal! h
+  endif
+endfunction
+onoremap <silent> i; :<C-u>call <SID>textobj_line_without_semicolon('i')<CR>
+xnoremap <silent> i; :<C-u>call <SID>textobj_line_without_semicolon('i')<CR>
+onoremap <silent> a; :<C-u>call <SID>textobj_line_without_semicolon('a')<CR>
+xnoremap <silent> a; :<C-u>call <SID>textobj_line_without_semicolon('a')<CR>
 
 " Use d (Double-quote) for ", q (Quote) for ' and g (Grave accent) for `
 " Use vim-surround convention of adding spaces to {,( and [ surroundings
@@ -1824,7 +1808,8 @@ let g:sandwich#magicchar#f#patterns = [
 
 """ vim-lsp {
 
-" let g:lsp_diagnostics_enabled = 0
+let g:lsp_diagnostics_enabled = 0
+let g:lsp_diagnostics_virtual_text_enabled = 0
 
 """ }
 
@@ -1928,4 +1913,11 @@ au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#source
     \    'max_buffer_size': 5000000,
     \  },
     \ }))
+""" }
+
+""" vim-checkbox {
+
+let g:checkbox_create_mappings = 0
+
+nnoremap <silent> <leader>x :ToggleOrInsertCheckbox<CR>
 """ }
