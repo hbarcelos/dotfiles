@@ -9,6 +9,7 @@
 	cia = commit -a
 	cam = commit --amend
 	cama = commit --amend -a
+	cmsg = commit -m
 
 	s = status -s
 	sts = status -s
@@ -25,15 +26,21 @@
 	dcd = diff --color-words=.
 	dft = difftool
 
+	pl = pull
+	plp = pull --prune
+	ps = push
+	pst = push --tags
+
 	br = branch
+	main-branch = !git symbolic-ref refs/remotes/origin/HEAD | cut -d '/' -f 4
+	mbr = !git main-branch
 	current-branch = rev-parse --abbrev-ref HEAD
 	cbr = !git current-branch
-	ps = push
-	pl = pull
-	pst = push --tags
-	cleanup = !git branch --merged master | grep  -v '\\*\\|master' | xargs -I {} git branch -d {}
+	cleanup-merged = !git branch --merged $(git main-branch) | grep  -v '\\*\\|'$(git main-branch) | xargs -r git branch -D
+	cleanup-squashed = git branch --format '%(refname:short) %(upstream:track)' | awk '$2 == "[gone]" { print $1 }' | xargs -r git branch -D
+	cleanup = !git cleanup-merged && git cleanup-squashed
 	cln = !git cleanup
-	cleanup-remote= !git checkout master && git pull && git branch -r --merged master | grep -v '^.*\\(master\\)' | sed s:origin/:: | xargs -I {} git push origin --delete {}
+	cleanup-remote= !git switch $(git main-branch) && git pull && git branch -r --merged $(git main-branch) | grep -v '^.*\\('$(git main-branch)'\\)' | sed s:origin/:: | xargs -I {} git push origin --delete {}
 	clnr = !git cleanup-remote
 
 	r = reset
@@ -53,6 +60,7 @@
 	lnc = log --pretty=format:"%h\\ %s\\ [%cn]"
 	hist = log --graph --pretty=format:'%Cred%h%Creset -%C(yellow)%d%Creset %s %Cgreen(%cr) %C(bold blue)<%an>%Creset' --abbrev-commit
 	hi = hist
+	hiaf = hist --all --first-parent
 
 	unstage = reset HEAD --
 	uns = reset HEAD --

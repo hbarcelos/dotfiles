@@ -63,7 +63,7 @@
 
 [tag]
 	gpgSign = true
-    forceSignAnnotated = true
+	forceSignAnnotated = true
 [commit]
 	gpgSign = true
 [gpg]
@@ -78,3 +78,4 @@
 
 [includeIf "gitdir:~/work/"]
 	path = ~/work/.gitconfig
+
