@@ -37,7 +37,7 @@
 	current-branch = rev-parse --abbrev-ref HEAD
 	cbr = !git current-branch
 	cleanup-merged = !git branch --merged $(git main-branch) | grep  -v '\\*\\|'$(git main-branch) | xargs -r git branch -D
-	cleanup-squashed = git branch --format '%(refname:short) %(upstream:track)' | awk '$2 == "[gone]" { print $1 }' | xargs -r git branch -D
+	cleanup-squashed = !git branch --format '%(refname:short) %(upstream:track)' | awk '$2 ~ /\\[gone\\]/ { print $1 }' | xargs -r git branch -D
 	cleanup = !git cleanup-merged && git cleanup-squashed
 	cln = !git cleanup
 	cleanup-remote= !git switch $(git main-branch) && git pull && git branch -r --merged $(git main-branch) | grep -v '^.*\\('$(git main-branch)'\\)' | sed s:origin/:: | xargs -I {} git push origin --delete {}
