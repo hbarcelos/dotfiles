@@ -1719,6 +1719,8 @@ xnoremap <silent> a; :<C-u>call <SID>textobj_line_without_semicolon('a')<CR>
 " Use vim-surround convention of adding spaces to {,( and [ surroundings
 " Use insert mode for surround with function
 " Add Markdown specific surround
+"
+  " \   {'buns': ['(', ')'], 'cursor': 'head', 'command': ['startinsert'], 'kind': ['add', 'replace'], 'action': ['add'], 'input': ['f']},
 let g:sandwich#recipes += [
   \   {'buns': ['"', '"'], 'quoteescape': 1, 'input': ['d']},
   \   {'buns': ["'", "'"], 'quoteescape': 1, 'input': ['q']},
@@ -1732,7 +1734,6 @@ let g:sandwich#recipes += [
   \   {'buns': ['{\s*', '\s*}'],   'regex': 1, 'nesting': 1, 'match_syntax': 1, 'kind': ['delete', 'replace', 'textobj'], 'action': ['delete'], 'input': ['{']},
   \   {'buns': ['\[\s*', '\s*\]'], 'regex': 1, 'nesting': 1, 'match_syntax': 1, 'kind': ['delete', 'replace', 'textobj'], 'action': ['delete'], 'input': ['[']},
   \   {'buns': ['(\s*', '\s*)'],   'regex': 1, 'nesting': 1, 'match_syntax': 1, 'kind': ['delete', 'replace', 'textobj'], 'action': ['delete'], 'input': ['(']},
-  \   {'buns': ['(', ')'], 'cursor': 'head', 'command': ['startinsert'], 'kind': ['add', 'replace'], 'action': ['add'], 'input': ['f']},
   \   {
   \     'buns':       ['```', '```'],
   \     'cursor':     'headend',

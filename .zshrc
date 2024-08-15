@@ -33,7 +33,6 @@ else
   zplug "cowboyd/zsh-volta", from:github
   zplug "plugins/sudo", from:oh-my-zsh
   zplug "plugins/yarn", from:oh-my-zsh
-
   zplug "chrissicool/zsh-256color"
   zplug "djui/alias-tips"
   zplug "hlissner/zsh-autopair", defer:2
@@ -43,10 +42,9 @@ else
   zplug "MichaelAquilina/zsh-emojis"
   zplug "Seinh/git-prune"
   zplug "adrieankhisbe/diractions"
-  zplug "junegunn/fzf", from:github, as:command, hook-build:"./install --all"
-  zplug "junegunn/fzf", from:github, as:plugin, use:"shell/*.zsh", defer:2
+  zplug "junegunn/fzf", as:command, hook-build:"./install --all"
+  zplug "junegunn/fzf", as:plugin, use:"shell/*.zsh", defer:2
   zplug "spaceship-prompt/spaceship-prompt", use:spaceship.zsh, from:github, as:theme
-
   zplug 'zsh-users/zsh-completions', depth:1 # more completions
 
   ### Plugins below must be declared in this order {
@@ -80,6 +78,10 @@ else
   zle -N deer
   bindkey '\ed' deer
 
+  # <Alt-E> to edit the current command line
+  autoload -z edit-command-line
+  zle -N edit-command-line
+  bindkey '\ee' edit-command-line
 fi
 
 setopt append_history # better concurrent shell history sharing
@@ -193,6 +195,14 @@ fi
 
 ########
 
+# SSH agent config
+if [ -S "${XDG_RUNTIME_DIR}/ssh-agent.socket" ]; then
+  export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
+else
+  echo "The systemd service \`ssh-agent.service\` is not running. Please run:"
+  echo -e "\n\tsystemctl --user enable --now ssh-agent.service"
+fi
+
 # GOLANG
 export GOPATH="${GOPATH:-${HOME}/go}"
 
@@ -201,6 +211,8 @@ export PATH="${HOME}/.yarn/bin:${HOME}/.config/yarn/global/node_modules/.bin:${P
 
 # Python config
 export PYTHONPATH="$(python -c "import site, os; print(os.path.join(site.USER_BASE, 'lib', 'python', 'site-packages'))"):${PYTHONPATH}"
+export VIRTUALENVWRAPPER_PYTHON=/usr/bin/python3
+
 # Virtualenv Wrapper setup
 [ -f /usr/bin/virtualenvwrapper.sh ] && source /usr/bin/virtualenvwrapper.sh
 
