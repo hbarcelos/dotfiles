@@ -36,6 +36,8 @@
 	mbr = !git main-branch
 	current-branch = rev-parse --abbrev-ref HEAD
 	cbr = !git current-branch
+	current-commit = rev-parse --short HEAD
+	ccm = !git current-commit
 	cleanup-merged = !git branch --merged $(git main-branch) | grep  -v '\\*\\|'$(git main-branch) | xargs -r git branch -D
 	cleanup-squashed = !git branch --format '%(refname:short) %(upstream:track)' | awk '$2 ~ /\\[gone\\]/ { print $1 }' | xargs -r git branch -D
 	cleanup = !git cleanup-merged && git cleanup-squashed

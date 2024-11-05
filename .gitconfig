@@ -4,6 +4,9 @@
 	; pager = delta --diff-so-fancy
 	; pager = delta
 
+[advice]
+	detachedHead = false
+
 [merge]
 	conflictstyle = diff3
 
@@ -78,4 +81,3 @@
 
 [includeIf "gitdir:~/work/"]
 	path = ~/work/.gitconfig
-
