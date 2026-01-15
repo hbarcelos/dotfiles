@@ -91,11 +91,14 @@ Plug 'justinj/vim-textobj-reactprop'
 Plug 'osyo-manga/vim-textobj-blockwise'
 
 " LSP and autocomplete
-Plug 'prabirshrestha/vim-lsp'
+" Plug 'prabirshrestha/vim-lsp'
+" Plug 'hbarcelos/vim-lsp'
+Plug '~/labs/vim-lsp'
 Plug 'mattn/vim-lsp-settings'
 Plug 'thomasfaingnaert/vim-lsp-snippets'
 Plug 'prabirshrestha/async.vim'
 Plug 'prabirshrestha/asyncomplete.vim'
+Plug 'prabirshrestha/asyncomplete-lsp.vim'
 Plug 'prabirshrestha/asyncomplete-file.vim'
 Plug 'prabirshrestha/asyncomplete-buffer.vim'
 Plug 'prabirshrestha/asyncomplete-emmet.vim'
@@ -104,6 +107,7 @@ Plug 'andreypopp/asyncomplete-ale.vim'
 Plug 'laixintao/asyncomplete-gitcommit'
 Plug 'prabirshrestha/asyncomplete-emoji.vim'
 Plug 'yami-beta/asyncomplete-omni.vim'
+Plug 'keremc/asyncomplete-racer.vim'
 
 " Snippets
 Plug 'SirVer/ultisnips'
@@ -115,6 +119,9 @@ Plug 'thomasfaingnaert/vim-lsp-ultisnips'
 " Plug 'ahmedelgabri/vim-ava-snippets'
 
 """ }
+
+Plug 'vadimcn/codelldb'
+Plug 'dradtke/vim-dap'
 
 """ Syntax {
 
@@ -136,11 +143,10 @@ let g:polyglot_disabled = ['javascript', 'typescript', 'solidity']
 " let g:polyglot_disabled = ['javascript', 'typescript']
 
 " Solidity
-" Plug '~/labs/vim-solidity'
-Plug 'hbarcelos/vim-solidity'
+Plug '~/labs/vim-solidity'
+" Plug 'hbarcelos/vim-solidity'
 " Plug 'tomlion/vim-solidity'
 " Plug 'thesis/vim-solidity', { 'branch': 'main' }
-" Plug 'TovarishFin/vim-solidity'
 
 " TS/JS support {
 
@@ -189,14 +195,18 @@ Plug 'vim-scripts/indentpython.vim'
 " SVG
 Plug 'jasonshell/vim-svg-indent'
 
+" Rust
+Plug 'rust-lang/rust.vim'
+
 " Themes
 " Plug 'nanotech/jellybeans.vim'
 " Plug 'morhetz/gruvbox'
 " To install the NORD theme in Gnome Terminal, run:
 " curl -s https://raw.githubusercontent.com/arcticicestudio/nord-gnome-terminal/develop/src/nord.sh | bash -
 " Plug 'arcticicestudio/nord-vim'
+Plug '~/labs/one-vim', { 'do': './setup.sh' }
 " Plug '~/labs/polar-ice-vim', { 'do': './setup.sh' }
-Plug 'hbarcelos/polar-ice-vim', { 'do': './setup.sh' }
+" Plug 'hbarcelos/polar-ice-vim', { 'do': './setup.sh' }
 " Plug '~/labs/gui-font-size.vim'
 Plug 'hbarcelos/gui-font-size.vim'
 
@@ -208,6 +218,7 @@ Plug 'johngrib/vim-game-code-break'
 """ }
 
 Plug 'fladson/vim-kitty'
+Plug 'Exafunction/codeium.vim', { 'branch': 'main' }
 
 call plug#end()
 
@@ -262,9 +273,9 @@ set smarttab
 set shiftround
 " a tab occupy the size of 4 spaces
 set tabstop=4
-set softtabstop=2
+set softtabstop=4
 " number of spaces to use for autoindenting
-set shiftwidth=2
+set shiftwidth=4
 set expandtab
 
 " Folding
@@ -323,7 +334,8 @@ set showmatch
 set matchtime=2
 
 " set list
-set listchars=eol:$,tab:>-,lead:·,trail:~,extends:>,precedes:<
+" set listchars=eol:$,tab:>-,lead:·,trail:~,extends:>,precedes:<
+set listchars=eol:↵,tab:→\ ,lead:·,trail:•,extends:⟩,precedes:⟨
 
 "Recursively set the path of the project.
 set path=$PWD/**
@@ -428,19 +440,11 @@ nnoremap <leader>y "+y
 nnoremap <leader>Y "+Y
 nnoremap <leader>p "+p
 nnoremap <leader>P "+P
-nnoremap <leader>d "+d
-nnoremap <leader>D "+D
-nnoremap <leader>c "+c
-nnoremap <leader>C "+C
 
 vnoremap <leader>y "+y
 vnoremap <leader>Y "+Y
 vnoremap <leader>p "+p
 vnoremap <leader>P "+P
-vnoremap <leader>d "+d
-vnoremap <leader>D "+D
-vnoremap <leader>c "+c
-vnoremap <leader>C "+C
 
 " Automatically jump to end of text pasted
 vnoremap <silent> y y`]
@@ -524,6 +528,8 @@ inoremap <silent> <F10> <C-o>:set number!<CR>
 cnoremap <silent> <F10> <C-c>:set number!<CR>
 
 " Toggle line wrapping
+set linebreak
+set wrap
 noremap <silent> <F12> :set wrap!<CR>
 inoremap <silent> <F12> <C-o>:set wrap!<CR>
 cnoremap <silent> <F12> <C-c>:set wrap!<CR>
@@ -721,14 +727,18 @@ augroup END
 let g:ale_sign_error = "\uf00d"
 let g:ale_sign_warning = "\uf071"
 
-" Display virtual text only after current line
-let g:ale_virtualtext_cursor = 'current'
-
 let g:ale_c_clang_options = '-Wall -O2 -std=c99'
 let g:ale_cpp_clang_options = '-Wall -O2 -std=c++17'
 
 let g:ale_javascript_prettier_use_local_config = 1
 let g:ale_fix_on_save = 0
+
+" Display virtual text only after current line
+let g:ale_virtualtext_cursor = 'current'
+let g:ale_completion_enabled = 0
+let g:ale_popup_menu_enabled = 1
+" let g:ale_floating_preview = 1
+let g:ale_disable_lsp = 1
 
 
 let g:ale_linters = {
@@ -764,6 +774,7 @@ let g:ale_fixers = {
   \  'scss': ['prettier', 'stylelint'],
   \  'less': ['prettier', 'stylelint'],
   \  'xml': ['prettier', 'xmllint'],
+  \  'rust': ['rustfmt'],
   \  'solidity': ['forge', 'prettier'],
   \  'toml': ['prettier'],
   \  'python': ['autopep8', 'yapf'],
@@ -791,21 +802,22 @@ nnoremap <silent> <leader>ld :ALEDetail<CR>
 nmap <silent> <leader>j <Plug>(ale_next_wrap)
 nmap <silent> <leader>k <Plug>(ale_previous_wrap)
 
-nmap <silent> <leader>gd :ALEGoToDefinition<CR>
-nmap <silent> <leader>gh :ALEHover<CR>
-nmap <silent> <leader>gr :ALERename<CR>
-nmap <silent> <leader>gR :ALEFindReferences<CR>
-nmap <silent> <leader>gT :ALEGoToTypeDefinition<CR>
+nmap <silent> <leader>gd :LspDefinition<CR>
+nmap <silent> <leader>gh :LspHover<CR>
+nmap <silent> <leader>gr :LspRename<CR>
+nmap <silent> <leader>gR :LspReferences<CR>
+nmap <silent> <leader>gT :LspTypeDefinition<CR>
+nmap <silent> <leader>gp <Plug>(lsp-preview-focus)
 """ }
 
 """ lighline {
 " \ 'colorscheme': 'nord',
 
 let g:lightline = {
-      \ 'colorscheme': 'PolarIce',
+      \ 'colorscheme': 'One',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'readonly', 'filename' ], ['ctrlpmark'] ],
-      \   'right': [ [ 'linter_checking' ,'linter_errors', 'linter_warnings', 'linter_infos' , 'linter_ok', 'lineinfo' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
+      \   'right': [ [ 'linter_checking' ,'linter_errors', 'linter_warnings', 'linter_infos' , 'linter_ok', 'lineinfo', 'codeium' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
       \ },
       \ 'component_function': {
       \   'fugitive': 'LightLineFugitive',
@@ -821,6 +833,7 @@ let g:lightline = {
       \   'linter_warnings': 'lightline#ale#warnings',
       \   'linter_errors': 'lightline#ale#errors',
       \   'linter_ok': 'lightline#ale#ok',
+      \   'codeium': 'LightLineCodeium',
       \ },
       \ 'component_type': {
       \   'linter_warnings': 'warning',
@@ -907,6 +920,10 @@ function! CtrlPMark()
   else
     return ''
   endif
+endfunction
+
+function! LightLineCodeium()
+  return "\ue28c" . codeium#GetStatusString()
 endfunction
 
 let g:ctrlp_status_func = {
@@ -1077,7 +1094,7 @@ let &t_ut=''
 " Change the color scheme here.
 try
   " colorscheme nord
-  colorscheme PolarIce
+  colorscheme One
 catch
   colorscheme default
 endtry
@@ -1721,6 +1738,58 @@ xnoremap <silent> a; :<C-u>call <SID>textobj_line_without_semicolon('a')<CR>
 " Add Markdown specific surround
 "
   " \   {'buns': ['(', ')'], 'cursor': 'head', 'command': ['startinsert'], 'kind': ['add', 'replace'], 'action': ['add'], 'input': ['f']},
+let g:sandwich#magicchar#generic#patterns = [
+  \   {
+  \     'header' : '\<\%(\h\k*\%(\.\|::\)\)*\h\k*',
+  \     'bra'    : '<',
+  \     'ket'    : '>',
+  \     'footer' : '',
+  \   },
+  \ ]
+
+function! SandwichGenericName() abort
+  call operator#sandwich#show()
+  try
+    echohl MoreMsg
+    let generic = input('generic: ')
+    " flash prompt
+    echo ''
+  finally
+    echohl NONE
+    call operator#sandwich#quench()
+  endtry
+  if generic ==# ''
+    throw 'OperatorSandwichCancel'
+  endif
+  return generic . '<'
+endfunction
+
+function! s:with_generic_patterns(kind, mode) abort
+  let l:save = get(g:, 'sandwich#magicchar#f#patterns', v:null)
+  let g:sandwich#magicchar#f#patterns = g:sandwich#magicchar#generic#patterns
+  try
+    call sandwich#magicchar#f#textobj(a:kind, a:mode)
+  finally
+    if type(l:save) == v:t_list
+      let g:sandwich#magicchar#f#patterns = l:save
+    else
+      unlet! g:sandwich#magicchar#f#patterns
+    endif
+  endtry
+endfunction
+
+function! SandwichGenericTextobjI(mode) abort
+  call s:with_generic_patterns('i', a:mode)
+endfunction
+
+function! SandwichGenericTextobjIP(mode) abort
+  call s:with_generic_patterns('ip', a:mode)
+endfunction
+
+onoremap <silent> <Plug>(textobj-sandwich-generic-i) :<C-u>call SandwichGenericTextobjI('o')<CR>
+xnoremap <silent> <Plug>(textobj-sandwich-generic-i) :<C-u>call SandwichGenericTextobjI('x')<CR>
+onoremap <silent> <Plug>(textobj-sandwich-generic-ip) :<C-u>call SandwichGenericTextobjIP('o')<CR>
+xnoremap <silent> <Plug>(textobj-sandwich-generic-ip) :<C-u>call SandwichGenericTextobjIP('x')<CR>
 let g:sandwich#recipes += [
   \   {'buns': ['"', '"'], 'quoteescape': 1, 'input': ['d']},
   \   {'buns': ["'", "'"], 'quoteescape': 1, 'input': ['q']},
@@ -1793,6 +1862,8 @@ let g:sandwich#recipes += [
   \     'filetype': ['markdown'],
   \     'input':    ['I'],
   \   },
+  \   {'buns': ['SandwichGenericName()', '">"'], 'kind': ['add', 'replace'], 'action': ['add'], 'expr': 1, 'input': ['<'], 'filetype': ['rust', 'cpp', 'typescript', 'typescriptreact']},
+  \   {'external': ["\<Plug>(textobj-sandwich-generic-ip)", "\<Plug>(textobj-sandwich-generic-i)"], 'noremap': 0, 'kind': ['delete', 'replace', 'query'], 'input': ['<'], 'filetype': ['rust', 'cpp', 'typescript', 'typescriptreact']},
   \ ]
 
 " Make f match `obj.method(|)` as well as `func(|)`
@@ -1809,8 +1880,59 @@ let g:sandwich#magicchar#f#patterns = [
 
 """ vim-lsp {
 
-let g:lsp_diagnostics_enabled = 0
+let g:lsp_diagnostics_enabled = 1
 let g:lsp_diagnostics_virtual_text_enabled = 0
+let g:lsp_completion_documentation_enabled = 1
+let g:lsp_completion_documentation_delay = 120
+let g:lsp_hover_ui = 'preview'
+let g:lsp_preview_keep_focus = 1
+let g:lsp_preview_float = 1
+let g:lsp_hover_conceal = 1
+
+function! s:LspFixFloatSyntax() abort
+  if !exists('*popup_list')
+    return
+  endif
+  let l:popups = popup_list()
+  if empty(l:popups)
+    return
+  endif
+  for l:winid in l:popups
+    let l:bufnr = winbufnr(l:winid)
+    if l:bufnr <= 0
+      continue
+    endif
+    if getbufvar(l:bufnr, '&buftype') !=# 'nofile'
+      continue
+    endif
+    if getbufvar(l:bufnr, '&buflisted')
+      continue
+    endif
+    if getbufvar(l:bufnr, '&swapfile')
+      continue
+    endif
+    call win_execute(l:winid, 'setlocal nonumber norelativenumber')
+    call win_execute(l:winid, 'setlocal signcolumn=no foldcolumn=0')
+    call win_execute(l:winid, 'setlocal conceallevel=2')
+    call win_execute(l:winid, 'setlocal concealcursor=nvic')
+    if !getbufvar(l:bufnr, 'lsp_float_syntax_ready', 0)
+      call win_execute(l:winid, 'setlocal filetype=markdown')
+      call win_execute(l:winid, 'syntax sync fromstart')
+      call setbufvar(l:bufnr, 'lsp_float_syntax_ready', 1)
+    endif
+  endfor
+endfunction
+
+augroup lsp_float_syntax_fix
+  autocmd!
+  autocmd User lsp_float_opened call s:LspFixFloatSyntax()
+augroup END
+
+augroup lsp_preview_window_fix
+  autocmd!
+  autocmd FileType *lsp-hover setlocal nonumber norelativenumber signcolumn=no foldcolumn=0 conceallevel=2 concealcursor=nvic
+  autocmd FileType *lsp-hover syntax sync fromstart
+augroup END
 
 """ }
 
@@ -1821,6 +1943,8 @@ set omnifunc=lsp#complete
 inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
 inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 inoremap <expr> <cr>    pumvisible() ? asyncomplete#close_popup() : "\<cr>"
+" For Vim 8 (<c-@> corresponds to <c-space>):
+inoremap <c-space> <Plug>(asyncomplete_force_refresh)
 
 " asyncomplete and UltiSnips compatibility, with the help of supertab {
 
@@ -1833,10 +1957,6 @@ let g:UltiSnipsJumpForwardTrigger = '<tab>'
 let g:UltiSnipsJumpBackwardTrigger = '<s-tab>'
 
 " }
-
-imap <c-space> <Plug>(asyncomplete_force_refresh)
-" For Vim 8 (<c-@> corresponds to <c-space>):
-imap <c-@> <Plug>(asyncomplete_force_refresh)
 
 let g:asyncomplete_auto_popup = 0
 
@@ -1852,11 +1972,20 @@ inoremap <silent><expr> <TAB>
 
 inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-" allow modifying the completeopt variable, or it will
-" be overridden all the time
-let g:asyncomplete_auto_completeopt = 0
+let g:asyncomplete_auto_popup = 0
 
-set completeopt=menuone,noinsert,noselect,preview
+function! s:check_back_space() abort
+    let col = col('.') - 1
+    return !col || getline('.')[col - 1]  =~ '\s'
+endfunction
+
+inoremap <silent><expr> <TAB>
+  \ pumvisible() ? "\<C-n>" :
+  \ <SID>check_back_space() ? "\<TAB>" :
+  \ asyncomplete#force_refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+set completeopt=menuone,noinsert,noselect
 
 augroup asyncomplete_autoclose
   autocmd! * <buffer>
@@ -1899,6 +2028,14 @@ autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#s
     \ },
     \ }))
 
+if exists('*asyncomplete#sources#lsp#get_source_options')
+  autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#lsp#get_source_options({
+      \ 'name': 'lsp',
+      \ 'allowlist': ['*'],
+      \ 'completor': function('asyncomplete#sources#lsp#completor'),
+      \ }))
+endif
+
 au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necosyntax#get_source_options({
     \ 'name': 'necosyntax',
     \ 'allowlist': ['*'],
@@ -1922,3 +2059,29 @@ let g:checkbox_create_mappings = 0
 
 nnoremap <silent> <leader>x :ToggleOrInsertCheckbox<CR>
 """ }
+
+""" codelldb {
+nnoremap <leader>dn :DapContinue<CR>
+nnoremap <leader>ds :DapStepInto<CR>
+nnoremap <leader>do :DapStepOut<CR>
+nnoremap <leader>db :DapToggleBreakpoint<CR>
+" }
+
+""" rust-analyzer {
+if executable('rust-analyzer')
+  augroup lsp_rust_analyzer
+    autocmd!
+    autocmd User lsp_setup call lsp#register_server({
+      \ 'name': 'rust-analyzer',
+      \ 'cmd': {server_info->['rust-analyzer']},
+      \ 'whitelist': ['rust'],
+      \ 'workspace_config': {
+      \   'rust-analyzer': {
+      \     'cargo': {'allFeatures': v:true},
+      \     'procMacro': {'enable': v:true},
+      \   },
+      \ },
+      \ })
+  augroup END
+endif
+" }

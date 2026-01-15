@@ -56,6 +56,9 @@ else
   # after executing compinit command and sourcing other plugins
   # (If the defer tag is given 2 or above, run after compinit command)
   zplug "zsh-users/zsh-syntax-highlighting", defer:2
+
+  zplug "~/labs/makerdao-zsh-utils", from:local
+  zplug "~/labs/tenderly-zsh", from:local, defer:2
   ### }
 
   # zplug check returns true if all packages are installed
@@ -232,4 +235,12 @@ export PATH="${HOME}/.foundry/bin:${PATH}"
   export PATH="${HOME}/.zplug/repos/zplug/zplug/bin:${PATH}"
 [ -d ~/.zplug/bin ] && \
   export PATH="${HOME}/.zplug/bin:${PATH}"
+
+# Fireclaw CLI integration
+function firecrawl {
+  http POST 'http://localhost:3002/v1/scrape' "url=${1}" | jq -r .data.markdown | glow
+}
+
+# DappTools from Nix
+export PATH="${PATH}:/nix/store/x8q85assliyvhwqgp9dq17qbvail2shl-dapp-0.35.0/bin"
 

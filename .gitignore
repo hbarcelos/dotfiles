@@ -4,3 +4,4 @@
 *.bak
 .*.bak
 .gitconfig.d/overrides.gitconfig
+.config/spaceship/spaceship.zsh.zwc
