@@ -92,8 +92,8 @@ Plug 'osyo-manga/vim-textobj-blockwise'
 
 " LSP and autocomplete
 " Plug 'prabirshrestha/vim-lsp'
-" Plug 'hbarcelos/vim-lsp'
-Plug '~/labs/vim-lsp'
+Plug 'hbarcelos/vim-lsp'
+" Plug '~/labs/vim-lsp'
 Plug 'mattn/vim-lsp-settings'
 Plug 'thomasfaingnaert/vim-lsp-snippets'
 Plug 'prabirshrestha/async.vim'
@@ -143,8 +143,8 @@ let g:polyglot_disabled = ['javascript', 'typescript', 'solidity']
 " let g:polyglot_disabled = ['javascript', 'typescript']
 
 " Solidity
-Plug '~/labs/vim-solidity'
-" Plug 'hbarcelos/vim-solidity'
+" Plug '~/labs/vim-solidity'
+Plug 'hbarcelos/vim-solidity'
 " Plug 'tomlion/vim-solidity'
 " Plug 'thesis/vim-solidity', { 'branch': 'main' }
 
