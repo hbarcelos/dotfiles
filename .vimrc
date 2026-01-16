@@ -204,7 +204,8 @@ Plug 'rust-lang/rust.vim'
 " To install the NORD theme in Gnome Terminal, run:
 " curl -s https://raw.githubusercontent.com/arcticicestudio/nord-gnome-terminal/develop/src/nord.sh | bash -
 " Plug 'arcticicestudio/nord-vim'
-Plug '~/labs/one-vim', { 'do': './setup.sh' }
+" Plug '~/labs/one-vim', { 'do': './setup.sh' }
+Plug 'hbarcelos/one-vim', { 'do': './setup.sh' }
 " Plug '~/labs/polar-ice-vim', { 'do': './setup.sh' }
 " Plug 'hbarcelos/polar-ice-vim', { 'do': './setup.sh' }
 " Plug '~/labs/gui-font-size.vim'
@@ -814,7 +815,7 @@ nmap <silent> <leader>gp <Plug>(lsp-preview-focus)
 " \ 'colorscheme': 'nord',
 
 let g:lightline = {
-      \ 'colorscheme': 'One',
+      \ 'colorscheme': 'one_dark',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ], [ 'fugitive', 'readonly', 'filename' ], ['ctrlpmark'] ],
       \   'right': [ [ 'linter_checking' ,'linter_errors', 'linter_warnings', 'linter_infos' , 'linter_ok', 'lineinfo', 'codeium' ], ['percent'], [ 'fileformat', 'fileencoding', 'filetype' ] ]
@@ -1094,7 +1095,7 @@ let &t_ut=''
 " Change the color scheme here.
 try
   " colorscheme nord
-  colorscheme One
+  colorscheme one_dark
 catch
   colorscheme default
 endtry

@@ -3,7 +3,7 @@
 <plist version="1.0">
 <dict>
 	<key>name</key>
-	<string>one-dark</string>
+	<string>one_dark</string>
 	<key>settings</key>
 	<array>
 		<dict>
