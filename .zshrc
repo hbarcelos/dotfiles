@@ -85,6 +85,27 @@ else
   autoload -z edit-command-line
   zle -N edit-command-line
   bindkey '\ee' edit-command-line
+
+  # Copy current command line to system clipboard
+  copy_cmdline() {
+    local clip=""
+    if command -v pbcopy >/dev/null 2>&1; then
+      clip="pbcopy"
+    elif command -v wl-copy >/dev/null 2>&1; then
+      clip="wl-copy"
+    elif command -v xclip >/dev/null 2>&1; then
+      clip="xclip -selection clipboard"
+    elif command -v xsel >/dev/null 2>&1; then
+      clip="xsel --clipboard --input"
+    else
+      echo "No clipboard tool found" >&2
+      return 1
+    fi
+
+    print -rn -- "$BUFFER" | eval "$clip"
+  }
+  zle -N copy_cmdline
+  bindkey '\ey' copy_cmdline
 fi
 
 setopt append_history # better concurrent shell history sharing
