@@ -424,6 +424,15 @@ nnoremap gl $
 vnoremap gh ^
 vnoremap gl $
 
+" Beginning of Word
+function! JumpToStartOfWord()
+    if col('.') > 1 && getline('.')[col('.') - 2] != ' '
+        normal! b
+    endif
+endfunction
+
+nnoremap <silent> gb :call JumpToStartOfWord()<CR>
+
 " Emacs/Shell like shortcuts for insert and command/ex mode
 
 " <C-a>: move to head.
@@ -682,9 +691,13 @@ nnoremap <silent> <F5> :MundoToggle<CR>
 
 """ FixWhitespace {
 
+let g:better_whitespace_operator = '_s'
+
 map <silent> <F6> :StripWhitespace<Cr>
 vmap <silent> <F6> :StripWhitespace<Cr>
 imap <silent> <S-F6> <c-o>:StripWhitespace<Cr>
+map <silent> <leader>ss :StripWhitespace<Cr>
+vmap <silent> <leader>ss :StripWhitespace<Cr>
 
 """ }
 
@@ -733,6 +746,10 @@ let g:ale_cpp_clang_options = '-Wall -O2 -std=c++17'
 
 let g:ale_javascript_prettier_use_local_config = 1
 let g:ale_fix_on_save = 0
+let g:ale_lint_on_enter = 0
+let g:ale_lint_on_save = 0
+let g:ale_lint_on_text_changed = 0
+let g:ale_lint_on_insert_leave = 0
 
 " Display virtual text only after current line
 let g:ale_virtualtext_cursor = 'current'
@@ -798,17 +815,6 @@ augroup ALEHighlightFix
 augroup END
 
 nnoremap <silent> <leader>lf :ALEFix<CR>
-nnoremap <silent> <leader>ld :ALEDetail<CR>
-
-nmap <silent> <leader>j <Plug>(ale_next_wrap)
-nmap <silent> <leader>k <Plug>(ale_previous_wrap)
-
-nmap <silent> <leader>gd :LspDefinition<CR>
-nmap <silent> <leader>gh :LspHover<CR>
-nmap <silent> <leader>gr :LspRename<CR>
-nmap <silent> <leader>gR :LspReferences<CR>
-nmap <silent> <leader>gT :LspTypeDefinition<CR>
-nmap <silent> <leader>gp <Plug>(lsp-preview-focus)
 """ }
 
 """ lighline {
@@ -987,21 +993,58 @@ let g:startify_lists = [
 """ }
 
 """ signify {
-augroup SignifyColors
+let g:signify_line_highlight = 0
+let g:signify_disable_by_default = 0
+" let g:signify_sign_add = '+'
+" let g:signify_sign_change = '~'
+" let g:signify_sign_delete = '-'
+" let g:signify_sign_delete_first_line = '-'
+" let g:signify_sign_change_delete = '-'
+let g:signify_sign_add = '✚'
+let g:signify_sign_change = '✎'
+let g:signify_sign_delete = '✖'
+let g:signify_sign_delete_first_line = '✖'
+let g:signify_sign_change_delete = '✖'
+
+function! s:SignifyApplySignHighlights() abort
+  let l:groups = {
+        \ 'SignifySignAdd': 'DiffAdd',
+        \ 'SignifySignChange': 'DiffChange',
+        \ 'SignifySignDelete': 'DiffDelete',
+        \ 'SignifySignChangeDelete': 'DiffChange',
+        \ 'SignifyLineAdd': 'DiffAdd',
+        \ 'SignifyLineChange': 'DiffChange',
+        \ 'SignifyLineDelete': 'DiffDelete',
+        \ 'SignifyLineChangeDelete': 'DiffChange',
+        \ 'SignifyLineDeleteFirstLine': 'DiffDelete',
+        \ 'SignifySignDeleteFirstLine': 'DiffDelete',
+        \ }
+  for l:target in keys(l:groups)
+    let l:source = l:groups[l:target]
+    let l:fg_gui = synIDattr(hlID(l:source), 'fg#')
+    if l:fg_gui !=# ''
+      execute 'highlight ' . l:target . ' guifg=' . l:fg_gui
+    endif
+    execute 'highlight ' . l:target . ' guibg=NONE ctermbg=NONE'
+  endfor
+endfunction
+
+augroup SignifyHighlights
   autocmd! * <buffer>
-  autocmd VimEnter * :highlight! SignColumn ctermbg=none
+  autocmd VimEnter * call <SID>SignifyApplySignHighlights()
+  autocmd ColorScheme * call <SID>SignifyApplySignHighlights()
 augroup END
 
-nnoremap <silent> <leader>gST :SignifyToggle<CR>
-nnoremap <silent> <leader>gSH :SignifyToggleHighlight<CR>
-nnoremap <silent> <leader>gSR :SignifyRefresh<CR>
-nnoremap <silent> <leader>gSD :SignifyDebug<CR>
+nnoremap <silent> <leader>st :SignifyToggle<CR>
+nnoremap <silent> <leader>sh :SignifyToggleHighlight<CR>
+nnoremap <silent> <leader>sr :SignifyRefresh<CR>
+nnoremap <silent> <leader>sd :SignifyDebug<CR>
 
 "" hunk jumping
-nmap <leader>gj <plug>(signify-next-hunk)
-nmap <leader>gk <plug>(signify-prev-hunk)
-nmap <leader>gJ 9999<leader>gj
-nmap <leader>gK 9999<leader>gk
+nmap <leader>sj <plug>(signify-next-hunk)
+nmap <leader>sk <plug>(signify-prev-hunk)
+nmap <leader>sgg 9999<leader>gj
+nmap <leader>sG 9999<leader>gk
 
 "" hunk text object
 omap ih <plug>(signify-motion-inner-pending)
@@ -1882,13 +1925,68 @@ let g:sandwich#magicchar#f#patterns = [
 """ vim-lsp {
 
 let g:lsp_diagnostics_enabled = 1
+let g:lsp_diagnostics_signs_enabled = 1
+let g:lsp_diagnostics_signs_error = { 'text': "" }
+let g:lsp_diagnostics_signs_warning = { 'text': "" }
+let g:lsp_diagnostics_signs_information = { 'text': "" }
+let g:lsp_diagnostics_signs_hint = { 'text': "" }
+let g:lsp_document_code_action_signs_enabled = 0
 let g:lsp_diagnostics_virtual_text_enabled = 0
+let g:lsp_diagnostics_echo_cursor = 1
+let g:lsp_diagnostics_echo_delay = 80
 let g:lsp_completion_documentation_enabled = 1
 let g:lsp_completion_documentation_delay = 120
 let g:lsp_hover_ui = 'preview'
 let g:lsp_preview_keep_focus = 1
 let g:lsp_preview_float = 1
 let g:lsp_hover_conceal = 1
+
+nnoremap <silent> <leader>ld :LspDocumentDiagnostics<CR>
+nnoremap <silent> <leader>lD :call <SID>LspLineDiagnostics()<CR>
+
+nmap <silent> <leader>j :LspNextDiagnostic<CR>
+nmap <silent> <leader>k :LspPreviousDiagnostic<CR>
+
+nmap <silent> <leader>gd :LspDefinition<CR>
+nmap <silent> <leader>gh :LspHover<CR>
+nmap <silent> <leader>gr :LspRename<CR>
+nmap <silent> <leader>gR :LspReferences<CR>
+nmap <silent> <leader>gT :LspTypeDefinition<CR>
+nmap <silent> <leader>gp <Plug>(lsp-preview-focus)
+
+function! s:LspApplySignHighlights() abort
+  let l:groups = {
+        \ 'LspErrorText': 'Error',
+        \ 'LspWarningText': 'WarningMsg',
+        \ 'LspInformationText': 'Identifier',
+        \ 'LspHintText': 'Comment',
+        \ }
+  for l:target in keys(l:groups)
+    let l:source = l:groups[l:target]
+    let l:fg_gui = synIDattr(hlID(l:source), 'fg#')
+    let l:fg_cterm = synIDattr(hlID(l:source), 'fg', 'cterm')
+    if l:fg_gui !=# ''
+      execute 'highlight ' . l:target . ' guifg=' . l:fg_gui
+    endif
+    execute 'highlight ' . l:target . ' guibg=NONE ctermbg=NONE'
+  endfor
+endfunction
+
+augroup LspSignHighlights
+  autocmd!
+  autocmd VimEnter * call <SID>LspApplySignHighlights()
+  autocmd ColorScheme * call <SID>LspApplySignHighlights()
+augroup END
+
+function! s:LspLineDiagnostics() abort
+  let l:diagnostic = lsp#internal#diagnostics#under_cursor#get_diagnostic()
+  if empty(l:diagnostic) || !has_key(l:diagnostic, 'message')
+    call lsp#utils#echo_with_truncation('LSP: no diagnostics under cursor')
+    return
+  endif
+  call lsp#ui#vim#output#preview('', l:diagnostic['message'], {'statusline': ' LSP Diagnostics'})
+endfunction
+
 
 function! s:LspFixFloatSyntax() abort
   if !exists('*popup_list')
@@ -1961,31 +2059,6 @@ let g:UltiSnipsJumpBackwardTrigger = '<s-tab>'
 
 let g:asyncomplete_auto_popup = 0
 
-function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
-endfunction
-
-inoremap <silent><expr> <TAB>
-  \ pumvisible() ? "\<C-n>" :
-  \ <SID>check_back_space() ? "\<TAB>" :
-  \ asyncomplete#force_refresh()
-
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
-let g:asyncomplete_auto_popup = 0
-
-function! s:check_back_space() abort
-    let col = col('.') - 1
-    return !col || getline('.')[col - 1]  =~ '\s'
-endfunction
-
-inoremap <silent><expr> <TAB>
-  \ pumvisible() ? "\<C-n>" :
-  \ <SID>check_back_space() ? "\<TAB>" :
-  \ asyncomplete#force_refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
-
 set completeopt=menuone,noinsert,noselect
 
 augroup asyncomplete_autoclose
@@ -2006,27 +2079,11 @@ autocmd User asyncomplete_setup call asyncomplete#register_source({
     \ 'completor': function('asyncomplete#sources#gitcommit#completor')
     \ })
 
-autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#emoji#get_source_options({
-    \ 'name': 'emoji',
-    \ 'allowlist': ['*'],
-    \ 'completor': function('asyncomplete#sources#emoji#completor'),
-    \ }))
-
 autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#file#get_source_options({
     \ 'name': 'file',
     \ 'allowlist': ['*'],
     \ 'priority': 10,
     \ 'completor': function('asyncomplete#sources#file#completor')
-    \ }))
-
-autocmd User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#omni#get_source_options({
-    \ 'name': 'omni',
-    \ 'allowlist': ['*'],
-    \ 'blocklist': ['c', 'cpp', 'html'],
-    \ 'completor': function('asyncomplete#sources#omni#completor'),
-    \ 'config': {
-    \   'show_source_kind': 1,
-    \ },
     \ }))
 
 if exists('*asyncomplete#sources#lsp#get_source_options')
@@ -2036,12 +2093,6 @@ if exists('*asyncomplete#sources#lsp#get_source_options')
       \ 'completor': function('asyncomplete#sources#lsp#completor'),
       \ }))
 endif
-
-au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#necosyntax#get_source_options({
-    \ 'name': 'necosyntax',
-    \ 'allowlist': ['*'],
-    \ 'completor': function('asyncomplete#sources#necosyntax#completor'),
-    \ }))
 
 au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#sources#buffer#get_source_options({
     \ 'name': 'buffer',
