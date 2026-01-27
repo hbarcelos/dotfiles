@@ -286,6 +286,6 @@
 	<key>colorSpaceName</key>
 	<string>sRGB</string>
 	<key>semanticClass</key>
-	<string>theme.dark.one-dark</string>
+	<string>theme.dark.one_dark</string>
 </dict>
 </plist>
