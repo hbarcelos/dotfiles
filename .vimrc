@@ -47,14 +47,16 @@ Plug 'haya14busa/vim-asterisk'
 Plug 'knubie/vim-kitty-navigator', {'do': 'cp ./*.py ~/.config/kitty/'}
 " Plug 'vim-scripts/colorsupport.vim'
 
-" NERDTree
-Plug 'scrooloose/nerdtree'
-Plug 'Xuyuanp/nerdtree-git-plugin'
-" vim-devicons MUST be included AFTER nerdtree-git-plugin
-" to avoid icons being misaligned when git markers are present
+" Fern
+Plug 'lambdalisue/fern.vim'
+Plug 'lambdalisue/fern-git-status.vim'
+Plug 'lambdalisue/fern-renderer-nerdfont.vim'
+Plug 'lambdalisue/nerdfont.vim'
+Plug 'lambdalisue/glyph-palette.vim'
+Plug 'LumaKernel/fern-mapping-fzf.vim'
+Plug 'hbarcelos/fern-two-vsplits'
 Plug 'ryanoasis/vim-devicons'
-" Plug 'tiagofumo/vim-nerdtree-syntax-highlight'
-Plug 'evandotpro/nerdtree-chmod'
+" Plug 'lambdalisue/fern-renderer-devicons.vim'
 
 """ }
 
@@ -567,57 +569,33 @@ nnoremap <leader><leader>D :s/\D//g<CR>
 " Shift+Insert pastes text from the clipboard in command mode
 cnoremap <S-Insert> <C-R>+
 
-""" NERDTree {
+""" Fern {
 
-" Show files matching .gitignore
-augroup NERDTreeConfig
-  autocmd! * <buffer>
-  autocmd FileType nerdtree setlocal nolist
+let g:fern#renderer = 'nerdfont'
+let g:fern#drawer_width = 35
+let g:fern#default_hidden = 1
+
+noremap <silent> <leader>e :Fern . -drawer -toggle<CR>
+noremap <silent> <leader>r :execute 'Fern . -drawer -reveal=' . fnameescape(expand('%:p'))<CR>
+
+augroup FernWindowConfig
+  autocmd!
+  autocmd BufWinEnter fern://* setlocal nonumber norelativenumber nowrap winfixheight
+  autocmd BufEnter fern://* let b:shortmess_save = &shortmess | set shortmess+=F
+  autocmd BufLeave fern://* if exists('b:shortmess_save') | let &shortmess = b:shortmess_save | unlet b:shortmess_save | endif
+  autocmd BufWinEnter fern://* wincmd _
 augroup END
 
-" if winwidth(0) >= 150
-"   let g:NERDTreeWinSize=41 " original + 10
-" endif
+augroup GlyphPalette
+  autocmd!
+  autocmd FileType fern call glyph_palette#apply()
+augroup END
 
-let NERDTreeHijackNetrw=1
-let NERDTreeIgnore=['\.pyc', '\~$', '\.swo$', '\.swp$', '\.git$', '\.hg', '\.svn', '\.bzr']
-let NERDTreeChDirMode=0
-let NERDTreeMouseMode=2
-let NERDTreeShowHidden=1
-let NERDTreeKeepTreeInNewTab=1
-let g:nerdtree_tabs_open_on_gui_startup=0
-let g:NERDShutUp=1
-let g:NERDTreeGitStatusShowIgnored = 1
-
-let g:NERDTreeGitStatusIndicatorMapCustom = {
-    \ 'Modified'  : '✎',
-    \ 'Staged'    : '✚',
-    \ 'Untracked' : '✭',
-    \ 'Renamed'   : '➜',
-    \ 'Unmerged'  : '═',
-    \ 'Deleted'   : '✖',
-    \ 'Dirty'     : '✎',
-    \ 'Clean'     : '✔︎',
-    \ 'Ignored'   : '☒',
-    \ 'Unknown'   : '?'
-    \ }
-
-noremap <silent> <F4> :NERDTreeToggle<Cr>
-noremap <leader>n :NERDTreeFind<Cr>
-
-function! s:CloseIfOnlyControlWinLeft()
-  if winnr('$') != 1
-    return
-  endif
-  if (exists('t:NERDTreeBufName') && bufwinnr(t:NERDTreeBufName) != -1)
-        \ || &buftype == 'quickfix'
-    q
-  endif
-endfunction
-
-augroup CloseIfOnlyControlWinLeft
-  au!
-  au BufEnter * call s:CloseIfOnlyControlWinLeft()
+augroup FernMappings
+  autocmd!
+  autocmd FileType fern silent! nunmap <buffer> <C-h>
+  autocmd FileType fern silent! nunmap <buffer> <C-l>
+  autocmd FileType fern silent! nunmap <buffer> <C-w>
 augroup END
 
 """ }
@@ -638,20 +616,6 @@ let g:DevIconsEnableFolderExtensionPatternMatching = 1
 
 " enable pattern matching glyphs on folder/directory (enabled by default with 1)
 let g:DevIconsEnableFolderPatternMatching = 1
-
-" whether or not to show the nerdtree brackets around flags
-let g:webdevicons_conceal_nerdtree_brackets = 1
-
-" Force extra padding in NERDTree so that the filetype icons line up vertically
-let g:WebDevIconsNerdTreeGitPluginForceVAlign = 1
-
-" the amount of space to use after the glyph character (default ' ')
-" let g:WebDevIconsNerdTreeAfterGlyphPadding = ' '
-
-" let g:WebDevIconsNerdTreeBeforeGlyphPadding = ' '
-" let g:WebDevIconsUnicodeDecorateFolderNodes = v:true
-let g:NERDTreeDirArrowExpandable = "\u00a0"
-let g:NERDTreeDirArrowCollapsible = "\u00a0"
 
 let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols = {}
 let g:WebDevIconsUnicodeDecorateFileNodesExactSymbols['.babelrc'] = ''
@@ -674,11 +638,6 @@ let g:WebDevIconsUnicodeDecorateFileNodesExtensionSymbols['pem'] = '󰌋'  " nf-
 
 let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols = {}
 let g:WebDevIconsUnicodeDecorateFileNodesPatternSymbols['\..*ignore$'] = ''
-
-augroup NERDTree
-  autocmd!
-  autocmd FileType nerdtree setlocal signcolumn=no
-augroup END
 
 """ }
 
@@ -874,7 +833,7 @@ function! LightLineFilename()
   let fname = expand('%:t')
   return fname == 'ControlP' ? g:lightline.ctrlp_item :
         \ fname == '__Tagbar__' ? g:lightline.fname :
-        \ fname =~ '__Gundo\|NERD_tree' ? '' :
+        \ (fname =~ '__Gundo__' || &filetype == 'fern') ? '' :
         \ &filetype == 'vimfiler' ? vimfiler#get_status_string() :
         \ &filetype == 'unite' ? unite#get_status_string() :
         \ &filetype == 'vimshell' ? vimshell#get_status_string() :
@@ -884,7 +843,7 @@ endfunction
 
 function! LightLineFugitive()
   try
-    if expand('%:t') !~? 'Tagbar\|Gundo\|NERD' && &filetype !~? 'vimfiler'
+    if expand('%:t') !~? 'Tagbar\|Gundo' && &filetype !~? 'vimfiler\|fern'
       let mark = "\uf126 "  " edit here for cool mark
       let _ = fugitive#head()
       return strlen(_) ? mark._ : ''
@@ -912,7 +871,7 @@ function! LightLineMode()
         \ fname == 'ControlP' ? 'CtrlP' :
         \ fname == '__Gundo__' ? 'Gundo' :
         \ fname == '__Gundo_Preview__' ? 'Gundo Preview' :
-        \ fname =~ 'NERD_tree' ? 'NERDTree' :
+        \ &filetype == 'fern' ? 'Fern' :
         \ &filetype == 'unite' ? 'Unite' :
         \ &filetype == 'vimfiler' ? 'VimFiler' :
         \ &filetype == 'vimshell' ? 'VimShell' :
