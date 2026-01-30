@@ -20,7 +20,6 @@ Plug 'nanotee/zoxide.vim'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'arthurxavierx/vim-caser'
-
 """ }
 
 """ Interface {
@@ -360,7 +359,7 @@ set encoding=utf-8
 set winminwidth=0
 
 " Abbrev. of messages (avoids 'hit enter')
-set shortmess+=filmnrxoOtT
+set shortmess+=filmnrxoOtTI
 
 " Better Unix / Windows compatibility
 set viewoptions=folds,options,cursor,unix,slash
@@ -379,6 +378,9 @@ set hlsearch
 " Remove search highlight
 noremap <silent> <Leader>. :nohlsearch<CR>
 
+set signcolumn=yes
+set updatetime=200
+set timeoutlen=400
 
 " Automatically quit Vim if quickfix window is the last
 augroup QuitIfQuickfixIsLast
@@ -454,8 +456,7 @@ cnoremap <C-a> <Home>
 inoremap <C-e> <C-o>$
 cnoremap <C-e> <End>
 " <C-k>: delete to the end.
-cnoremap <expr> <C-k>
-      \ repeat("\<Del>", strchars(getcmdline()[getcmdpos() - 1:]))
+cnoremap <expr> <C-k> repeat("\<Del>", strchars(getcmdline()[getcmdpos() - 1:]))
 
 " Clipboard copy and paste
 nnoremap <leader>y "+y
@@ -662,11 +663,11 @@ nnoremap <silent> <F5> :MundoToggle<CR>
 
 let g:better_whitespace_operator = '_s'
 
-map <silent> <F6> :StripWhitespace<Cr>
-vmap <silent> <F6> :StripWhitespace<Cr>
-imap <silent> <S-F6> <c-o>:StripWhitespace<Cr>
-map <silent> <leader>ss :StripWhitespace<Cr>
-vmap <silent> <leader>ss :StripWhitespace<Cr>
+nnoremap <silent> <F6> :StripWhitespace<Cr>
+vnoremap <silent> <F6> :StripWhitespace<Cr>
+inoremap <silent> <S-F6> <c-o>:StripWhitespace<Cr>
+nnoremap <silent> <leader>ss :StripWhitespace<Cr>
+vnoremap <silent> <leader>ss :StripWhitespace<Cr>
 
 """ }
 
@@ -774,14 +775,6 @@ let g:ale_fixers = {
   \  'c': ['clang-format'],
   \  'cpp': ['clang-format'],
 \}
-
-augroup ALEHighlightFix
-  autocmd! * <buffer>
-  autocmd VimEnter * :highlight! ALEErrorSign ctermfg=9 guifg=#F59597
-  autocmd VimEnter * :highlight! ALEWarningSign ctermfg=11 guifg=#F2DB94
-  autocmd VimEnter * :highlight! ALEError ctermfg=9 guifg=#F59597
-  autocmd VimEnter * :highlight! ALEWarning ctermfg=11 guifg=#F2DB94
-augroup END
 
 nnoremap <silent> <leader>lf :ALEFix<CR>
 """ }
@@ -1055,18 +1048,14 @@ augroup END
 """ }
 
 """ signify {
+
 let g:signify_line_highlight = 0
 let g:signify_disable_by_default = 0
-" let g:signify_sign_add = '+'
-" let g:signify_sign_change = '~'
-" let g:signify_sign_delete = '-'
-" let g:signify_sign_delete_first_line = '-'
-" let g:signify_sign_change_delete = '-'
-let g:signify_sign_add = '✚'
-let g:signify_sign_change = '✎'
-let g:signify_sign_delete = '✖'
-let g:signify_sign_delete_first_line = '✖'
-let g:signify_sign_change_delete = '✖'
+let g:signify_sign_add = '+'
+let g:signify_sign_change = '~'
+let g:signify_sign_delete = '–'
+let g:signify_sign_delete_first_line = '–'
+let g:signify_sign_change_delete = '–'
 
 function! s:SignifyApplySignHighlights() abort
   let l:groups = {
@@ -1149,10 +1138,13 @@ set termguicolors
 " Setting dark mode
 set background=dark
 
+set laststatus=2
+
 " Mouse support
 set mouse=a
 set ttymouse=sgr
 set balloonevalterm
+
 " Styled and colored underline support
 let &t_AU = "\e[58:5:%dm"
 let &t_8u = "\e[58:2:%lu:%lu:%lum"
@@ -2116,6 +2108,9 @@ let g:SuperTabClosePreviewOnPopupClose = 1
 let g:UltiSnipsExpandTrigger = '<C-e>'
 let g:UltiSnipsJumpForwardTrigger = '<tab>'
 let g:UltiSnipsJumpBackwardTrigger = '<s-tab>'
+
+" UltiSnips maps <C-h> in select mode by default; unmap it to avoid interference.
+silent! sunmap <C-h>
 
 " }
 
