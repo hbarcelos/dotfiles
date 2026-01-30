@@ -225,6 +225,16 @@ Plug 'Exafunction/codeium.vim', { 'branch': 'main' }
 
 call plug#end()
 
+" Enable Codeium by default
+let g:codeium_enabled = v:true
+silent! runtime autoload/codeium/log.vim
+silent! runtime autoload/codeium/server.vim
+
+augroup CodeiumDeferredStart
+  autocmd!
+  autocmd VimEnter * if exists('*codeium#command#StartLanguageServer') | call codeium#command#StartLanguageServer() | endif
+augroup END
+
 """ General {
 syntax on
 
@@ -889,8 +899,15 @@ function! CtrlPMark()
 endfunction
 
 function! LightLineCodeium()
-  return "\ue28c" . codeium#GetStatusString()
+  if exists('*codeium#GetStatusString')
+    return "\ue28c" . codeium#GetStatusString()
+  endif
+  return ''
 endfunction
+
+if !exists('*codeium#server#Start')
+  let g:codeium_manual_start = 1
+endif
 
 let g:ctrlp_status_func = {
   \ 'main': 'CtrlPStatusFunc_1',
