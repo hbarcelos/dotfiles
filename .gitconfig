@@ -1,5 +1,7 @@
 [core]
 	editor = vim
+	untrackedCache = true
+	fsmonitor = true
 	; pager = diff-so-fancy | less --tabs=4 -RFX
 	; pager = delta --diff-so-fancy
 	; pager = delta
