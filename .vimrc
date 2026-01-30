@@ -2199,3 +2199,12 @@ if executable('rust-analyzer')
   augroup END
 endif
 " }
+
+""" junegunn/fzf.vim {
+
+nnoremap <leader>ff :Files<CR>
+nnoremap <leader>fg :Rg<CR>
+nnoremap <leader>fb :Buffers<CR>
+nnoremap <leader>fh :Helptags<CR>
+
+""" }
