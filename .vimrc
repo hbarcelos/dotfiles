@@ -941,21 +941,93 @@ let g:vimshell_force_overwrite_statusline = 0
 
 """ startify {
 
-" returns all modified files of the current git repo
-" `2>/dev/null` makes the command fail quietly, so that when we are not
-" in a git repo, the list will be empty
-function! s:gitModified()
-    let files = systemlist('git ls-files -m 2>/dev/null')
-    return map(files, "{'line': v:val, 'path': v:val}")
-endfunction
-
-" same as above, but show untracked files, honouring .gitignore
-function! s:gitUntracked()
-    let files = systemlist('git ls-files -o --exclude-standard 2>/dev/null')
-    return map(files, "{'line': v:val, 'path': v:val}")
-endfunction
-
 let g:startify_change_to_dir = 0
+let s:startify_git_cache = {'modified': [], 'untracked': []}
+let s:startify_git_loaded = 0
+let s:startify_git_refresh_scheduled = 0
+
+function! s:StartifyGitParse(lines) abort
+    let l:modified = []
+    let l:untracked = []
+    for l:line in a:lines
+      if l:line ==# ''
+        continue
+      endif
+      let l:status = l:line[0:1]
+      let l:path = substitute(l:line[3:], '^"\\|"$', '', 'g')
+      if l:status ==# '??'
+        if len(l:untracked) < 10
+          call add(l:untracked, {'line': l:path, 'path': l:path})
+        endif
+      else
+        let l:target = l:path
+        if l:target =~# ' -> '
+          let l:target = split(l:target, ' -> ')[-1]
+        endif
+        if len(l:modified) < 10
+          call add(l:modified, {'line': l:target, 'path': l:target})
+        endif
+      endif
+      if len(l:modified) >= 10 && len(l:untracked) >= 10
+        break
+      endif
+    endfor
+    let s:startify_git_cache = {'modified': l:modified, 'untracked': l:untracked}
+endfunction
+
+function! s:StartifyGitRefreshUI(...) abort
+    let s:startify_git_refresh_scheduled = 0
+    if &filetype ==# 'startify'
+      silent! execute 'Startify'
+    endif
+endfunction
+
+function! s:StartifyGitRefresh(...) abort
+    if s:startify_git_loaded
+      return
+    endif
+    if !executable('git')
+      let s:startify_git_loaded = 1
+      return
+    endif
+    let l:cwd = getcwd()
+    let l:root = systemlist('cd ' . shellescape(l:cwd) . ' && git rev-parse --show-toplevel 2>/dev/null')
+    let l:root = len(l:root) > 0 ? l:root[0] : ''
+    if v:shell_error || l:root ==# ''
+      let s:startify_git_loaded = 1
+      return
+    endif
+    call s:StartifyGitParse(systemlist('cd ' . shellescape(l:root) . ' && git status --porcelain=1 2>/dev/null'))
+    let s:startify_git_loaded = 1
+    call s:StartifyGitRefreshUI()
+endfunction
+
+function! s:gitModified()
+    return s:startify_git_cache.modified
+endfunction
+
+function! s:gitUntracked()
+    return s:startify_git_cache.untracked
+endfunction
+
+augroup StartifyGitRefresh
+  autocmd!
+  autocmd VimEnter * call <SID>StartifyGitSchedule()
+  autocmd User StartifyReady call <SID>StartifyGitSchedule()
+augroup END
+
+function! s:StartifyGitSchedule() abort
+    if s:startify_git_loaded || s:startify_git_refresh_scheduled
+      return
+    endif
+    let s:startify_git_refresh_scheduled = 1
+    if has('timers')
+      call timer_start(80, function('s:StartifyGitRefresh'))
+    else
+      call s:StartifyGitRefresh()
+    endif
+endfunction
+
 let g:startify_lists = [
         \ { 'type': 'dir',       'header': ['   MRU '. getcwd()] },
         \ { 'type': 'files',     'header': ['   MRU']            },
@@ -965,6 +1037,20 @@ let g:startify_lists = [
         \ { 'type': function('s:gitUntracked'), 'header': ['   git untracked']},
         \ { 'type': 'commands',  'header': ['   Commands']       },
         \ ]
+
+function! s:StartifyQuit() abort
+    if winnr('$') == 1
+      qa
+    else
+      bd
+    endif
+endfunction
+
+augroup StartifyQuitMapping
+  autocmd!
+  autocmd FileType startify nnoremap <buffer> <nowait> q :call <SID>StartifyQuit()<CR>
+  autocmd User StartifyReady nnoremap <buffer> <nowait> q :call <SID>StartifyQuit()<CR>
+augroup END
 
 """ }
 
