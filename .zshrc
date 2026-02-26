@@ -57,6 +57,8 @@ else
   # (If the defer tag is given 2 or above, run after compinit command)
   zplug "zsh-users/zsh-syntax-highlighting", defer:2
 
+  zplug "hbarcelos/gh-profile-switcher"
+
   zplug "~/labs/makerdao-zsh-utils", from:local
   zplug "~/labs/tenderly-zsh", from:local, defer:2
   ### }
@@ -219,14 +221,6 @@ fi
 
 ########
 
-# SSH agent config
-if [ -S "${XDG_RUNTIME_DIR}/ssh-agent.socket" ]; then
-  export SSH_AUTH_SOCK="${XDG_RUNTIME_DIR}/ssh-agent.socket"
-else
-  echo "The systemd service \`ssh-agent.service\` is not running. Please run:"
-  echo -e "\n\tsystemctl --user enable --now ssh-agent.service"
-fi
-
 # GOLANG
 export GOPATH="${GOPATH:-${HOME}/go}"
 
@@ -264,4 +258,3 @@ function firecrawl {
 
 # DappTools from Nix
 export PATH="${PATH}:/nix/store/x8q85assliyvhwqgp9dq17qbvail2shl-dapp-0.35.0/bin"
-
