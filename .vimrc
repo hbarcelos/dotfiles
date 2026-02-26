@@ -628,6 +628,49 @@ augroup FernMappings
   autocmd FileType fern nnoremap <buffer> D <Plug>(fern-action-remove)
 augroup END
 
+function! s:FernConcealPopups() abort
+  if !exists('*popup_list')
+    return
+  endif
+  let l:sep = nr2char(0x1f)
+  for l:winid in popup_list()
+    let l:bufnr = winbufnr(l:winid)
+    if l:bufnr <= 0
+      continue
+    endif
+    let l:line = getbufline(l:bufnr, 1, 1)
+    if !empty(l:line) && stridx(l:line[0], l:sep) >= 0
+      call setwinvar(l:winid, '&list', 0)
+      call setwinvar(l:winid, '&conceallevel', 2)
+      call setwinvar(l:winid, '&concealcursor', 'nvic')
+      call win_execute(l:winid, 'silent! call matchadd("Conceal", "\\%x1f", 10, -1, {"conceal": ""})', v:true)
+      call popup_settext(l:winid, [substitute(l:line[0], l:sep, " ", "g")])
+    endif
+  endfor
+endfunction
+
+function! s:FernPopupDebug() abort
+  if !exists('*popup_list')
+    echom "popup_list not available"
+    return
+  endif
+  let l:ids = popup_list()
+  echom "popup_list: " . string(l:ids)
+  for l:winid in l:ids
+    let l:bufnr = winbufnr(l:winid)
+    let l:line = getbufline(l:bufnr, 1, 1)
+    let l:conceal = getbufvar(l:bufnr, '&conceallevel')
+    echom printf("popup %d buf %d conceal %s line: %s", l:winid, l:bufnr, l:conceal, string(l:line))
+  endfor
+endfunction
+
+command! FernPopupDebug call <SID>FernPopupDebug()
+
+augroup FernPopupConceal
+  autocmd!
+  autocmd CursorMoved,CursorMovedI fern://* call timer_start(0, { -> <SID>FernConcealPopups() })
+augroup END
+
 """ }
 
 """ vim-devicons {
@@ -1638,7 +1681,27 @@ nnoremap <leader>lF :EslintProject --fix<CR>
 """ }
 
 """ Yilin-Yang/vim-markbar {
+let g:markbar_cache_with_hidden_buffers = v:false
 nmap <Leader>m <Plug>ToggleMarkbar
+
+function! s:MarkbarSafeInit() abort
+  if &filetype ==# 'fern'
+    return
+  endif
+  try
+    call g:MarkbarVimEnter()
+  catch
+  endtry
+endfunction
+
+augroup markbar_read_write_shada
+  autocmd!
+augroup END
+
+augroup MarkbarSafe
+  autocmd!
+  autocmd VimEnter * call <SID>MarkbarSafeInit()
+augroup END
 """ }
 
 """ junegunn/vim-peakaboo {
