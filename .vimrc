@@ -4,6 +4,9 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 
+" Avoid buggy <afile>-based BufWinLeave mapping in vim-better-whitespace.
+let g:current_line_whitespace_disabled_soft = 1
+
 call plug#begin('~/.vim/plugged')
 
 """ General {
@@ -224,6 +227,18 @@ Plug 'Exafunction/codeium.vim', { 'branch': 'main' }
 
 call plug#end()
 
+function! s:FixPluginAutocmds() abort
+  " Replace polyglot's BufWinEnter check that can fail with E495 when <afile>
+  " is unavailable during startup edge cases.
+  augroup filetypedetect
+    autocmd! BufWinEnter *
+    autocmd BufWinEnter * if &ft ==# '' && expand('%:e') ==# '' | silent! call polyglot#shebang#Detect() | endif
+  augroup END
+endfunction
+
+" Plugin compatibility fixes without patching files in ~/.vim/plugged.
+call <SID>FixPluginAutocmds()
+
 " Enable Codeium by default
 let g:codeium_enabled = v:true
 silent! runtime autoload/codeium/log.vim
@@ -298,9 +313,10 @@ set nofoldenable
 set foldlevel=2
 
 augroup remember_folds
-  autocmd! * <buffer>
-  autocmd BufWinLeave * silent! mkview
-  autocmd BufWinEnter * silent! loadview
+  autocmd!
+  " Avoid errors on unnamed/help/terminal buffers during startup.
+  autocmd BufWinLeave * if &buftype ==# '' && expand('%:p') !=# '' | silent! mkview | endif
+  autocmd BufWinEnter * if &buftype ==# '' && expand('%:p') !=# '' | silent! loadview | endif
 augroup END
 
 " Wild menu conf
@@ -592,6 +608,8 @@ noremap <silent> <leader>r :execute 'Fern . -drawer -reveal=' . fnameescape(expa
 augroup FernWindowConfig
   autocmd!
   autocmd BufWinEnter fern://* setlocal nonumber norelativenumber nowrap winfixheight
+  " Prevent vim-markbar from trying to cache fern drawer buffers.
+  autocmd FileType fern setlocal bufhidden=wipe
   autocmd BufEnter fern://* let b:shortmess_save = &shortmess | set shortmess+=F
   autocmd BufLeave fern://* if exists('b:shortmess_save') | let &shortmess = b:shortmess_save | unlet b:shortmess_save | endif
   autocmd BufWinEnter fern://* wincmd _
@@ -607,6 +625,7 @@ augroup FernMappings
   autocmd FileType fern silent! nunmap <buffer> <C-h>
   autocmd FileType fern silent! nunmap <buffer> <C-l>
   autocmd FileType fern silent! nunmap <buffer> <C-w>
+  autocmd FileType fern nnoremap <buffer> D <Plug>(fern-action-remove)
 augroup END
 
 """ }
@@ -1145,43 +1164,9 @@ set mouse=a
 set ttymouse=sgr
 set balloonevalterm
 
-" Styled and colored underline support
-let &t_AU = "\e[58:5:%dm"
-let &t_8u = "\e[58:2:%lu:%lu:%lum"
-let &t_Us = "\e[4:2m"
-let &t_Cs = "\e[4:3m"
-let &t_ds = "\e[4:4m"
-let &t_Ds = "\e[4:5m"
-let &t_Ce = "\e[4:0m"
-" Strikethrough
-let &t_Ts = "\e[9m"
-let &t_Te = "\e[29m"
-" Truecolor support
-let &t_8f = "\e[38:2:%lu:%lu:%lum"
-let &t_8b = "\e[48:2:%lu:%lu:%lum"
-let &t_RF = "\e]10;?\e\\"
-let &t_RB = "\e]11;?\e\\"
-" Bracketed paste
-let &t_BE = "\e[?2004h"
-let &t_BD = "\e[?2004l"
-let &t_PS = "\e[200~"
-let &t_PE = "\e[201~"
-" Cursor control
-let &t_RC = "\e[?12$p"
-let &t_SH = "\e[%d q"
-let &t_RS = "\eP$q q\e\\"
-let &t_SI = "\e[5 q"
-let &t_SR = "\e[3 q"
-let &t_EI = "\e[1 q"
-let &t_VS = "\e[?12l"
-" Focus tracking
-let &t_fe = "\e[?1004h"
-let &t_fd = "\e[?1004l"
-execute "set <FocusGained>=\<Esc>[I"
-execute "set <FocusLost>=\<Esc>[O"
-" Window title
-let &t_ST = "\e[22;2t"
-let &t_RT = "\e[23;2t"
+" Legacy manual termcap overrides removed.
+" Vim 9 + kitty handle these capabilities natively; custom query/response
+" sequences here can leak raw escapes into the UI.
 
 " vim hardcodes background color erase even if the terminfo file does
 " not contain bce. This causes incorrect background rendering when
