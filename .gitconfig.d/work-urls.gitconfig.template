@@ -1,0 +1,4 @@
+[url "git@github.com-work:__SLUG__/"]
+	insteadOf = git@github.com:__SLUG__/
+	insteadOf = https://github.com/__SLUG__/
+	insteadOf = ssh://git@github.com/__SLUG__/

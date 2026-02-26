@@ -79,7 +79,4 @@
 [include]
 	path = ~/.gitconfig.d/alias.gitconfig
 	path = ~/.gitconfig.d/delta.gitconfig
-	path = ~/.gitconfig.d/identity.gitconfig
-
-[includeIf "gitdir:~/work/"]
-	path = ~/work/.gitconfig
+	path = ~/.gitconfig.local.d/local.gitconfig
