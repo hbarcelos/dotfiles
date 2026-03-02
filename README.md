@@ -8,38 +8,101 @@ cd "$HOME/dotfiles"
 ./install.sh
 ```
 
-To skip `logid` system config:
+`install.sh` is an orchestrator that runs module setup scripts.
+
+### Skip Modules
+You can skip any module with `--no-<module>`:
+
 ```bash
-./install.sh --no-logid
+./install.sh --no-bat --no-kitty
+./install.sh --no-git --no-gnome
+./install.sh --no-logiops
 ```
 
-To skip git or gnome setup:
+Supported module flags:
+- `--no-bat`
+- `--no-core`
+- `--no-fontconfig`
+- `--no-git`
+- `--no-gnome`
+- `--no-gnome-backup-timer`
+- `--no-kitty`
+- `--no-logiops`
+- `--no-logid` (deprecated alias for `--no-logiops`)
+- `--no-spaceship`
+- `--no-tmux`
+- `--no-vim`
+- `--no-zsh`
+
+## Repo Structure
+Each concern lives in its own module:
+
+- `bat/`
+- `core/`
+- `fontconfig/`
+- `git/`
+- `gnome/`
+- `kitty/`
+- `logiops/`
+- `spaceship/`
+- `tmux/`
+- `vim/`
+- `zsh/`
+
+Shared helpers are in `_common/`.
+
+## Logging
+Shared logging is in `_common/log.sh`.
+
+- Default format: `[dotfiles] ...`
+- Module format: `[dotfiles/<suffix>] ...`
+- Logs are written to stderr.
+
+## Module Notes
+### `git/`
+`git/setup.sh`:
+- links `git/.gitconfig` and `git/.gitconfig.d`
+- prompts for personal/work identities
+- generates files under `$HOME/.gitconfig.local.d`
+- manages SSH host blocks and `$HOME/.config/git/allowed_signers`
+
+### `zsh/`
+`zsh/setup.zsh` is a zsh script and is only run by `install.sh` when install is launched from zsh.
+
+### `logiops/`
+- tracked config file: `logiops/#etc#logid.cfg`
+- setup symlinks it to `/etc/logid.cfg`
+- warns if `logid.service` is not available in systemd
+
+### `spaceship/`
+`spaceship/setup.sh` warns when Spaceship is not detected.
+It checks:
+- zplug registration (`zplug list`)
+- AUR package install (`pacman -Q spaceship-prompt`)
+
+### `fontconfig/`
+`fontconfig/setup.sh` validates that `Hasklug Nerd Font Mono` is installed and warns otherwise.
+
+## GNOME Backups
+GNOME state is tracked under `gnome/backups/`.
+
+Key files:
+- `gnome/backups/dconf-org-gnome.ini`
+- `gnome/backups/dconf-org-gtk.ini`
+- `gnome/backups/mimeapps.list`
+- `gnome/backups/extensions-*.txt`
+- `gnome/backups/extensions-manifest.txt`
+
+Commands:
+
 ```bash
-./install.sh --no-git
-./install.sh --no-gnome
+./gnome/backup.sh
+./gnome/setup.sh
+./gnome/setup.sh --dry-run
+./gnome/install-timer.sh
 ```
 
 Notes:
-- The install script will warn if `Hasklug Nerd Font Mono` is not installed.
-- Existing files are backed up with a timestamped `.bak` suffix.
-
-## Git
-`install.sh` runs `setup-git.sh`, which:
-
-- Prompts for personal/work git identity info.
-- Generates `$HOME/.gitconfig.local.d/personal-identity.gitconfig` and `$HOME/.gitconfig.local.d/work-identity.gitconfig`.
-- Generates `$HOME/.gitconfig.local.d/work-urls.gitconfig` (URL rewrite rules).
-- Writes `$HOME/.gitconfig.local.d/local.gitconfig` to wire in conditional includes.
-- Creates/updates `$HOME/.ssh/config` with a `github.com-work` host block.
-- Creates/updates `$HOME/.config/git/allowed_signers`.
-
-This setup is strict on SSH signing, and expects separate personal/work identities.
-
-## Fonts
-Fontconfig defines the `monospace` alias in:
-
-- `$HOME/.config/fontconfig/conf.d/99-monospace.conf`
-
-and forces `Hasklug Nerd Font Mono Med`.
-
-Kitty sets `font_family Hasklug Nerd Font Mono Med` and `italic_font Hasklug Nerd Font Mono Med Italic` directly in `kitty.conf`.
+- local/system extension inventories are metadata-only (no full extension source trees)
+- `gnome/backup.sh` auto-generates `extensions-manifest.txt`
+- `gnome/setup.sh` attempts auto-install from that manifest when possible

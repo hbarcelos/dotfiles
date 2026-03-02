@@ -2,110 +2,46 @@
 set -euo pipefail
 
 REPO_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-BACKUP_SUFFIX="$(date +%Y%m%d-%H%M%S)"
+source "$REPO_DIR/_common/linking.sh"
+init_logger_for_source "${BASH_SOURCE[0]}" ""
 
 usage() {
   cat <<USAGE
-Usage: ./install.sh [--no-logid]
+Usage: ./install.sh [--no-<module> ...]
 
 Installs dotfiles by creating symlinks from this repository into your home directory.
 Existing targets are moved aside with a timestamped .bak suffix.
 
 Options:
-  --no-git       Skip git setup (setup-git.sh)
-  --no-gnome     Skip gnome setup (setup-gnome.sh)
-  --no-logid     Skip installing /etc/logid.cfg
+  --no-bat                 Skip bat module setup (bat/setup.sh)
+  --no-core                Skip core module setup (core/setup.sh)
+  --no-fontconfig          Skip fontconfig module setup (fontconfig/setup.sh)
+  --no-git                 Skip git module setup (git/setup.sh)
+  --no-gnome               Skip gnome module setup (gnome/setup.sh)
+  --no-gnome-backup-timer  Skip gnome timer setup (gnome/install-timer.sh)
+  --no-kitty               Skip kitty module setup (kitty/setup.sh)
+  --no-logiops             Skip logiops module setup (logiops/setup.sh)
+  --no-logid               Alias for --no-logiops (deprecated)
+  --no-spaceship           Skip spaceship module setup (spaceship/setup.sh)
+  --no-tmux                Skip tmux module setup (tmux/setup.sh)
+  --no-vim                 Skip vim module setup (vim/setup.sh)
+  --no-zsh                 Skip zsh module setup (zsh/setup.zsh)
   -h, --help     Show this help message
 USAGE
 }
 
-log() {
-  printf '[dotfiles] %s\n' "$*"
-}
-
-warn_missing_font() {
-  local font_name="$1"
-  if [[ -z "$font_name" ]]; then
-    log "Warning: missing font name for verification"
-    return
-  fi
-  if ! command -v fc-list >/dev/null 2>&1; then
-    log "Warning: fc-list not found; cannot verify ${font_name} installation"
-    return
-  fi
-  (
-    set +o pipefail
-    if ! fc-list | rg -q "$font_name"; then
-      exit 1
-    fi
-  ) || {
-    log "Warning: ${font_name} not found; install it to ensure proper monospace rendering"
-  }
-}
-
-backup_existing() {
-  local target="$1"
-  local backup="${target}.bak.${BACKUP_SUFFIX}"
-  if [[ ! -e "$target" && ! -L "$target" ]]; then
-    return
-  fi
-  mv "$target" "$backup"
-  log "Backed up $target -> $backup"
-}
-
-link_path() {
-  local source="$1"
-  local target="$2"
-
-  mkdir -p "$(dirname "$target")"
-
-  if [[ -L "$target" ]]; then
-    local current
-    current="$(readlink "$target")"
-    if [[ "$current" == "$source" ]]; then
-      log "OK $target already linked"
-      return
-    fi
-    backup_existing "$target"
-  elif [[ -e "$target" ]]; then
-    backup_existing "$target"
-  fi
-
-  ln -s "$source" "$target"
-  log "Linked $target -> $source"
-}
-
-link_logid_with_sudo() {
-  local source="$REPO_DIR/logid.cfg"
-  local target="/etc/logid.cfg"
-  local backup="${target}.bak.${BACKUP_SUFFIX}"
-
-  if [[ ! -f "$source" ]]; then
-    log "Skipped logid install: $source not found"
-    return
-  fi
-
-  if sudo test -L "$target"; then
-    local current
-    current="$(sudo readlink "$target")"
-    if [[ "$current" == "$source" ]]; then
-      log "OK $target already linked"
-      return
-    fi
-    sudo mv "$target" "$backup"
-    log "Backed up $target -> $backup"
-  elif sudo test -e "$target"; then
-    sudo mv "$target" "$backup"
-    log "Backed up $target -> $backup"
-  fi
-
-  sudo ln -s "$source" "$target"
-  log "Linked $target -> $source"
-}
-
-install_logid=true
-install_git=true
-install_gnome=true
+setup_bat=true
+setup_core=true
+setup_fontconfig=true
+setup_logiops=true
+setup_git=true
+setup_gnome=true
+setup_kitty=true
+setup_spaceship=true
+setup_tmux=true
+setup_vim=true
+setup_zsh=true
+install_backup_timer_gnome=true
 
 if [[ "${EUID:-$(id -u)}" -eq 0 ]]; then
   printf 'Run this script as your normal user, not as root/sudo.\n' >&2
@@ -114,14 +50,41 @@ fi
 
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --no-logid)
-      install_logid=false
+    --no-bat)
+      setup_bat=false
+      ;;
+    --no-core)
+      setup_core=false
+      ;;
+    --no-fontconfig)
+      setup_fontconfig=false
+      ;;
+    --no-logiops|--no-logid)
+      setup_logiops=false
       ;;
     --no-git)
-      install_git=false
+      setup_git=false
       ;;
     --no-gnome)
-      install_gnome=false
+      setup_gnome=false
+      ;;
+    --no-gnome-backup-timer)
+      install_backup_timer_gnome=false
+      ;;
+    --no-kitty)
+      setup_kitty=false
+      ;;
+    --no-spaceship)
+      setup_spaceship=false
+      ;;
+    --no-tmux)
+      setup_tmux=false
+      ;;
+    --no-vim)
+      setup_vim=false
+      ;;
+    --no-zsh)
+      setup_zsh=false
       ;;
     -h|--help)
       usage
@@ -136,39 +99,84 @@ while [[ $# -gt 0 ]]; do
   shift
 done
 
-link_path "$REPO_DIR/.config/bat" "$HOME/.config/bat"
-link_path "$REPO_DIR/.config/fontconfig" "$HOME/.config/fontconfig"
-link_path "$REPO_DIR/.config/kitty" "$HOME/.config/kitty"
-link_path "$REPO_DIR/.config/spaceship" "$HOME/.config/spaceship"
-link_path "$REPO_DIR/.ethrc" "$HOME/.ethrc"
-link_path "$REPO_DIR/.gitconfig" "$HOME/.gitconfig"
-link_path "$REPO_DIR/.gitconfig.d" "$HOME/.gitconfig.d"
-mkdir -p "$HOME/.gitconfig.local.d"
-link_path "$REPO_DIR/.profile" "$HOME/.profile"
-link_path "$REPO_DIR/.tmux" "$HOME/.tmux"
-link_path "$REPO_DIR/.tmux.conf" "$HOME/.tmux.conf"
-link_path "$REPO_DIR/.vimrc" "$HOME/.vimrc"
-link_path "$REPO_DIR/.zshrc" "$HOME/.zshrc"
+if [[ "$setup_bat" == true ]]; then
+  "$REPO_DIR/bat/setup.sh"
+else
+  log "Skipped bat setup (--no-bat)"
+fi
 
-if [[ "$install_git" == true ]]; then
-  "$REPO_DIR/setup-git.sh"
+if [[ "$setup_fontconfig" == true ]]; then
+  "$REPO_DIR/fontconfig/setup.sh"
+else
+  log "Skipped fontconfig setup (--no-fontconfig)"
+fi
+
+if [[ "$setup_kitty" == true ]]; then
+  "$REPO_DIR/kitty/setup.sh"
+else
+  log "Skipped kitty setup (--no-kitty)"
+fi
+
+if [[ "$setup_spaceship" == true ]]; then
+  "$REPO_DIR/spaceship/setup.sh"
+else
+  log "Skipped spaceship setup (--no-spaceship)"
+fi
+
+if [[ "$setup_core" == true ]]; then
+  "$REPO_DIR/core/setup.sh"
+else
+  log "Skipped core setup (--no-core)"
+fi
+
+if [[ "$setup_tmux" == true ]]; then
+  "$REPO_DIR/tmux/setup.sh"
+else
+  log "Skipped tmux setup (--no-tmux)"
+fi
+
+if [[ "$setup_vim" == true ]]; then
+  "$REPO_DIR/vim/setup.sh"
+else
+  log "Skipped vim setup (--no-vim)"
+fi
+
+if [[ "$setup_zsh" == true ]]; then
+  if [[ "${SHELL:-}" == */zsh ]] || [[ "$(ps -p "$PPID" -o comm= 2>/dev/null || true)" == "zsh" ]]; then
+    "$REPO_DIR/zsh/setup.zsh"
+  else
+    log "Skipped zsh setup: run install from zsh to apply zsh module"
+  fi
+else
+  log "Skipped zsh setup (--no-zsh)"
+fi
+
+if [[ "$setup_git" == true ]]; then
+  "$REPO_DIR/git/setup.sh"
 else
   log "Skipped git setup (--no-git)"
 fi
 
-if [[ "$install_logid" == true ]]; then
-  link_logid_with_sudo
+if [[ "$setup_logiops" == true ]]; then
+  "$REPO_DIR/logiops/setup.sh"
+else
+  log "Skipped logiops setup (--no-logiops)"
 fi
 
-if [[ "$install_gnome" == true ]]; then
-  "$REPO_DIR/setup-gnome.sh"
+if [[ "$setup_gnome" == true ]]; then
+  "$REPO_DIR/gnome/setup.sh"
 else
   log "Skipped gnome setup (--no-gnome)"
 fi
 
-log "Install complete"
-if [[ "$install_logid" == false ]]; then
-  log "Skipped logid install (--no-logid)"
+if [[ "$install_backup_timer_gnome" == true ]]; then
+  if command -v systemctl >/dev/null 2>&1; then
+    "$REPO_DIR/gnome/install-timer.sh"
+  else
+    log "Skipped gnome backup timer install: systemctl not found"
+  fi
+else
+  log "Skipped gnome backup timer install (--no-gnome-backup-timer)"
 fi
 
-warn_missing_font "Hasklug Nerd Font Mono"
+log "Install complete"

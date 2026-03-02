@@ -1,7 +1,7 @@
-.tmux/plugins
-.tmux/resurrect
-.zsh_functions/_volta
+tmux/.tmux/plugins
+tmux/.tmux/resurrect
+zsh/.zsh_functions/_volta
 *.bak
 .*.bak
-.gitconfig.d/overrides.gitconfig
-.config/spaceship/spaceship.zsh.zwc
+git/.gitconfig.d/overrides.gitconfig
+spaceship/.config/spaceship/spaceship.zsh.zwc
