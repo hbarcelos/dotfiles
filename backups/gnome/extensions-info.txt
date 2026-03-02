@@ -1,0 +1,197 @@
+[AlphabeticalAppGrid@stuarthayhurst]
+AlphabeticalAppGrid@stuarthayhurst
+  Name: Alphabetical App Grid
+  Description: Alphabetically order the app grid and folders
+  Path: /usr/share/gnome-shell/extensions/AlphabeticalAppGrid@stuarthayhurst
+  URL: https://github.com/stuarthayhurst/alphabetical-grid-extension
+  Version: 44
+  Enabled: No
+  State: INITIALIZED
+
+[apps-menu@gnome-shell-extensions.gcampax.github.com]
+apps-menu@gnome-shell-extensions.gcampax.github.com
+  Name: Apps Menu
+  Description: Add a category-based menu for apps.
+This extension is part of Classic Mode and is officially supported by GNOME. Please do not report bugs using the form below, use GNOME's GitLab instance instead.
+  Path: /usr/share/gnome-shell/extensions/apps-menu@gnome-shell-extensions.gcampax.github.com
+  URL: https://gitlab.gnome.org/GNOME/gnome-shell-extensions
+  Enabled: No
+  State: INITIALIZED
+
+[arch-update@RaphaelRochet]
+arch-update@RaphaelRochet
+  Name: Arch Linux Updates Indicator
+  Description: Update indicator for Arch Linux and GNOME Shell. Runs gnome-terminal by default, you can change in settings. 
+** Note : you need to install the package pacman-contrib to use the checkupdates script. **
+  Can support AUR or other distros by changing command used to check for and apply updates.
+  Path: /usr/share/gnome-shell/extensions/arch-update@RaphaelRochet
+  URL: https://github.com/RaphaelRochet/arch-update
+  Version: 65
+  Enabled: Yes
+  State: ACTIVE
+
+[auto-move-windows@gnome-shell-extensions.gcampax.github.com]
+auto-move-windows@gnome-shell-extensions.gcampax.github.com
+  Name: Auto Move Windows
+  Description: Move applications to specific workspaces when they create windows.
+  Path: /usr/share/gnome-shell/extensions/auto-move-windows@gnome-shell-extensions.gcampax.github.com
+  URL: https://gitlab.gnome.org/GNOME/gnome-shell-extensions
+  Enabled: Yes
+  State: ACTIVE
+
+[copyous@boerdereinar.dev]
+copyous@boerdereinar.dev
+  Name: Copyous
+  Description: Modern Clipboard Manager for GNOME
+  Path: /usr/share/gnome-shell/extensions/copyous@boerdereinar.dev
+  URL: https://github.com/boerdereinar/copyous
+  Version: 1.3.0 (7)
+  Enabled: Yes
+  State: ACTIVE
+
+[dash-to-panel@jderose9.github.com]
+dash-to-panel@jderose9.github.com
+  Name: Dash to Panel
+  Description: An icon taskbar for the Gnome Shell. This extension moves the dash into the gnome main panel so that the application launchers and system tray are combined into a single panel, similar to that found in KDE Plasma and Windows 7+. A separate dock is no longer needed for easy access to running and favorited applications.
+
+For a more traditional experience, you may also want to use Tweak Tool to enable Windows > Titlebar Buttons > Minimize & Maximize.
+
+For the best support, please report any issues on Github. Dash-to-panel is developed and maintained by @jderose9 and @charlesg99.
+  Path: /usr/share/gnome-shell/extensions/dash-to-panel@jderose9.github.com
+  URL: https://github.com/home-sweet-gnome/dash-to-panel
+  Version: 72
+  Enabled: Yes
+  State: ACTIVE
+
+[drive-menu@gnome-shell-extensions.gcampax.github.com]
+drive-menu@gnome-shell-extensions.gcampax.github.com
+  Name: Removable Drive Menu
+  Description: A status menu for accessing and unmounting removable devices.
+  Path: /usr/share/gnome-shell/extensions/drive-menu@gnome-shell-extensions.gcampax.github.com
+  URL: https://gitlab.gnome.org/GNOME/gnome-shell-extensions
+  Enabled: Yes
+  State: ACTIVE
+
+[gTile@vibou]
+gTile@vibou
+  Name: gTile
+  Description: Tile windows on a grid
+  Path: /usr/share/gnome-shell/extensions/gTile@vibou
+  URL: https://github.com/gTile
+  Version: 67
+  Enabled: Yes
+  State: ACTIVE
+
+[launch-new-instance@gnome-shell-extensions.gcampax.github.com]
+launch-new-instance@gnome-shell-extensions.gcampax.github.com
+  Name: Launch New Instance
+  Description: Always launch a new instance when clicking in the dash or the application view.
+This extension is part of Classic Mode and is officially supported by GNOME. Please do not report bugs using the form below, use GNOME's GitLab instance instead.
+  Path: /usr/share/gnome-shell/extensions/launch-new-instance@gnome-shell-extensions.gcampax.github.com
+  URL: https://gitlab.gnome.org/GNOME/gnome-shell-extensions
+  Enabled: No
+  State: INITIALIZED
+
+[light-style@gnome-shell-extensions.gcampax.github.com]
+light-style@gnome-shell-extensions.gcampax.github.com
+  Name: Light Style
+  Description: Switch default to light style
+  Path: /usr/share/gnome-shell/extensions/light-style@gnome-shell-extensions.gcampax.github.com
+  URL: https://gitlab.gnome.org/GNOME/gnome-shell-extensions
+  Enabled: No
+  State: INITIALIZED
+
+[native-window-placement@gnome-shell-extensions.gcampax.github.com]
+native-window-placement@gnome-shell-extensions.gcampax.github.com
+  Name: Native Window Placement
+  Description: Arrange windows in overview in a more compact way.
+  Path: /usr/share/gnome-shell/extensions/native-window-placement@gnome-shell-extensions.gcampax.github.com
+  URL: https://gitlab.gnome.org/GNOME/gnome-shell-extensions
+  Enabled: No
+  State: INITIALIZED
+
+[places-menu@gnome-shell-extensions.gcampax.github.com]
+places-menu@gnome-shell-extensions.gcampax.github.com
+  Name: Places Status Indicator
+  Description: Add a menu for quickly navigating places in the system.
+This extension is part of Classic Mode and is officially supported by GNOME. Please do not report bugs using the form below, use GNOME's GitLab instance instead.
+  Path: /usr/share/gnome-shell/extensions/places-menu@gnome-shell-extensions.gcampax.github.com
+  URL: https://gitlab.gnome.org/GNOME/gnome-shell-extensions
+  Enabled: No
+  State: INITIALIZED
+
+[power-off-options@axelitama.github.io]
+power-off-options@axelitama.github.io
+  Name: Power Off Options
+  Description: Adds extra options to the GNOME Power Off dialog.
+  Path: /home/anon/.local/share/gnome-shell/extensions/power-off-options@axelitama.github.io
+  URL: https://github.com/axelitama/power-off-options
+  Version: 7
+  Enabled: Yes
+  State: ACTIVE
+
+[screenshot-window-sizer@gnome-shell-extensions.gcampax.github.com]
+screenshot-window-sizer@gnome-shell-extensions.gcampax.github.com
+  Name: Screenshot Window Sizer
+  Description: Resize windows for GNOME Software screenshots with Ctrl+Alt+s shortcut
+  Path: /usr/share/gnome-shell/extensions/screenshot-window-sizer@gnome-shell-extensions.gcampax.github.com
+  URL: https://gitlab.gnome.org/GNOME/gnome-shell-extensions
+  Enabled: No
+  State: INITIALIZED
+
+[status-icons@gnome-shell-extensions.gcampax.github.com]
+status-icons@gnome-shell-extensions.gcampax.github.com
+  Name: Status Icons
+  Description: Show status icons in the top bar
+  Path: /usr/share/gnome-shell/extensions/status-icons@gnome-shell-extensions.gcampax.github.com
+  URL: https://gitlab.gnome.org/GNOME/gnome-shell-extensions
+  Enabled: No
+  State: INITIALIZED
+
+[system-monitor@gnome-shell-extensions.gcampax.github.com]
+system-monitor@gnome-shell-extensions.gcampax.github.com
+  Name: System Monitor
+  Description: Monitor system from the top bar
+  Path: /usr/share/gnome-shell/extensions/system-monitor@gnome-shell-extensions.gcampax.github.com
+  URL: https://gitlab.gnome.org/GNOME/gnome-shell-extensions
+  Enabled: No
+  State: INITIALIZED
+
+[user-theme@gnome-shell-extensions.gcampax.github.com]
+user-theme@gnome-shell-extensions.gcampax.github.com
+  Name: User Themes
+  Description: Load shell themes from user directory.
+  Path: /usr/share/gnome-shell/extensions/user-theme@gnome-shell-extensions.gcampax.github.com
+  URL: https://gitlab.gnome.org/GNOME/gnome-shell-extensions
+  Enabled: Yes
+  State: ACTIVE
+
+[window-list@gnome-shell-extensions.gcampax.github.com]
+window-list@gnome-shell-extensions.gcampax.github.com
+  Name: Window List
+  Description: Display a window list at the bottom of the screen.
+This extension is part of Classic Mode and is officially supported by GNOME. Please do not report bugs using the form below, use GNOME's GitLab instance instead.
+  Path: /usr/share/gnome-shell/extensions/window-list@gnome-shell-extensions.gcampax.github.com
+  URL: https://gitlab.gnome.org/GNOME/gnome-shell-extensions
+  Enabled: No
+  State: INITIALIZED
+
+[windowsNavigator@gnome-shell-extensions.gcampax.github.com]
+windowsNavigator@gnome-shell-extensions.gcampax.github.com
+  Name: Window Navigator
+  Description: Allow keyboard selection of windows and workspaces in overlay mode. <Ctrl>number selects a workspace, and <Alt>number selects a window.
+  Path: /usr/share/gnome-shell/extensions/windowsNavigator@gnome-shell-extensions.gcampax.github.com
+  URL: https://gitlab.gnome.org/GNOME/gnome-shell-extensions
+  Original author: zaspire@rambler.ru
+  Enabled: Yes
+  State: ACTIVE
+
+[workspace-indicator@gnome-shell-extensions.gcampax.github.com]
+workspace-indicator@gnome-shell-extensions.gcampax.github.com
+  Name: Workspace Indicator
+  Description: Put an indicator on the panel signaling in which workspace you are, and give you the possibility of switching to another one.
+  Path: /usr/share/gnome-shell/extensions/workspace-indicator@gnome-shell-extensions.gcampax.github.com
+  URL: https://gitlab.gnome.org/GNOME/gnome-shell-extensions
+  Enabled: No
+  State: INITIALIZED
+
