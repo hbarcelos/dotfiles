@@ -11,6 +11,7 @@ light-style@gnome-shell-extensions.gcampax.github.com
 native-window-placement@gnome-shell-extensions.gcampax.github.com
 places-menu@gnome-shell-extensions.gcampax.github.com
 power-off-options@axelitama.github.io
+save-my-windows@lukastymo.com
 screenshot-window-sizer@gnome-shell-extensions.gcampax.github.com
 status-icons@gnome-shell-extensions.gcampax.github.com
 system-monitor@gnome-shell-extensions.gcampax.github.com

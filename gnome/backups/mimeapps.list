@@ -59,3 +59,5 @@ text/yaml=vim.desktop
 text/plain=vim.desktop
 inode/directory=org.gnome.Nautilus.desktop
 application/x-gnome-saved-search=org.gnome.Nautilus.desktop
+x-scheme-handler/sgnl=signal.desktop
+x-scheme-handler/signalcaptcha=signal.desktop

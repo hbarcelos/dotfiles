@@ -5,8 +5,8 @@ AlphabeticalAppGrid@stuarthayhurst
   Path: /usr/share/gnome-shell/extensions/AlphabeticalAppGrid@stuarthayhurst
   URL: https://github.com/stuarthayhurst/alphabetical-grid-extension
   Version: 44
-  Enabled: No
-  State: INITIALIZED
+  Enabled: Yes
+  State: ACTIVE
 
 [apps-menu@gnome-shell-extensions.gcampax.github.com]
 apps-menu@gnome-shell-extensions.gcampax.github.com
@@ -16,7 +16,7 @@ This extension is part of Classic Mode and is officially supported by GNOME. Ple
   Path: /usr/share/gnome-shell/extensions/apps-menu@gnome-shell-extensions.gcampax.github.com
   URL: https://gitlab.gnome.org/GNOME/gnome-shell-extensions
   Enabled: No
-  State: INITIALIZED
+  State: ERROR
 
 [arch-update@RaphaelRochet]
 arch-update@RaphaelRochet
@@ -36,8 +36,8 @@ auto-move-windows@gnome-shell-extensions.gcampax.github.com
   Description: Move applications to specific workspaces when they create windows.
   Path: /usr/share/gnome-shell/extensions/auto-move-windows@gnome-shell-extensions.gcampax.github.com
   URL: https://gitlab.gnome.org/GNOME/gnome-shell-extensions
-  Enabled: Yes
-  State: ACTIVE
+  Enabled: No
+  State: INITIALIZED
 
 [copyous@boerdereinar.dev]
 copyous@boerdereinar.dev
@@ -108,7 +108,7 @@ native-window-placement@gnome-shell-extensions.gcampax.github.com
   Path: /usr/share/gnome-shell/extensions/native-window-placement@gnome-shell-extensions.gcampax.github.com
   URL: https://gitlab.gnome.org/GNOME/gnome-shell-extensions
   Enabled: No
-  State: INITIALIZED
+  State: INACTIVE
 
 [places-menu@gnome-shell-extensions.gcampax.github.com]
 places-menu@gnome-shell-extensions.gcampax.github.com
@@ -118,7 +118,7 @@ This extension is part of Classic Mode and is officially supported by GNOME. Ple
   Path: /usr/share/gnome-shell/extensions/places-menu@gnome-shell-extensions.gcampax.github.com
   URL: https://gitlab.gnome.org/GNOME/gnome-shell-extensions
   Enabled: No
-  State: INITIALIZED
+  State: INACTIVE
 
 [power-off-options@axelitama.github.io]
 power-off-options@axelitama.github.io
@@ -127,6 +127,16 @@ power-off-options@axelitama.github.io
   Path: /home/anon/.local/share/gnome-shell/extensions/power-off-options@axelitama.github.io
   URL: https://github.com/axelitama/power-off-options
   Version: 7
+  Enabled: No
+  State: INITIALIZED
+
+[save-my-windows@lukastymo.com]
+save-my-windows@lukastymo.com
+  Name: Save My Windows
+  Description: Save My Windows periodically records all open windows along with their monitors and workspaces. It lets you restore your window layout whenever Wayland resets or scrambles positions (e.g. after suspend).
+  Path: /home/anon/.local/share/gnome-shell/extensions/save-my-windows@lukastymo.com
+  URL: https://github.com/lukastymo/save-my-windows
+  Version: 6
   Enabled: Yes
   State: ACTIVE
 
@@ -146,7 +156,7 @@ status-icons@gnome-shell-extensions.gcampax.github.com
   Path: /usr/share/gnome-shell/extensions/status-icons@gnome-shell-extensions.gcampax.github.com
   URL: https://gitlab.gnome.org/GNOME/gnome-shell-extensions
   Enabled: No
-  State: INITIALIZED
+  State: INACTIVE
 
 [system-monitor@gnome-shell-extensions.gcampax.github.com]
 system-monitor@gnome-shell-extensions.gcampax.github.com
@@ -155,7 +165,7 @@ system-monitor@gnome-shell-extensions.gcampax.github.com
   Path: /usr/share/gnome-shell/extensions/system-monitor@gnome-shell-extensions.gcampax.github.com
   URL: https://gitlab.gnome.org/GNOME/gnome-shell-extensions
   Enabled: No
-  State: INITIALIZED
+  State: INACTIVE
 
 [user-theme@gnome-shell-extensions.gcampax.github.com]
 user-theme@gnome-shell-extensions.gcampax.github.com
@@ -183,8 +193,8 @@ windowsNavigator@gnome-shell-extensions.gcampax.github.com
   Path: /usr/share/gnome-shell/extensions/windowsNavigator@gnome-shell-extensions.gcampax.github.com
   URL: https://gitlab.gnome.org/GNOME/gnome-shell-extensions
   Original author: zaspire@rambler.ru
-  Enabled: Yes
-  State: ACTIVE
+  Enabled: No
+  State: INITIALIZED
 
 [workspace-indicator@gnome-shell-extensions.gcampax.github.com]
 workspace-indicator@gnome-shell-extensions.gcampax.github.com
