@@ -24,6 +24,28 @@ note() {
   [[ "$QUIET" == false ]] && log "$*"
 }
 
+dump_dconf_tree() {
+  local tree="$1"
+  local out_file="$2"
+  local err_file
+  err_file="$(mktemp)"
+
+  if ! dconf dump "$tree" > "$out_file" 2> "$err_file"; then
+    cat "$err_file" >&2
+    rm -f "$err_file"
+    return 1
+  fi
+
+  # dconf may emit this known noisy warning for malformed entries; keep other errors visible.
+  if [[ -s "$err_file" ]]; then
+    sed -E \
+      "/g_key_file_set_value: assertion 'group_name != NULL && g_key_file_is_group_name \(group_name\)' failed/d" \
+      "$err_file" >&2
+  fi
+
+  rm -f "$err_file"
+}
+
 sanitize_field() {
   printf '%s' "$1" | tr '\n' ' ' | sed -E 's/[[:space:]]+/ /g; s/^ //; s/ $//; s/\|/%7C/g'
 }
@@ -230,8 +252,8 @@ done
 mkdir -p "$BACKUP_DIR"
 
 note "Dumping dconf trees"
-dconf dump /org/gnome/ > "$BACKUP_DIR/dconf-org-gnome.ini"
-dconf dump /org/gtk/ > "$BACKUP_DIR/dconf-org-gtk.ini"
+dump_dconf_tree /org/gnome/ "$BACKUP_DIR/dconf-org-gnome.ini"
+dump_dconf_tree /org/gtk/ "$BACKUP_DIR/dconf-org-gtk.ini"
 
 if command -v gnome-extensions >/dev/null 2>&1; then
   note "Recording extension inventory"
