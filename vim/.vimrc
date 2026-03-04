@@ -1332,8 +1332,8 @@ nnoremap <leader><Space> :Grep<SPACE>
 nnoremap <leader>/ :Grep<SPACE>
 
 " bind K to grep word under cursor
-nnoremap <leader>* :execute 'grep! "\b"'.expand("<cword>").'"\b"'<CR>:rightb<SPACE>cw<CR>
-vnoremap <leader>* :<C-u>execute 'grep! "'.expand("<C-r>=GetVisual()<CR>").'"'<CR>:rightb<SPACE>cw<CR>
+nnoremap <leader>* :execute 'grep! "\b"'.expand("<cword>").'"\b"'<CR>:rightb<SPACE>cw<CR><CR>
+vnoremap <leader>* :<C-u>execute 'grep! "'.expand("<C-r>=GetVisual()<CR>").'"'<CR>:rightb<SPACE>cw<CR><CR>
 
 
 """ }
