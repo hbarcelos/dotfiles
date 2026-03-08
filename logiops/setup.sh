@@ -4,14 +4,36 @@ set -euo pipefail
 MODULE_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 source "$MODULE_DIR/../_common/linking.sh"
 
-SOURCE="$MODULE_DIR/#etc#logid.cfg"
-TARGET="/etc/logid.cfg"
 BACKUP_SUFFIX="$(date +%Y%m%d-%H%M%S)"
 
-if [[ ! -f "$SOURCE" ]]; then
-  log "Skipped logiops install: $SOURCE not found"
-  exit 0
-fi
+link_root_path() {
+  local source="$1"
+  local target="$2"
+
+  if [[ ! -f "$source" ]]; then
+    log "Skipped $target: $source not found"
+    return
+  fi
+
+  sudo mkdir -p "$(dirname "$target")"
+
+  if sudo test -L "$target"; then
+    local current
+    current="$(sudo readlink "$target")"
+    if [[ "$current" == "$source" ]]; then
+      log "OK $target already linked"
+      return
+    fi
+    sudo mv "$target" "${target}.bak.${BACKUP_SUFFIX}"
+    log "Backed up $target -> ${target}.bak.${BACKUP_SUFFIX}"
+  elif sudo test -e "$target"; then
+    sudo mv "$target" "${target}.bak.${BACKUP_SUFFIX}"
+    log "Backed up $target -> ${target}.bak.${BACKUP_SUFFIX}"
+  fi
+
+  sudo ln -s "$source" "$target"
+  log "Linked $target -> $source"
+}
 
 if command -v systemctl >/dev/null 2>&1; then
   if ! systemctl list-unit-files --type=service --no-legend 2>/dev/null | awk '{print $1}' | grep -qx "logid.service"; then
@@ -21,18 +43,14 @@ else
   log "Warning: systemctl not found; cannot verify logid.service availability."
 fi
 
-if sudo test -L "$TARGET"; then
-  current="$(sudo readlink "$TARGET")"
-  if [[ "$current" == "$SOURCE" ]]; then
-    log "OK $TARGET already linked"
-    exit 0
-  fi
-  sudo mv "$TARGET" "${TARGET}.bak.${BACKUP_SUFFIX}"
-  log "Backed up $TARGET -> ${TARGET}.bak.${BACKUP_SUFFIX}"
-elif sudo test -e "$TARGET"; then
-  sudo mv "$TARGET" "${TARGET}.bak.${BACKUP_SUFFIX}"
-  log "Backed up $TARGET -> ${TARGET}.bak.${BACKUP_SUFFIX}"
-fi
+link_root_path "$MODULE_DIR/#etc#logid.cfg" "/etc/logid.cfg"
+link_root_path "$MODULE_DIR/systemd/logid.service.d/override.conf" "/etc/systemd/system/logid.service.d/override.conf"
+link_root_path "$MODULE_DIR/systemd/logid-postboot-restart.service" "/etc/systemd/system/logid-postboot-restart.service"
+link_root_path "$MODULE_DIR/systemd/logid-postboot-restart.timer" "/etc/systemd/system/logid-postboot-restart.timer"
 
-sudo ln -s "$SOURCE" "$TARGET"
-log "Linked $TARGET -> $SOURCE"
+if command -v systemctl >/dev/null 2>&1; then
+  sudo systemctl daemon-reload
+  sudo systemctl enable logid-postboot-restart.timer >/dev/null
+  sudo systemctl restart logid-postboot-restart.timer
+  log "Reloaded systemd and ensured logid post-boot restart timer is enabled"
+fi

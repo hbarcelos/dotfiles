@@ -72,6 +72,7 @@ Shared logging is in `_common/log.sh`.
 ### `logiops/`
 - tracked config file: `logiops/#etc#logid.cfg`
 - setup symlinks it to `/etc/logid.cfg`
+- setup also installs a tracked `logid.service` override and a delayed post-boot restart timer under `/etc/systemd/system`
 - warns if `logid.service` is not available in systemd
 
 ### `spaceship/`

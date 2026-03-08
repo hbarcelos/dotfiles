@@ -1,0 +1,8 @@
+[Unit]
+Description=Restart logid once after boot so late Logitech devices are picked up
+After=graphical.target logid.service
+Wants=logid.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/bin/systemctl restart logid.service

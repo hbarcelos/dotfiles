@@ -1,0 +1,10 @@
+[Unit]
+Description=Run one delayed restart of logid after boot
+
+[Timer]
+OnBootSec=75sec
+AccuracySec=15sec
+Unit=logid-postboot-restart.service
+
+[Install]
+WantedBy=timers.target
