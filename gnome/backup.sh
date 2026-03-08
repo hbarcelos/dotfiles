@@ -290,6 +290,14 @@ capture_system_extensions
 note "Building extension install manifest"
 build_manifest
 
+if [[ -f "$HOME/.config/monitors.xml" ]]; then
+  cp "$HOME/.config/monitors.xml" "$BACKUP_DIR/monitors.xml"
+  note "Captured monitors.xml"
+else
+  : > "$BACKUP_DIR/monitors.xml"
+  note "No monitors.xml found in ~/.config"
+fi
+
 if [[ -f "$HOME/.config/mimeapps.list" ]]; then
   cp "$HOME/.config/mimeapps.list" "$BACKUP_DIR/mimeapps.list"
 else

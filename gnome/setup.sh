@@ -287,6 +287,14 @@ if [[ -f "$BACKUP_DIR/mimeapps.list" ]]; then
   log "Applied mimeapps.list"
 fi
 
+if [[ ! -s "$HOME/.config/monitors.xml" && -s "$BACKUP_DIR/monitors.xml" ]]; then
+  run_cmd mkdir -p "$HOME/.config"
+  run_cmd cp "$BACKUP_DIR/monitors.xml" "$HOME/.config/monitors.xml"
+  log "Applied user monitors.xml from backup"
+else
+  log "Skipped monitors.xml restore"
+fi
+
 if [[ -f "$BACKUP_DIR/extensions-manifest.txt" ]]; then
   log "Applying extensions from manifest"
   missing_local=0
