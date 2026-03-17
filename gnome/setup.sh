@@ -287,6 +287,14 @@ if [[ -f "$BACKUP_DIR/mimeapps.list" ]]; then
   log "Applied mimeapps.list"
 fi
 
+if [[ -d "$BACKUP_DIR/applications" ]]; then
+  run_cmd mkdir -p "$HOME/.local/share/applications"
+  while IFS= read -r desktop_file; do
+    run_cmd cp "$desktop_file" "$HOME/.local/share/applications/"
+    log "Applied launcher override: $(basename "$desktop_file")"
+  done < <(find "$BACKUP_DIR/applications" -maxdepth 1 -type f -name '*.desktop' | sort)
+fi
+
 if [[ ! -s "$HOME/.config/monitors.xml" && -s "$BACKUP_DIR/monitors.xml" ]]; then
   run_cmd mkdir -p "$HOME/.config"
   run_cmd cp "$BACKUP_DIR/monitors.xml" "$HOME/.config/monitors.xml"
