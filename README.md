@@ -25,7 +25,9 @@ Supported module flags:
 - `--no-fontconfig`
 - `--no-git`
 - `--no-gnome`
-- `--no-gnome-backup-timer`
+- `--no-gnome-settings-sync-timer`
+- `--no-gnome-backup-timer` (deprecated alias for `--no-gnome-settings-sync-timer`)
+- `--no-gnome-screenshot-cleanup-timer`
 - `--no-kitty`
 - `--no-logiops`
 - `--no-logid` (deprecated alias for `--no-logiops`)
@@ -100,10 +102,12 @@ Commands:
 ./gnome/backup.sh
 ./gnome/setup.sh
 ./gnome/setup.sh --dry-run
-./gnome/install-timer.sh
+./gnome/install-settings-sync-timer.sh
+./gnome/install-screenshot-cleanup-timer.sh
 ```
 
 Notes:
 - local/system extension inventories are metadata-only (no full extension source trees)
 - `gnome/backup.sh` auto-generates `extensions-manifest.txt`
 - `gnome/setup.sh` attempts auto-install from that manifest when possible
+- `gnome/install-screenshot-cleanup-timer.sh` installs a user timer that deletes files older than 24 hours from `~/Pictures/Screenshots` (or the XDG Pictures dir equivalent)

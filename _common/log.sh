@@ -22,7 +22,7 @@ derive_log_suffix() {
     install.sh)
       printf 'install'
       ;;
-    setup.sh|setup.zsh|backup.sh|install-timer.sh)
+    setup.sh|setup.zsh|backup.sh|install-timer.sh|install-settings-sync-timer.sh|install-screenshot-cleanup-timer.sh)
       printf '%s' "$dir_name"
       ;;
     *)

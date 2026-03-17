@@ -18,7 +18,9 @@ Options:
   --no-fontconfig          Skip fontconfig module setup (fontconfig/setup.sh)
   --no-git                 Skip git module setup (git/setup.sh)
   --no-gnome               Skip gnome module setup (gnome/setup.sh)
-  --no-gnome-backup-timer  Skip gnome timer setup (gnome/install-timer.sh)
+  --no-gnome-settings-sync-timer  Skip gnome timer setup (gnome/install-settings-sync-timer.sh)
+  --no-gnome-backup-timer  Deprecated alias for --no-gnome-settings-sync-timer
+  --no-gnome-screenshot-cleanup-timer  Skip screenshot cleanup timer setup (gnome/install-screenshot-cleanup-timer.sh)
   --no-kitty               Skip kitty module setup (kitty/setup.sh)
   --no-logiops             Skip logiops module setup (logiops/setup.sh)
   --no-logid               Alias for --no-logiops (deprecated)
@@ -41,7 +43,8 @@ setup_spaceship=true
 setup_tmux=true
 setup_vim=true
 setup_zsh=true
-install_backup_timer_gnome=true
+install_settings_sync_timer_gnome=true
+install_screenshot_cleanup_timer_gnome=true
 
 if [[ "${EUID:-$(id -u)}" -eq 0 ]]; then
   printf 'Run this script as your normal user, not as root/sudo.\n' >&2
@@ -68,8 +71,11 @@ while [[ $# -gt 0 ]]; do
     --no-gnome)
       setup_gnome=false
       ;;
-    --no-gnome-backup-timer)
-      install_backup_timer_gnome=false
+    --no-gnome-settings-sync-timer|--no-gnome-backup-timer)
+      install_settings_sync_timer_gnome=false
+      ;;
+    --no-gnome-screenshot-cleanup-timer)
+      install_screenshot_cleanup_timer_gnome=false
       ;;
     --no-kitty)
       setup_kitty=false
@@ -169,14 +175,24 @@ else
   log "Skipped gnome setup (--no-gnome)"
 fi
 
-if [[ "$install_backup_timer_gnome" == true ]]; then
+if [[ "$install_settings_sync_timer_gnome" == true ]]; then
   if command -v systemctl >/dev/null 2>&1; then
-    "$REPO_DIR/gnome/install-timer.sh"
+    "$REPO_DIR/gnome/install-settings-sync-timer.sh"
   else
-    log "Skipped gnome backup timer install: systemctl not found"
+    log "Skipped gnome settings sync timer install: systemctl not found"
   fi
 else
-  log "Skipped gnome backup timer install (--no-gnome-backup-timer)"
+  log "Skipped gnome settings sync timer install (--no-gnome-settings-sync-timer)"
+fi
+
+if [[ "$install_screenshot_cleanup_timer_gnome" == true ]]; then
+  if command -v systemctl >/dev/null 2>&1; then
+    "$REPO_DIR/gnome/install-screenshot-cleanup-timer.sh"
+  else
+    log "Skipped screenshot cleanup timer install: systemctl not found"
+  fi
+else
+  log "Skipped screenshot cleanup timer install (--no-gnome-screenshot-cleanup-timer)"
 fi
 
 log "Install complete"
