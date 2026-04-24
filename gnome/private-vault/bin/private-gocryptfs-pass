@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+secret-tool lookup app gocryptfs-vault name private

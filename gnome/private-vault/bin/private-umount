@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+mount_dir="${HOME}/Private"
+locked_mode="500"
+
+lock_mountpoint() {
+  chmod "${locked_mode}" "${mount_dir}"
+  actual_mode="$(stat -c '%a' "${mount_dir}")"
+  if [[ "${actual_mode}" != "${locked_mode}" ]]; then
+    echo "Failed to lock ${mount_dir}: mode is ${actual_mode}, expected ${locked_mode}" >&2
+    exit 1
+  fi
+}
+
+if ! mountpoint -q "${mount_dir}"; then
+  lock_mountpoint
+  echo "Not mounted: ${mount_dir}"
+  exit 0
+fi
+
+while mountpoint -q "${mount_dir}"; do
+  fusermount3 -u "${mount_dir}"
+done
+
+lock_mountpoint
+echo "Unmounted: ${mount_dir}"

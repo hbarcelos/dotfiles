@@ -65,6 +65,24 @@ apply_dconf_load() {
   dconf load "$path" < "$file"
 }
 
+apply_config_backup() {
+  local source_file="$1"
+  local target_file="$2"
+
+  if [[ ! -f "$source_file" ]]; then
+    return 0
+  fi
+
+  if [[ "$DRY_RUN" == true ]]; then
+    log "[dry-run] mkdir -p $(dirname "$target_file")"
+    log "[dry-run] cp $source_file $target_file"
+    return 0
+  fi
+
+  mkdir -p "$(dirname "$target_file")"
+  cp "$source_file" "$target_file"
+}
+
 install_local_from_ego() {
   local uuid="$1"
   local sv info_json download_url zip_path
@@ -287,6 +305,16 @@ if [[ -f "$BACKUP_DIR/mimeapps.list" ]]; then
   log "Applied mimeapps.list"
 fi
 
+apply_config_backup "$BACKUP_DIR/gtk-3.0-settings.ini" "$HOME/.config/gtk-3.0/settings.ini"
+if [[ -f "$BACKUP_DIR/gtk-3.0-settings.ini" ]]; then
+  log "Applied gtk-3.0 settings.ini"
+fi
+
+apply_config_backup "$BACKUP_DIR/gtk-4.0-settings.ini" "$HOME/.config/gtk-4.0/settings.ini"
+if [[ -f "$BACKUP_DIR/gtk-4.0-settings.ini" ]]; then
+  log "Applied gtk-4.0 settings.ini"
+fi
+
 if [[ -d "$BACKUP_DIR/applications" ]]; then
   run_cmd mkdir -p "$HOME/.local/share/applications"
   while IFS= read -r desktop_file; do
@@ -387,3 +415,5 @@ else
 fi
 
 log "GNOME setup restore complete"
+
+"$MODULE_DIR/private-vault/setup.sh"

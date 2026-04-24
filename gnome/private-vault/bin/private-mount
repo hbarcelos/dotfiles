@@ -1,0 +1,60 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cipher_dir="${HOME}/.local/share/private.gocryptfs"
+mount_dir="${HOME}/Private"
+pending_import_dir="${HOME}/.local/share/private.pending-import"
+secret_app="gocryptfs-vault"
+secret_name="private"
+pass_cmd="${HOME}/.local/bin/private-gocryptfs-pass"
+watch_cmd="${HOME}/.local/bin/private-lock-watch"
+
+import_pending() {
+  if [[ -d "${pending_import_dir}" ]] && [[ -n "$(find "${pending_import_dir}" -mindepth 1 -maxdepth 1 -print -quit)" ]]; then
+    find "${pending_import_dir}" -mindepth 1 -maxdepth 1 -exec mv -t "${mount_dir}" -- {} +
+    echo "Imported staged files into encrypted vault."
+  fi
+}
+
+has_plaintext_entries() {
+  [[ -n "$(find "${mount_dir}" -mindepth 1 -maxdepth 1 ! -name '.directory' -print -quit)" ]]
+}
+
+if [[ ! -e "${cipher_dir}/gocryptfs.conf" ]]; then
+  echo "Vault is not initialized yet. Run private-init first." >&2
+  exit 1
+fi
+
+mkdir -p "${mount_dir}"
+
+if mountpoint -q "${mount_dir}"; then
+  import_pending
+  echo "Already mounted: ${mount_dir}"
+  exit 0
+fi
+
+if has_plaintext_entries; then
+  echo "Refusing to mount because ${mount_dir} contains plaintext files while locked." >&2
+  echo "Move them elsewhere first, then run private-mount again." >&2
+  exit 1
+fi
+
+chmod 700 "${mount_dir}"
+
+pass="$(secret-tool lookup app "${secret_app}" name "${secret_name}" || true)"
+if [[ -z "${pass}" ]]; then
+  echo "No vault password found in GNOME Keyring. Run private-init again or store it with secret-tool." >&2
+  exit 1
+fi
+unset pass
+
+if ! gocryptfs -quiet -extpass "${pass_cmd}" "${cipher_dir}" "${mount_dir}"; then
+  chmod 500 "${mount_dir}" 2>/dev/null || true
+  exit 1
+fi
+
+chmod 700 "${mount_dir}"
+nohup "${watch_cmd}" >/dev/null 2>&1 &
+import_pending
+
+echo "Mounted: ${mount_dir}"

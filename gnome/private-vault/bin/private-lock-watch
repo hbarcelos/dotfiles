@@ -1,0 +1,20 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+mount_dir="${HOME}/Private"
+lock_dir="${XDG_RUNTIME_DIR:-/tmp}/private-vault-lock-watch"
+
+if ! mkdir "${lock_dir}" 2>/dev/null; then
+  exit 0
+fi
+
+cleanup() {
+  rmdir "${lock_dir}" 2>/dev/null || true
+}
+trap cleanup EXIT
+
+while mountpoint -q "${mount_dir}"; do
+  sleep 2
+done
+
+chmod 500 "${mount_dir}" 2>/dev/null || true

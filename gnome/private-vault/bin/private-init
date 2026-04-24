@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+cipher_dir="${HOME}/.local/share/private.gocryptfs"
+mount_dir="${HOME}/Private"
+secret_label="Private gocryptfs vault"
+secret_app="gocryptfs-vault"
+secret_name="private"
+pass_cmd="${HOME}/.local/bin/private-gocryptfs-pass"
+
+if [[ -e "${cipher_dir}/gocryptfs.conf" ]]; then
+  echo "Vault already initialized: ${cipher_dir}"
+  echo "Use private-mount to unlock it."
+  exit 0
+fi
+
+mkdir -p "${cipher_dir}" "${mount_dir}"
+chmod 700 "${cipher_dir}" "${mount_dir}"
+
+echo "Choose a vault password. This is separate from your login password."
+read -r -s -p "Vault password: " pass1
+echo
+read -r -s -p "Confirm vault password: " pass2
+echo
+
+if [[ "${pass1}" != "${pass2}" ]]; then
+  echo "Passwords did not match." >&2
+  exit 1
+fi
+
+if [[ -z "${pass1}" ]]; then
+  echo "Password cannot be empty." >&2
+  exit 1
+fi
+
+printf '%s' "${pass1}" | secret-tool store --label="${secret_label}" app "${secret_app}" name "${secret_name}"
+gocryptfs -init -extpass "${pass_cmd}" "${cipher_dir}" || {
+  secret-tool clear app "${secret_app}" name "${secret_name}" >/dev/null 2>&1 || true
+  exit 1
+}
+
+unset pass1 pass2
+
+echo "Initialized encrypted folder."
+echo "Encrypted data: ${cipher_dir}"
+echo "Unlocked view:   ${mount_dir}"
+echo "Run private-mount when you want to unlock it."

@@ -304,6 +304,18 @@ else
   : > "$BACKUP_DIR/mimeapps.list"
 fi
 
+if [[ -f "$HOME/.config/gtk-3.0/settings.ini" ]]; then
+  cp "$HOME/.config/gtk-3.0/settings.ini" "$BACKUP_DIR/gtk-3.0-settings.ini"
+else
+  : > "$BACKUP_DIR/gtk-3.0-settings.ini"
+fi
+
+if [[ -f "$HOME/.config/gtk-4.0/settings.ini" ]]; then
+  cp "$HOME/.config/gtk-4.0/settings.ini" "$BACKUP_DIR/gtk-4.0-settings.ini"
+else
+  : > "$BACKUP_DIR/gtk-4.0-settings.ini"
+fi
+
 if [[ "$NO_COMMIT" == true ]]; then
   note "Backup updated without commit (--no-commit)"
   exit 0

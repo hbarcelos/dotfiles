@@ -1,0 +1,8 @@
+[Desktop Entry]
+Type=Application
+Name=Private Vault
+Comment=Mount and open the encrypted Private folder
+Exec=/home/anon/.local/bin/private-open
+Icon=folder-lock-symbolic
+Terminal=false
+Categories=Utility;

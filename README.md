@@ -74,7 +74,7 @@ Shared logging is in `_common/log.sh`.
 ### `logiops/`
 - tracked config file: `logiops/#etc#logid.cfg`
 - setup symlinks it to `/etc/logid.cfg`
-- setup also installs a tracked `logid.service` override and a delayed post-boot restart timer under `/etc/systemd/system`
+- setup copies a tracked `logid.service` override and delayed post-boot restart units into `/etc/systemd/system`
 - warns if `logid.service` is not available in systemd
 
 ### `spaceship/`
@@ -92,6 +92,8 @@ GNOME state is tracked under `gnome/backups/`.
 Key files:
 - `gnome/backups/dconf-org-gnome.ini`
 - `gnome/backups/dconf-org-gtk.ini`
+- `gnome/backups/gtk-3.0-settings.ini`
+- `gnome/backups/gtk-4.0-settings.ini`
 - `gnome/backups/mimeapps.list`
 - `gnome/backups/extensions-*.txt`
 - `gnome/backups/extensions-manifest.txt`

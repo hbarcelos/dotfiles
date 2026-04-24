@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+"${HOME}/.local/bin/private-mount"
+nautilus "${HOME}/Private" >/dev/null 2>&1 &
