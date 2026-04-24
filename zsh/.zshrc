@@ -257,3 +257,6 @@ function firecrawl {
 
 # DappTools from Nix
 export PATH="${PATH}:/nix/store/x8q85assliyvhwqgp9dq17qbvail2shl-dapp-0.35.0/bin"
+
+# User-level .env
+[ -f "${HOME}/.env.sh" ] && source "${HOME}/.env.sh"
