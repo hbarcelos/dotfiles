@@ -148,8 +148,8 @@ let g:polyglot_disabled = ['javascript', 'typescript', 'solidity']
 
 " Solidity
 " Plug '~/labs/vim-solidity'
-Plug 'hbarcelos/vim-solidity'
-" Plug 'tomlion/vim-solidity'
+" Plug 'hbarcelos/vim-solidity'
+Plug 'tomlion/vim-solidity'
 " Plug 'thesis/vim-solidity', { 'branch': 'main' }
 
 " TS/JS support {
@@ -175,12 +175,16 @@ Plug 'moll/vim-node'
 " Plug 'jason0x43/vim-js-indent'
 " }
 
-Plug '~/labs/certora-vim'
+""" }
+
+""" Certora {
+Plug 'hbarcelos/certora-vim'
 """ }
 
 " Markdown
 Plug 'mzlogin/vim-markdown-toc'
 Plug '~/labs/vim-checkbox'
+" Plug 'hbarcelos/vim-checkbox'
 
 " HTML
 Plug 'alvan/vim-closetag'
@@ -261,8 +265,7 @@ set secure
 
 """ GUI only {
 
-" set guifont=Hasklug\ Nerd\ Font\ Mono\ Medium\ 14
-set guifont=Hasklug\ Nerd\ Font\ Mono\ Medium\ 14
+set guifont=Hasklug\ Nerd\ Font\ Mono\ Medium\ 12
 " Hide menu bar
 set guioptions -=m
 " Hide scrollbars
@@ -2212,9 +2215,6 @@ au User asyncomplete_setup call asyncomplete#register_source(asyncomplete#source
 
 """ vim-checkbox {
 
-let g:checkbox_create_mappings = 0
-
-nnoremap <silent> <leader>x :ToggleOrInsertCheckbox<CR>
 """ }
 
 """ codelldb {
