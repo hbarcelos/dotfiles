@@ -5,3 +5,4 @@ zsh/.zsh_functions/_volta
 .*.bak
 git/.gitconfig.d/overrides.gitconfig
 spaceship/.config/spaceship/spaceship.zsh.zwc
+.codex
